@@ -14,7 +14,9 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
     res.render('index.njk', {
-        username: 'Mr. Test'
+        appName: 'UWCFOS',
+        username: 'Mr. Test',
+        cafelist: require('./cafe_list.json')['cafelist']
     });
 });
 
