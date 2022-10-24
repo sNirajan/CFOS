@@ -14,7 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
     res.render('index.njk', {
-        username: 'Xyz abc'
+        username: 'Mr. Test'
     });
 });
 

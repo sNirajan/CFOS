@@ -1,17 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     {% block title %}
-        <title>UWinnipeg Campus Food Ordering</title>
+        <title>UWCFOS</title>
     {% endblock %}
 
     <style>
-        {% block style %}
-        {% endblock %}
+        * {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        #header {
+            padding: 10px;
+            padding-left: 25px;
+            padding-right: 25px;
+            background-color: forestgreen;
+            color: white;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        #sitename p {
+            font-size: 24px; 
+            margin: 0;
+        }
+        #menu_items a {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            margin-left: 15px;
+        }
+        {% block style %} {% endblock %}
     </style>
 </head>
 
 <body>
+    {% block header %}
+        <div id="header">
+            <div id="sitename">
+                <p>UWCFOS</p>
+            </div>
+            <div id="menu_items">
+                <a href="#">Account</a>
+                <a href="#">Log out</a>
+            </div>
+        </div>
+    {% endblock %}
+
     {% block main_body %}
         <h1> Default body </h1>
     {% endblock %}
