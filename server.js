@@ -1,5 +1,7 @@
 const express = require('express');
 const nunjucks = require('nunjucks');
+const fs = require("fs");
+
 
 const app = express();
 const port = 3000;
@@ -16,12 +18,44 @@ app.get('/', (req, res) => {
     res.render('index.njk', {
         appName: 'UWCFOS',
         username: 'Mr. Test',
-        cafelist: require('./cafe_list.json')['cafelist']
+        cafelist: require('./cafe_list.json')
     });
+});
+
+//Rendering new Restaurant page
+app.get('/new_Restaurant.njk', (req, res) => {
+    res.render('new_Restaurant.njk', {
+    });
+});
+
+// Getting form data for new restaurant and adding it in json file
+app.post("/new_Restaurant.njk", (req,res)=>{
+    const fromData = (req.body);
+
+    fs.readFile("cafe_list.json", (err, data) => {
+        if (data.length==0) {
+            // Write in file, if list is empty
+            return fs.writeFile("cafe_list.json", JSON.stringify([fromData], null, 2), error => console.error);
+        }
+        else if (err) {
+            // Some other error
+            console.error(err);
+        }  
+
+        // Otherwise, get its JSON content
+        else {
+            const fileData = JSON.parse(data);
+    
+            //Append the object you want
+            fileData.push((fromData));
+    
+            //Write the file back out
+            return fs.writeFile("cafe_list.json", JSON.stringify(fileData, null, 2), error => console.error)
+        }
+    });
+    res.send("Form submitted");
 });
 
 app.listen(port, () => {
     console.log('App listening at http://localhost:' + port);
 });
-
-

@@ -1,3 +1,38 @@
-{
-    "cafelist": ["Malecon", "Pangea", "Dash", "Stella"]
-}
+[
+  {
+    "Cafe": "Sprout - plant based kitchen",
+    "Location": "4th floor Lockhart hall",
+    "Phone": "",
+    "Descrption": "",
+    "Week": "Monday-Friday",
+    "startTime": "9am",
+    "CloseTime": "3:30pm"
+  },
+  {
+    "Cafe": "Pangea's Kitchen",
+    "Location": "Riddle Hall",
+    "Phone": "",
+    "Descrption": "",
+    "Week": "Monday-Friday",
+    "startTime": "8am",
+    "CloseTime": "6pm"
+  },
+  {
+    "Cafe": "Dash Cafe",
+    "Location": "1st floor Lockhart hall",
+    "Phone": "",
+    "Descrption": "",
+    "Week": "Monday-Friday",
+    "startTime": "10am",
+    "CloseTime": "2pm"
+  },
+  {
+    "Cafe": "Stella's Café & Bakery",
+    "Location": "Buhler Centre",
+    "Phone": "",
+    "Descrption": "",
+    "Week": "Monday-Friday",
+    "startTime": "7am",
+    "CloseTime": "10pm"
+  }
+]
