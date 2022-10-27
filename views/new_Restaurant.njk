@@ -1,0 +1,104 @@
+<!--
+ * Gagandeep Singh
+ * Nirajan Bikram Shah
+ * Reza Saker Hossain
+-->
+
+{% extends 'layouts/main_layout.njk' %}
+
+{% block main_body %}
+	
+  	<form method = "Post" class="Form" id="Form">
+		<h1>New Restaurant</h1><br>
+		<label for="Cafe"> Restaurant Name</label>     
+			<input type="text" id="Cafe" name="Cafe" required>
+
+			<label for="Location">Location</label>
+			<input type="text" id="Location" name="Location" required>
+
+			<label for="Phone">Phone</label>
+			<input type="text" id="Phone" name="Phone">
+
+			<label for="Descrption">Descrption</label>
+			<input type="text" id="Descrption" name="Descrption">
+
+			<label for="Week">Weeks opened</label>
+			<input type="text" id="Week" name="Week" required>
+
+			<label for="startTime">Start Time</label>
+			<input type="text" id="startTime" name="startTime" required>
+
+			<label for="CloseTime">Close Time</label>
+			<input type="text" id="CloseTime" name="CloseTime" required>
+			<button type="submit" class="btn">Add Now</button>
+ 	</form>
+	
+    
+{% endblock %}
+
+{% block style %}
+    
+    .Form {
+		position: absolute;
+		margin: 20px ;
+		max-width: 600px;
+		padding: 16px;
+		background-color: white;
+		opacity:0.9;
+		margin-left: 27%;	
+	}
+
+	input[type=text]{
+		width: 100%;
+		padding: 15px;
+  		margin: 5px 0 22px 0 ;
+		border: none;
+ 		background: #f1f1f1;
+	}
+
+	input[type=text]:focus{
+		background-color: #ddd;
+		outline: none;
+	}
+
+	.btn {
+		background-color: #4CAF50;
+		color: white;
+		padding: 16px 20px;
+		margin-top: 20px ;
+ 		border: none;
+ 		cursor: pointer;
+  		width: 100%;
+ 		opacity: 0.9;
+	}
+
+	.btn:hover {
+ 		opacity: 1;
+	}
+{% endblock %}
+
+{% block script %}
+
+function sendAjax(e){
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const formProps = Object.fromEntries(formData);
+
+    let request = new XMLHttpRequest();
+    request.addEventListener("load", ()=>{
+      let response = JSON.parse(request.responseText);
+      document.getElementById("try").innerHTML = JSON.stringify(response);
+    });
+
+    request.open("POST", "/new_Restaurant.njk");
+    request.setRequestHeader("Content-Type", "application/json");
+    request.send((JSON.stringify(formProps)));
+  }
+  document.getElementById("Form").onsubmit = sendAjax;
+
+{% endblock %}
+
+
+
+
+
