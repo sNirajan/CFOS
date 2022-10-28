@@ -1,17 +1,23 @@
 [
     {
-        "cafeId": "1",
-        "name": "Burger",
-        "price": "10"
+        "id": "1",
+        "cafe_id": "1",
+        "item_name": "Burger",
+        "price": "10", 
+        "description": "Allergy warning"
     },
     {
-        "cafeId": "1",
-        "name": "Sandwich",
-        "price": "10"
+        "id": "2",
+        "cafe_id": "1",
+        "item_name": "Burger",
+        "price": "10", 
+        "description": "Allergy warning"
     },
     {
-        "cafeId": "1",
-        "name": "Rice",
-        "price": "10"
+        "id": "3",
+        "cafe_id": "1",
+        "item_name": "Burger",
+        "price": "10", 
+        "description": "Allergy warning"
     }
 ]
