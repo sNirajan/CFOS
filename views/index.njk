@@ -4,10 +4,12 @@
     <p>Welcome {{ username }} </br>
     Below is the list of campus cafeterias</p>
 
-    {% for cafe in cafelist %}
-        <a href="#">{{cafe.Cafe}}</a> <!-- Some changes here-->
-    {% endfor %}
-    <a href="new_Restaurant.njk"><button id="addBtn">+</button><a/>
+    <div id="container">
+        {% for cafe in cafelist %}
+            <a class="cafe_box" href="{{ '/cafe/' + cafe.id }}">{{cafe.Cafe}}</a>
+        {% endfor %}
+    </div>
+    <a href="new_Restaurant.njk"><button id="addBtn">+ Add New Restaurant</button><a/>
 {% endblock %}
 
 {% block style %}
@@ -20,12 +22,33 @@
     a {
         display: block;
         text-align: center;
-        margin-bottom: 5px;
-        text-decoration:none; <!-- Some changes here-->
+        text-decoration: none;
+        color: white;
     }
 
-    a:hover{
-        color:green;
+    #container {
+        width: 90%;
+        margin-left: 5%;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .cafe_box {
+        width: 30%;
+        height: 100px;
+        margin-bottom: 20px;
+        background-color: green;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        justify-items: center;
+        font-size: 24px
+    }
+
+    .cafe_box:hover {
+        background-color: forestgreen;
     }
     
     #addBtn{
@@ -36,8 +59,8 @@
         text-align: center;
         text-decoration: none;
         display: inline-block;
-        font-size: 25px;
-        border-radius: 50%;
+        font-size: 24px;
+        border-radius: 5px;
         margin-bottom: 5px;
     }
 

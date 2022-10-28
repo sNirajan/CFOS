@@ -1,5 +1,6 @@
 [
   {
+    "id": "1",
     "Cafe": "Sprout - plant based kitchen",
     "Location": "4th floor Lockhart hall",
     "Phone": "",
@@ -9,6 +10,7 @@
     "CloseTime": "3:30pm"
   },
   {
+    "id": "2",
     "Cafe": "Pangea's Kitchen",
     "Location": "Riddle Hall",
     "Phone": "",
@@ -18,6 +20,7 @@
     "CloseTime": "6pm"
   },
   {
+    "id": "3",
     "Cafe": "Dash Cafe",
     "Location": "1st floor Lockhart hall",
     "Phone": "",
@@ -27,6 +30,7 @@
     "CloseTime": "2pm"
   },
   {
+    "id": "4",
     "Cafe": "Stella's Café & Bakery",
     "Location": "Buhler Centre",
     "Phone": "",

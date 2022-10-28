@@ -1,0 +1,17 @@
+[
+    {
+        "cafeId": "1",
+        "name": "Burger",
+        "price": "10"
+    },
+    {
+        "cafeId": "1",
+        "name": "Sandwich",
+        "price": "10"
+    },
+    {
+        "cafeId": "1",
+        "name": "Rice",
+        "price": "10"
+    }
+]
