@@ -31,7 +31,6 @@ app.get('/new_Restaurant.njk', (req, res) => {
 
 // Getting form data for new restaurant and adding it in json file
 app.post("/new_Restaurant.njk", (req,res)=>{
-    const fromData = (req.body);
 
     const client = new mongodb.MongoClient(uri);
 
@@ -39,9 +38,7 @@ app.post("/new_Restaurant.njk", (req,res)=>{
         await client.connect();
         const mycol = await client
             .db("cafe's").collection("cafe_lists");
-        //const cursor = mycol.find({});
-        await cursor.forEach(doc=>{console.log(doc.Cafe)});
-        return "Done";
+        return mycol.insertOne(req.body);
 }
 testCursor().then(console.log);
 
