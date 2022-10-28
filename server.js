@@ -31,9 +31,7 @@ app.get('/new_Restaurant.njk', (req, res) => {
 
 // Getting form data for new restaurant and adding it in json file
 app.post("/new_Restaurant.njk", (req,res)=>{
-
     const client = new mongodb.MongoClient(uri);
-
     async function testCursor(){
         await client.connect();
         const mycol = await client
