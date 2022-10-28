@@ -6,7 +6,7 @@
 
     <div id="container">
         {% for cafe in cafelist %}
-            <a class="cafe_box" href="{{ '/cafe/' + cafe.id }}">{{cafe.Cafe}}</a>
+            <a class="cafe_box" href="{{ '/cafe/' + cafe.id }}">{{cafe.name}}</a>
         {% endfor %}
     </div>
     <a href="new_Restaurant.njk"><button id="addBtn">+ Add New Restaurant</button><a/>

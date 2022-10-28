@@ -1,7 +1,7 @@
 {% extends 'layouts/main_layout.njk' %}
 
 {% block main_body %}
-    <h2 id="cafe_name">{{ cafeData.Cafe }}</h2>
+    <h2 id="cafe_name">{{ cafeData.name }}</h2>
 
     <div id="container">
         {% for item in menu_items %}

@@ -14,18 +14,54 @@ let env = nunjucks.configure('views', {
 });
 
 app.use(express.urlencoded({ extended: true }));
+const client = new mongodb.MongoClient(uri);
 
-app.get('/', (req, res) => {
-    res.render('index.njk', {
-        appName: 'UWCFOS',
-        username: 'Mr. Test',
-        cafelist: require('./cafe_list.json')
+app.get('/', (req,res)=>{
+    getCafeLists().then(cafe_list=>{
+        // Rendering index page and providing it with some data
+        res.render('index.njk', {
+            appName: 'UWCFOS',
+            username: 'Mr. Test',
+            cafelist: cafe_list
+        });
     });
 });
 
 //Rendering new Restaurant page
 app.get('/new_Restaurant.njk', (req, res) => {
     res.render('new_Restaurant.njk', {
+    });
+});
+
+app.get('/cafe/:id', (req, res) => {
+    getCafeLists().then(cafe_list=>{
+        let cafelist = cafe_list;
+        let isCafeFound = false;
+
+        for(let cafe of cafelist) {
+            if(cafe.id == req.params['id']) {
+                isCafeFound = true;
+
+                getMenuList().then(menu_list=>{
+                    let menu_item_list = menu_list;
+                    let menu = [];
+    
+                    for(let item of menu_item_list) {
+                        if(item.cafe_id == cafe.id) {
+                            menu.push(item);
+                        }
+                    }
+                    res.render('./cafe.njk', {
+                    cafeData: cafe,
+                    menu_items: menu
+                    });
+                }); 
+            }
+        }
+
+        if(!isCafeFound) {
+            res.status(404).send('404.html');
+        }
     });
 });
 
@@ -44,33 +80,23 @@ client.close();
     res.send("Form submitted");
 });
 
-app.get('/cafe/:id', (req, res) => {
-    let cafelist = require('./cafe_list.json');
-    let isCafeFound = false;
+// Function to get cafe Lists
+async function getCafeLists(){
+    await client.connect();
+    const mycol = await client
+        .db("cafe's").collection("cafe_lists");
+        const cursor = mycol.find({});
+        return await cursor.toArray();
+};
 
-    for(let cafe of cafelist) {
-        if(cafe.id == req.params['id']) {
-            isCafeFound = true;
-
-            let menu_item_list = require('./menu_items.json');
-            let menu = [];
-
-            for(let item of menu_item_list) {
-                if(item.cafeId == cafe.id) {
-                    menu.push(item);
-                }
-            }
-            res.render('./cafe.njk', {
-                cafeData: cafe,
-                menu_items: menu
-            });
-        }
-    }
-
-    if(!isCafeFound) {
-        res.status(404).send('404.html');
-    }
-});
+// Function to get munu items
+async function getMenuList(){
+    await client.connect();
+    const mycol = await client
+        .db("cafe's").collection("menu_items");
+        const cursor = mycol.find({});
+        return await cursor.toArray();
+};
 
 app.listen(port, () => {
     console.log('App listening at http://localhost:' + port);
