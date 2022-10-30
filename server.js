@@ -68,19 +68,20 @@ app.route('/createCafe')
         res.render('./createCafe.njk')
     })
     .post((req, res) => {
-        const client = new mongodb.MongoClient(uri);
         async function insertCafe() {
             await client.connect();
-            const cafeListCol = await client
-                .db("cafe's").collection("cafe_lists");
+            const cafeListCol = await client.db("cafe's").collection("cafe_lists");
             return cafeListCol.insertOne(req.body);
         }
         insertCafe().then(console.log);
-
-        client.close();
         res.redirect('/');
     });
 
+/**
+ * GET route to show the form for editing a cafeteria.
+ * POST route to update the cafeteria info in DB.
+ * TODO: Restrict to authenticated admin level users only. 
+ */
 app.route('/cafe/:id/edit')
     .get((req, res) => {
         getCafe(req.params['id']).then(cafe => {
@@ -90,11 +91,9 @@ app.route('/cafe/:id/edit')
         });
     })
     .post((req, res) => {
-        const client = new mongodb.MongoClient(uri);
         async function updateCafe() {
             await client.connect();
-            const cafeListCol = await client
-                .db("cafe's").collection("cafe_lists");
+            const cafeListCol = await client.db("cafe's").collection("cafe_lists");
             
             let query = { _id: mongodb.ObjectId(req.params['id']) };
             let update = { $set: { 
@@ -109,8 +108,6 @@ app.route('/cafe/:id/edit')
             return cafeListCol.findOneAndUpdate(query, update, {});
         }
         updateCafe().then(console.log);
-        
-        client.close();
         res.redirect('/cafe/' + req.params['id']);
     });
 
@@ -127,17 +124,13 @@ app.route('/cafe/:id/createMenuItem')
         });
     })
     .post((req, res) => {
-        const client = new mongodb.MongoClient(uri);
         async function insertMenuItem() {
             await client.connect();
-            const menuItemCol = await client
-                .db("cafe's").collection("menu_items");
+            const menuItemCol = await client.db("cafe's").collection("menu_items");
             req.body.cafe_id = req.params['id'];
             return menuItemCol.insertOne(req.body);
         }
         insertMenuItem().then(console.log);
-        
-        client.close();
         res.redirect(`/cafe/${req.params['id']}`);
     });
 
@@ -148,8 +141,7 @@ app.route('/cafe/:id/createMenuItem')
  */
 async function getCafeList(){
     await client.connect();
-    const cafeListCol = await client
-        .db("cafe's").collection("cafe_lists");
+    const cafeListCol = await client.db("cafe's").collection("cafe_lists");
     const cursor = cafeListCol.find({});
     return await cursor.toArray();
 }
@@ -161,10 +153,9 @@ async function getCafeList(){
  */
 async function getCafe(cafeId){
     await client.connect();
-    const cafeListCol = await client
-        .db("cafe's").collection("cafe_lists");
-        const cursor = cafeListCol.findOne({ '_id': mongodb.ObjectId(cafeId)});
-        return await cursor;
+    const cafeListCol = await client.db("cafe's").collection("cafe_lists");
+    const cursor = cafeListCol.findOne({ '_id': mongodb.ObjectId(cafeId)});
+    return await cursor;
 }
 
 /**
@@ -174,8 +165,7 @@ async function getCafe(cafeId){
  */
 async function getCafeMenu(cafeId){
     await client.connect();
-    const menuItemCol = await client
-        .db("cafe's").collection("menu_items");
+    const menuItemCol = await client.db("cafe's").collection("menu_items");
     const cursor = menuItemCol.find({ cafe_id: cafeId });
     return await cursor.toArray();
 }
