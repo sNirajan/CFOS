@@ -45,7 +45,7 @@
             <div id="cafe_action_btns">
                 <a id="item_create_btn" href="{{ '/cafe/' + cafe._id + '/createMenuItem' }}">Add New Menu Item</a>
                 <a id="cafe_edit_btn" href="{{ '/cafe/' + cafe._id + '/edit' }}">Edit Cafe Info</a>
-                <a id="cafe_delete_btn" href="#">Delete this Cafe</a>
+                <button id="cafe_delete_btn" onclick="onDeleteCafeBtnClick('{{ cafe._id }}')">Delete this Cafe</button>
             </div>
         {% endif %}
     </div>
@@ -96,6 +96,7 @@
     a.item_delete_btn {
         border-color: #C3381A;
         color: #C3381A;
+        font-size: 16px;
     }
     a.item_delete_btn:hover {
         background-color: #C3381A;
@@ -111,6 +112,8 @@
         padding: 10px;
         border-radius: 2px;
         margin-right: 10px;
+        font-size: 16px;
+        cursor: pointer
     }
     #cafe_delete_btn {
         border: 1px solid #C3381A;
@@ -125,5 +128,24 @@
     #cafe_delete_btn:hover {
         background-color: #C3381A;
         color: white;
+    }
+{% endblock %}
+
+{% block script %}
+    function onDeleteCafeBtnClick(cafeId) {
+        let isDeleteConfirmed = confirm('This cafe and all data associated with it will be permanently deleted. ' + 
+                                        'Are you sure you want to delete this cafe?');
+        
+        if(isDeleteConfirmed) {
+            fetch('/cafe/' + cafeId + '/delete').
+                then(response => {
+                    if(response.status == 200) {
+                        window.location.href = '/';
+                    } 
+                    else {
+                        alert('Sorry, couldn\'t delete the cafe info. PLease try again!');
+                    }
+                });
+        }
     }
 {% endblock %}

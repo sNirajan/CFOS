@@ -112,6 +112,20 @@ app.route('/cafe/:id/edit')
     });
 
 /**
+ * GET Route to delete a particular cafe by id.
+ * TODO: Restrict to only authenticated admin level users.
+ */
+app.get('/cafe/:id/delete', (req, res) => {
+    async function deleteCafe() {
+        await client.connect();
+        const cafeListCol = await client.db("cafe's").collection("cafe_lists");
+        return cafeListCol.deleteOne({_id: mongodb.ObjectId(req.params['id'])});
+    }
+    deleteCafe().then(console.log);
+    res.redirect('/');
+});
+
+/**
  * GET route for showing the form to create new menu item for a particular cafe. 
  * TODO: Restrict to authenticated admin level users only. 
  */
@@ -156,7 +170,8 @@ app.route('/menu/:id/edit')
             let update = { $set: { 
                 name: req.body.name, 
                 price: req.body.price,
-                description: req.body.description 
+                description: req.body.description,
+                isAvailable: req.body.isAvailable
             }};
             return menuItemCol.findOneAndUpdate(query, update, {});
         }
