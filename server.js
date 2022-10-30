@@ -1,12 +1,13 @@
 const express = require('express');
 const nunjucks = require('nunjucks');
-const fs = require("fs");
-const mongodb = require("mongodb");
-const uri = "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/?retryWrites=true&w=majority";
+const fs = require('fs');
+const mongodb = require('mongodb');
+const serveIndex = require('serve-index');
 
 const app = express();
 const port = 3000;
 
+const uri = "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/?retryWrites=true&w=majority";
 const client = new mongodb.MongoClient(uri);
 
 nunjucks.configure('views', {
@@ -16,6 +17,8 @@ nunjucks.configure('views', {
 });
 
 app.use(express.urlencoded({ extended: true }));
+app.use('/usefulResources', express.static(__dirname + '/public/usefulResources'));
+app.use('/usefulResources', serveIndex(__dirname + '/public/usefulResources', { icons: true }));
 
 /**
  * GET route for the admin index page.
