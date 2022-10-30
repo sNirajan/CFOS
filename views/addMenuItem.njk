@@ -1,0 +1,75 @@
+<!--
+ * Reza Saker Hossain
+ * Gagandeep Singh
+ * Niranjan Bikram Shah
+-->
+
+{% extends 'layouts/main_layout.njk' %}
+
+{% block main_body %}
+	
+  	<form method = "POST" action="{{ '/cafe/' + cafeData._id + '/addMenuItem' }}" id="form">
+		<h1>Menu item for {{ cafeData.name }} cafe</h1><br>
+		<label for="name"> Item Name</label>     
+			<input type="text" id="name" name="name" required>
+
+			<label for="price">Price</label>
+			<input type="text" id="price" name="price" required>
+
+			<label for="description">Description</label>
+			<textarea id="description" name="description"></textarea>
+
+			<input type="checkbox" id="is_item_available" name="is_item_available" value="1" checked>
+            <label for="is_item_available">This item is available</label>
+
+			<button type="submit" class="btn">Add Now</button>
+ 	</form>
+	
+    
+{% endblock %}
+
+{% block style %}
+    
+    #form {
+		position: absolute;
+		margin: 20px ;
+		max-width: 600px;
+		padding: 16px;
+		background-color: white;
+		opacity:0.9;
+		margin-left: 27%;	
+	}
+
+	input[type="text"], textarea{
+		width: 100%;
+		padding: 15px;
+  		margin: 5px 0 22px 0 ;
+		border: none;
+ 		background: #f1f1f1;
+	}
+
+	input[type="text"]:focus{
+		background-color: #ddd;
+		outline: none;
+	}
+
+	.btn {
+		background-color: #4CAF50;
+		color: white;
+		padding: 16px 20px;
+		margin-top: 20px ;
+ 		border: none;
+ 		cursor: pointer;
+  		width: 100%;
+ 		opacity: 0.9;
+	}
+
+	.btn:hover {
+ 		opacity: 1;
+	}
+{% endblock %}
+
+
+
+
+

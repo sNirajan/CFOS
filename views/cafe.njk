@@ -1,3 +1,9 @@
+<!--
+ * Reza Saker Hossain
+ * Gagandeep Singh
+ * Niranjan Bikram Shah
+-->
+
 {% extends 'layouts/main_layout.njk' %}
 
 {% block main_body %}
@@ -17,7 +23,7 @@
         {% endfor %}
 
         <div style="margin-top: 20px">
-            <a id="add_btn" href="#">Add New Item</a>
+            <a id="add_btn" href="{{ '/cafe/' + cafeData._id + '/addMenuItem' }}">Add New Item</a>
             <a id="edit_btn" href="#">Edit Cafe Info</a>
             <a id="delete_btn" href="#">Delete Cafe</a>
         </div>
