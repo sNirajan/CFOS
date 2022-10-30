@@ -1,0 +1,72 @@
+<!--
+ * Reza Saker Hossain
+ * Gagandeep Singh
+ * Niranjan Bikram Shah
+-->
+
+{% extends 'layouts/main_layout.njk' %}
+
+{% block main_body %}
+	<h3>Edit menu item</h3>
+  	<form method = "POST" action="{{ '/menu/' + menuItem._id + '/edit' }}" id="menu_item_create_form">
+		<label for="name"> Item Name</label>     
+		<input type="text" name="name" value="{{ menuItem.name }}" required>
+
+		<label for="price">Price</label>
+		<input type="text" name="price" value="{{ menuItem.price }}" required>
+
+		<label for="description">Description</label>
+		<textarea name="description">{{ menuItem.description }}</textarea>
+
+        {% if menuItem.isAvailable == '1' %}
+		    <input type="checkbox" name="isAvailable" value="1" checked>
+        {% else %}
+            <input type="checkbox" name="isAvailable" value="1">
+        {% endif %}
+		<label for="isAvailable">This item is available</label>
+
+		<button type="submit" id="item_create_btn">Add Now</button>
+ 	</form>	  
+{% endblock %}
+
+{% block style %}
+	h3 {
+		text-align: center;
+		margin-top: 20px;
+	}
+    #menu_item_create_form {
+		width: 50%;
+		padding: 15px;
+		background-color: white;
+		margin-left: 25%;	
+	}
+	input[type="text"], textarea {
+		width: 100%;
+		padding: 15px;
+  		margin: 5px 0 20px 0;
+		border: none;
+ 		background: #f1f1f1;
+	}
+	input[type="text"]:focus, textarea {
+		background-color: #ddd;
+		outline: none;
+	}
+	#item_create_btn {
+		background-color: royalblue;
+		color: white;
+		padding: 15px 20px;
+		margin-top: 20px ;
+ 		cursor: pointer;
+  		width: 100%;
+		border: none;
+		font-size: 16px;
+	}
+	#item_create_btn:hover {
+ 		background-color: forestgreen
+	}
+{% endblock %}
+
+
+
+
+

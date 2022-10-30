@@ -34,7 +34,7 @@
                     {% if userLevel == 2 %}
                         <a href="#" class="add_to_cart_btn">Add to Cart</a>
                     {% elif userLevel == 0 %}
-                        <a href="#" class="item_edit_btn">Edit</a>
+                        <a href="{{ '/menu/' + item._id + '/edit' }}" class="item_edit_btn">Edit</a>
                         <a href="#" class="item_delete_btn">Delete</a>
                     {% endif %}
                 </div>

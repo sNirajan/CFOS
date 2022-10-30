@@ -43,11 +43,11 @@ app.get('/', (req, res) => {
 app.get('/cafe/:id', (req, res) => {
     getCafe(req.params['id']).then(cafe => {
         if(cafe == null) {
-            // if no cafe was found because the cafe id is invalid
             res.status(404).send('404.html');
         } 
         else {
             getCafeMenu(req.params['id']).then(menu => {
+                console.log(menu);
                 res.render('./cafe.njk', {
                     userLevel: 0, //This value should be dynamically assigned when authentication is implemented (0 = admin, 1 = staff, 2 = customer)
                     cafe: cafe,
@@ -134,10 +134,43 @@ app.route('/cafe/:id/createMenuItem')
         res.redirect(`/cafe/${req.params['id']}`);
     });
 
+/**
+ * GET route to show the form for editing a menu item.
+ * POST route to update the menu item in DB.
+ * TODO: Restrict to authenticated admin level users only. 
+ */
+app.route('/menu/:id/edit')
+    .get((req, res) => {
+        getMenuItem(req.params['id']).then(menuItem => {
+            res.render('./editMenuItem.njk', {
+                menuItem: menuItem
+            });
+        });
+    })
+    .post((req, res) => {
+        async function updateMenuItem() {
+            await client.connect();
+            const menuItemCol = await client.db("cafe's").collection("menu_items");
+            
+            let query = { _id: mongodb.ObjectId(req.params['id']) };
+            let update = { $set: { 
+                name: req.body.name, 
+                price: req.body.price,
+                description: req.body.description 
+            }};
+            return menuItemCol.findOneAndUpdate(query, update, {});
+        }
+        updateMenuItem().then(console.log);
+
+        getMenuItem(req.params['id']).then(menuItem => {
+            res.redirect('/cafe/' + menuItem.cafe_id);
+        });
+    });
+
 
 /**
  * Function to retrieve the entire collection of cafeterias from DB. 
- * @returns [Object object] the list of cafeterias. 
+ * @returns { [Object] } the list of cafeterias. 
  */
 async function getCafeList(){
     await client.connect();
@@ -161,13 +194,25 @@ async function getCafe(cafeId){
 /**
  * Function to retrieve the food menu of a particular cafeteria.
  * @param { string } cafeId Id of the cafe to retrieve its menu.
- * @returns [Object object] The list of menu items for the given cafe.
+ * @returns { [Object] } The list of menu items for the given cafe.
  */
 async function getCafeMenu(cafeId){
     await client.connect();
     const menuItemCol = await client.db("cafe's").collection("menu_items");
     const cursor = menuItemCol.find({ cafe_id: cafeId });
     return await cursor.toArray();
+}
+
+/**
+ * Function to retrieve a single item from a cafe menu.
+ * @param { string } menuId Id of the menu item to retrieve.
+ * @returns { Object } The menu item object.
+ */
+ async function getMenuItem(menuId){
+    await client.connect();
+    const menuItemCol = await client.db("cafe's").collection("menu_items");
+    const cursor = menuItemCol.findOne({ _id: mongodb.ObjectId(menuId) });
+    return await cursor;
 }
 
 app.listen(port, () => {
