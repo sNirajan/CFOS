@@ -16,18 +16,25 @@
                     <p>{{item.name + ' ($' + item.price + ')' }}</p>
                 </div>
                 <div>
-                    <a href="#" class="add_to_cart_btn">Add to Cart</a>
-                    <a href="#" class="item_edit_btn">Edit</a>
-                    <a href="#" class="item_delete_btn">Delete</a>
+                    {% if userLevel == 2 %}
+                        <a href="#" class="add_to_cart_btn">Add to Cart</a>
+                    {% endif %}
+
+                    {% if userLevel == 0 %}
+                        <a href="#" class="item_edit_btn">Edit</a>
+                        <a href="#" class="item_delete_btn">Delete</a>
+                    {% endif %}
                 </div>
             </div>
         {% endfor %}
 
-        <div id="cafe_action_btns">
-            <a id="item_create_btn" href="{{ '/cafe/' + cafe._id + '/createMenuItem' }}">Add New Menu Item</a>
-            <a id="cafe_edit_btn" href="#">Edit Cafe Info</a>
-            <a id="cafe_delete_btn" href="#">Delete Cafe</a>
-        </div>
+        {% if userLevel == 0 %}
+            <div id="cafe_action_btns">
+                <a id="item_create_btn" href="{{ '/cafe/' + cafe._id + '/createMenuItem' }}">Add New Menu Item</a>
+                <a id="cafe_edit_btn" href="#">Edit Cafe Info</a>
+                <a id="cafe_delete_btn" href="#">Delete Cafe</a>
+            </div>
+        {% endif %}
     </div>
 {% endblock %}
 

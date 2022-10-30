@@ -16,7 +16,10 @@
                 <span class="cafe_hours">{{ 'Open ' + cafe.daysOpened + ' ' + cafe.startTime + ' to ' + cafe.closeTime }}</span>
             </a>
         {% endfor %}
-        <a class="create_cafe_box" href="/createCafe">Create New Cafeteria</a>
+
+        {% if userLevel == 0 %}
+            <a class="create_cafe_box" href="/createCafe">Create New Cafeteria</a>
+        {% endif %}
     </div>
 {% endblock %}
 

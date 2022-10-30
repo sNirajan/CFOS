@@ -38,6 +38,7 @@ app.get('/cafe/:id', (req, res) => {
         else {
             getCafeMenu(cafeId).then(menu => {
                 res.render('./cafe.njk', {
+                    userLevel: 0,
                     cafe: cafe,
                     menu: menu
                 });
