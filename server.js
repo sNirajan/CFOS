@@ -47,6 +47,7 @@ app.get('/cafe/:id', (req, res) => {
         } 
         else {
             getCafeMenu(req.params['id']).then(menu => {
+                console.log(menu);
                 res.render('./cafe.njk', {
                     userLevel: 0, //This value should be dynamically assigned when authentication is implemented (0 = admin, 1 = staff, 2 = customer)
                     cafe: cafe,

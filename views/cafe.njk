@@ -7,13 +7,28 @@
 {% extends 'layouts/main_layout.njk' %}
 
 {% block main_body %}
-    <h2 id="cafe_name">{{ cafe.name }} Menu</h2>
+    <div id="cafe_info">
+        <h3>{{ cafe.name }}</h3>
+        <p>Location: {{ cafe.location }}</p>
+        <p>Hours of Operation: {{ cafe.daysOpened + ' ' + cafe.startTime + ' to ' + cafe.closeTime }}</p>
+        <p>Description: 
+            {% if cafe.description.length > 0 %}
+                {{ cafe.description }}
+            {% else %}
+                N/A
+            {% endif %}
+        </p>
+    </div>
 
     <div id="container">
+        <h3>Menu</h3>
         {% for item in menu %}
             <div class="menu_item">
                 <div>
                     <p>{{item.name + ' ($' + item.price + ')' }}</p>
+                    {% if item.description.length > 0 %}
+                        <p class="item_description">{{ item.description }}</p>
+                    {% endif %}
                 </div>
                 <div>
                     {% if userLevel == 2 %}
@@ -37,18 +52,17 @@
 {% endblock %}
 
 {% block style %}
-    #cafe_name  {
-        text-align: center;
-        margin-top: 10px;
-        margin-bottom: 10px;
+    #cafe_info  {
+        width: 70%;
+        margin: 10px 0 20px 15%;
+        border-bottom: 1px solid dimgray;
+        padding-bottom: 5px;
     }
-
     #container {
         width: 70%;
         margin-left: 15%;
-        text-align: center;
+        margin-bottom: 50px;
     }
-
     .menu_item {
         width: 100%;
         padding: 20px;
@@ -57,9 +71,8 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        margin-bottom: 10px;
+        margin-top: 10px;
     }
-
     .menu_item a {
         color: white;
         padding: 10px 15px 10px 15px;
@@ -68,32 +81,29 @@
         text-decoration: none;
         border-radius: 2px;
     }
-
+    .item_description {
+        font-size: 12px;
+    }
     a.item_edit_btn, a.item_delete_btn {
         background-color: white;
         border: 1px solid royalblue;
         color: royalblue;
     }
-
     a.item_edit_btn:hover {
         background-color: royalblue;
         color: white;
     }
-
     a.item_delete_btn {
         border-color: #C3381A;
         color: #C3381A;
     }
-
     a.item_delete_btn:hover {
         background-color: #C3381A;
         color: white;
     }
-
     #cafe_action_btns {
         margin-top: 50px;
     }
-
     #item_create_btn, #cafe_edit_btn, #cafe_delete_btn {
         color: white;
         background-color: royalblue;
@@ -102,19 +112,16 @@
         border-radius: 2px;
         margin-right: 10px;
     }
-
     #cafe_delete_btn {
         border: 1px solid #C3381A;
         color: #C3381A;
         background-color: white;
     }
-
     #item_create_btn:hover, 
     #cafe_edit_btn:hover, 
     a.add_to_cart_btn:hover {
         background-color: forestgreen;
     }
-
     #cafe_delete_btn:hover {
         background-color: #C3381A;
         color: white;
