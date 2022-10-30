@@ -18,9 +18,7 @@
                 <div>
                     {% if userLevel == 2 %}
                         <a href="#" class="add_to_cart_btn">Add to Cart</a>
-                    {% endif %}
-
-                    {% if userLevel == 0 %}
+                    {% elif userLevel == 0 %}
                         <a href="#" class="item_edit_btn">Edit</a>
                         <a href="#" class="item_delete_btn">Delete</a>
                     {% endif %}

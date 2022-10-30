@@ -17,6 +17,10 @@ nunjucks.configure('views', {
 
 app.use(express.urlencoded({ extended: true }));
 
+/**
+ * GET route for the admin index page.
+ * TODO: restrict to authenticated users only.
+ */
 app.get('/', (req, res) => {
     getCafeList().then(cafeList => {
         res.render('index.njk', {
@@ -28,17 +32,20 @@ app.get('/', (req, res) => {
     });
 });
 
+/**
+ * GET route for showing a particular cafe
+ * TODO: Restrict to authenticated users only. 
+ */
 app.get('/cafe/:id', (req, res) => {
-    const cafeId = req.params['id'];
-
-    getCafe(cafeId).then(cafe => {
+    getCafe(req.params['id']).then(cafe => {
         if(cafe == null) {
+            // if no cafe was found because the cafe id is invalid
             res.status(404).send('404.html');
         } 
         else {
-            getCafeMenu(cafeId).then(menu => {
+            getCafeMenu(req.params['id']).then(menu => {
                 res.render('./cafe.njk', {
-                    userLevel: 0,
+                    userLevel: 0, //This value should be dynamically assigned when authentication is implemented (0 = admin, 1 = staff, 2 = customer)
                     cafe: cafe,
                     menu: menu
                 });
@@ -47,6 +54,11 @@ app.get('/cafe/:id', (req, res) => {
     });
 });
 
+/**
+ * GET route to show the form for creating new cafeteria.
+ * POST route to store insert new cafeteria into DB.
+ * TODO: Restrict to authenticated admin level users only. 
+ */
 app.route('/createCafe')
     .get((req, res) => {
         res.render('./createCafe.njk')
@@ -65,10 +77,13 @@ app.route('/createCafe')
         res.redirect('/');
     });
 
+/**
+ * GET route for showing the form to create new menu item for a particular cafe. 
+ * TODO: Restrict to authenticated admin level users only. 
+ */
 app.route('/cafe/:id/createMenuItem')
     .get((req, res) => {
         getCafe(req.params['id']).then(cafe => {
-            console.log(cafe);
             res.render('createMenuItem.njk', {
                 cafe: cafe
             });
@@ -90,7 +105,10 @@ app.route('/cafe/:id/createMenuItem')
     });
 
 
-// Function to get cafe Lists
+/**
+ * Function to retrieve the entire collection of cafeterias from DB. 
+ * @returns [Object object] the list of cafeterias. 
+ */
 async function getCafeList(){
     await client.connect();
     const cafeListCol = await client
@@ -99,7 +117,11 @@ async function getCafeList(){
     return await cursor.toArray();
 }
 
-// Function to get a cafe info by cafe id
+/**
+ * Function to retrieve a single cafeteria data by id.
+ * @param { string } cafeId The id of the cafe to be retrieved.
+ * @returns { Object } an object containing the cafe data. 
+ */
 async function getCafe(cafeId){
     await client.connect();
     const cafeListCol = await client
@@ -108,7 +130,11 @@ async function getCafe(cafeId){
         return await cursor;
 }
 
-// Function to get munu of a cafe
+/**
+ * Function to retrieve the food menu of a particular cafeteria.
+ * @param { string } cafeId Id of the cafe to retrieve its menu.
+ * @returns [Object object] The list of menu items for the given cafe.
+ */
 async function getCafeMenu(cafeId){
     await client.connect();
     const menuItemCol = await client
@@ -118,5 +144,5 @@ async function getCafeMenu(cafeId){
 }
 
 app.listen(port, () => {
-    console.log('App listening at http://localhost:' + port);
+    console.log('App listening on http://localhost:' + port);
 });
