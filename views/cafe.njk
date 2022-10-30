@@ -7,25 +7,26 @@
 {% extends 'layouts/main_layout.njk' %}
 
 {% block main_body %}
-    <h2 id="cafe_name">{{ cafeData.name }}</h2>
+    <h2 id="cafe_name">{{ cafe.name }} Menu</h2>
 
     <div id="container">
-        {% for item in menu_items %}
+        {% for item in menu %}
             <div class="menu_item">
                 <div>
                     <p>{{item.name + ' ($' + item.price + ')' }}</p>
                 </div>
-                <div class="menu_item_btn">
-                    <a href="#">Edit</a>
-                    <a href="#">Delete</a>
+                <div>
+                    <a href="#" class="add_to_cart_btn">Add to Cart</a>
+                    <a href="#" class="item_edit_btn">Edit</a>
+                    <a href="#" class="item_delete_btn">Delete</a>
                 </div>
             </div>
         {% endfor %}
 
-        <div style="margin-top: 20px">
-            <a id="add_btn" href="{{ '/cafe/' + cafeData._id + '/addMenuItem' }}">Add New Item</a>
-            <a id="edit_btn" href="#">Edit Cafe Info</a>
-            <a id="delete_btn" href="#">Delete Cafe</a>
+        <div id="cafe_action_btns">
+            <a id="item_create_btn" href="{{ '/cafe/' + cafe._id + '/createMenuItem' }}">Add New Menu Item</a>
+            <a id="cafe_edit_btn" href="#">Edit Cafe Info</a>
+            <a id="cafe_delete_btn" href="#">Delete Cafe</a>
         </div>
     </div>
 {% endblock %}
@@ -38,37 +39,79 @@
     }
 
     #container {
-        width: 90%;
-        margin-left: 5%;
+        width: 70%;
+        margin-left: 15%;
         text-align: center;
     }
 
     .menu_item {
         width: 100%;
         padding: 20px;
-        background-color: dimgray;
+        border: 1px solid dimgray;
+        border-radius: 2px;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        color: white;
         margin-bottom: 10px;
     }
 
     .menu_item a {
         color: white;
-        padding: 5px 10px 5px 10px;
+        padding: 10px 15px 10px 15px;
         margin-left: 10px;
         background-color: royalblue;
         text-decoration: none;
+        border-radius: 2px;
     }
 
-    #add_btn, #edit_btn, #delete_btn {
+    a.item_edit_btn, a.item_delete_btn {
+        background-color: white;
+        border: 1px solid royalblue;
+        color: royalblue;
+    }
+
+    a.item_edit_btn:hover {
+        background-color: royalblue;
+        color: white;
+    }
+
+    a.item_delete_btn {
+        border-color: #C3381A;
+        color: #C3381A;
+    }
+
+    a.item_delete_btn:hover {
+        background-color: #C3381A;
+        color: white;
+    }
+
+    #cafe_action_btns {
+        margin-top: 50px;
+    }
+
+    #item_create_btn, #cafe_edit_btn, #cafe_delete_btn {
         color: white;
         background-color: royalblue;
         text-decoration: none;
         padding: 10px;
+        border-radius: 2px;
+        margin-right: 10px;
     }
-    #add_btn:hover, #edit_btn:hover, #delete_btn:hover, .menu_item a:hover {
-        opacity: 0.9
+
+    #cafe_delete_btn {
+        border: 1px solid #C3381A;
+        color: #C3381A;
+        background-color: white;
+    }
+
+    #item_create_btn:hover, 
+    #cafe_edit_btn:hover, 
+    a.add_to_cart_btn:hover {
+        background-color: forestgreen;
+    }
+
+    #cafe_delete_btn:hover {
+        background-color: #C3381A;
+        color: white;
     }
 {% endblock %}

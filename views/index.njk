@@ -7,70 +7,64 @@
 {% extends 'layouts/main_layout.njk' %}
 
 {% block main_body %}
-    <p>Welcome {{ username }} </br>
-    Below is the list of campus cafeterias</p>
+    <p>Choose A Cafeteria to Start Ordering</p>
 
     <div id="container">
-        {% for cafe in cafelist %}
-            <a class="cafe_box" href="{{ '/cafe/' + cafe._id }}">{{cafe.name}}</a>
+        {% for cafe in cafeList %}
+            <a class="cafe_box" href="{{ '/cafe/' + cafe._id }}">
+                <span class="cafe_name">{{ cafe.name }}</span>
+                <span class="cafe_hours">{{ 'Open ' + cafe.daysOpened + ' ' + cafe.startTime + ' to ' + cafe.closeTime }}</span>
+            </a>
         {% endfor %}
+        <a class="create_cafe_box" href="/createCafe">Create New Cafeteria</a>
     </div>
-    <a href="new_Restaurant.njk"><button id="addBtn">+ Add New Restaurant</button><a/>
 {% endblock %}
 
 {% block style %}
-    p { 
+    p {
         text-align: center;
-        margin-top: 20px;
-        margin-bottom: 10px;
+        margin: 20px 0 20px 0;
     }
 
     a {
-        display: block;
         text-align: center;
         text-decoration: none;
-        color: white;
+        color: black;
     }
 
     #container {
-        width: 90%;
-        margin-left: 5%;
+        width: 60%;
+        margin-left: 20%;
+    }
+
+    .cafe_box, .create_cafe_box {
+        display: block;
+        width: 100%;
+        margin-bottom: 20px;
+        border: 1px solid dimgray;
+        border-radius: 5px;
+        padding: 15px;
         display: flex;
         flex-direction: row;
-        flex-wrap: wrap;
         justify-content: space-between;
     }
 
-    .cafe_box {
-        width: 30%;
-        height: 100px;
-        margin-bottom: 20px;
-        background-color: green;
-        display: flex;
-        flex-direction: column;
+    .create_cafe_box {
         justify-content: center;
-        justify-items: center;
-        font-size: 24px
+        font-weight: bold;
     }
 
-    .cafe_box:hover {
-        background-color: forestgreen;
+    .cafe_box:hover, 
+    .create_cafe_box:hover {
+        background-color: royalblue;
+        color: white;
     }
     
-    #addBtn{
-        background-color: forestgreen; 
-        border: none;
-        color: white;
-        padding: 5px 12px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 24px;
-        border-radius: 5px;
-        margin-bottom: 5px;
+    .cafe_name {
+        font-weight: bold;
     }
 
-     #addBtn:hover{
-        opacity: 0.8;
+    .create-cafe {
+        text-align: center;
     }
 {% endblock %}

@@ -7,117 +7,114 @@ const uri = "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/?retryW
 const app = express();
 const port = 3000;
 
-let env = nunjucks.configure('views', {
+const client = new mongodb.MongoClient(uri);
+
+nunjucks.configure('views', {
     autoescape: true,
     express: app,
     noCache: true
 });
 
 app.use(express.urlencoded({ extended: true }));
-const client = new mongodb.MongoClient(uri);
 
 app.get('/', (req, res) => {
-    getCafeLists().then(cafe_list => {
-        console.log(cafe_list);
-        // Rendering index page and providing it with some data
+    getCafeList().then(cafeList => {
         res.render('index.njk', {
             appName: 'UWCFOS',
             username: 'Mr. Test',
-            cafelist: cafe_list
+            userLevel: 0, //This value should be dynamically assigned when authentication is implemented (0 = admin, 1 = staff, 2 = customer)
+            cafeList: cafeList
         });
     });
 });
 
-//Rendering new Restaurant page
-app.get('/new_Restaurant.njk', (req, res) => {
-        res.render('new_Restaurant.njk', {
-    });
-});
-
 app.get('/cafe/:id', (req, res) => {
-    let isCafeFound = false;
-    getCafe(req.params['id']).then(cafe => {
+    const cafeId = req.params['id'];
+
+    getCafe(cafeId).then(cafe => {
         if(cafe == null) {
             res.status(404).send('404.html');
         } 
         else {
-            getMenuList(req.params['id']).then(menu_list=>{
+            getCafeMenu(cafeId).then(menu => {
                 res.render('./cafe.njk', {
-                    cafeData: cafe,
-                    menu_items: menu_list
+                    cafe: cafe,
+                    menu: menu
                 });
             }); 
         }  
     });
 });
 
-app.route('/cafe/:id/addMenuItem')
+app.route('/createCafe')
+    .get((req, res) => {
+        res.render('./createCafe.njk')
+    })
+    .post((req, res) => {
+        const client = new mongodb.MongoClient(uri);
+        async function insertCafe() {
+            await client.connect();
+            const cafeListCol = await client
+                .db("cafe's").collection("cafe_lists");
+            return cafeListCol.insertOne(req.body);
+        }
+        insertCafe().then(console.log);
+
+        client.close();
+        res.redirect('/');
+    });
+
+app.route('/cafe/:id/createMenuItem')
     .get((req, res) => {
         getCafe(req.params['id']).then(cafe => {
             console.log(cafe);
-            res.render('addMenuItem.njk', {
-                cafeData: cafe
+            res.render('createMenuItem.njk', {
+                cafe: cafe
             });
         });
     })
-    .post((req,res)=>{
+    .post((req, res) => {
         const client = new mongodb.MongoClient(uri);
-        async function testCursor(){
+        async function insertMenuItem() {
             await client.connect();
-            const mycol = await client
+            const menuItemCol = await client
                 .db("cafe's").collection("menu_items");
             req.body.cafe_id = req.params['id'];
-            return mycol.insertOne(req.body);
-    }
-    testCursor().then(console.log);
-    
-    client.close();
-        res.send("Form submitted");
+            return menuItemCol.insertOne(req.body);
+        }
+        insertMenuItem().then(console.log);
+        
+        client.close();
+        res.redirect(`/cafe/${req.params['id']}`);
     });
 
-// Getting form data for new restaurant and adding it in json file
-app.post("/new_Restaurant.njk", (req,res )=>{
-    const client = new mongodb.MongoClient(uri);
-    async function testCursor(){
-        await client.connect();
-        const mycol = await client
-            .db("cafe's").collection("cafe_lists");
-        return mycol.insertOne(req.body);
-}
-testCursor().then(console.log);
-
-client.close();
-    res.send("Form submitted");
-});
 
 // Function to get cafe Lists
-async function getCafeLists(){
+async function getCafeList(){
     await client.connect();
-    const mycol = await client
+    const cafeListCol = await client
         .db("cafe's").collection("cafe_lists");
-        const cursor = mycol.find({});
-        return await cursor.toArray();
-};
+    const cursor = cafeListCol.find({});
+    return await cursor.toArray();
+}
 
-// Function to get cafe Lists
+// Function to get a cafe info by cafe id
 async function getCafe(cafeId){
     await client.connect();
-    const mycol = await client
+    const cafeListCol = await client
         .db("cafe's").collection("cafe_lists");
-        const cursor = mycol.findOne({ '_id': mongodb.ObjectId(cafeId)});
+        const cursor = cafeListCol.findOne({ '_id': mongodb.ObjectId(cafeId)});
         return await cursor;
-};
+}
 
-// Function to get munu items
-async function getMenuList(cafeId){
+// Function to get munu of a cafe
+async function getCafeMenu(cafeId){
     await client.connect();
-    const mycol = await client
+    const menuItemCol = await client
         .db("cafe's").collection("menu_items");
-        const cursor = mycol.find({cafe_id: cafeId});
-        return await cursor.toArray();
-};
-
-
+    const cursor = menuItemCol.find({ cafe_id: cafeId });
+    return await cursor.toArray();
+}
 
 app.listen(port, () => {
     console.log('App listening at http://localhost:' + port);

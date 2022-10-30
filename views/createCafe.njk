@@ -1,0 +1,105 @@
+<!--
+ * Gagandeep Singh
+ * Nirajan Bikram Shah
+ * Reza Saker Hossain
+-->
+
+{% extends 'layouts/main_layout.njk' %}
+
+{% block main_body %}	
+	<h3>Create New Cafe</h3>
+  	<form method = "POST" action="/createCafe" id="cafe_create_form">
+		<label for="cafe"> Cafeteria Name</label>     
+		<input type="text" name="name" required>
+
+		<label for="location">Location</label>
+		<input type="text" name="location" required>
+
+		<label for="phone">Phone</label>
+		<input type="text" name="phone">
+
+		<label for="daysOpened">Opening Days (Ex. Monday-Friday)</label>
+		<input type="text" id="days_opened" name="daysOpened" required>
+
+		<label for="startTime">Start Time (Ex. 2:30pm)</label>
+		<input type="text" id="startTime" name="startTime" required>
+
+		<label for="closeTime">Close Time (Ex. 2:30pm)</label>
+		<input type="text" name="closeTime" required>
+
+		<label for="descrption">Descrption</label>
+		<textarea name="descrption"></textarea>
+
+		<button type="submit" id="cafe_create_btn">Create</button>
+ 	</form>
+{% endblock %}
+
+{% block style %}   
+	h3 {
+		text-align: center;
+		margin-top: 20px;
+	}
+
+    #cafe_create_form {
+		margin: 20px 0 50px 0;
+		width: 50%;
+		padding: 15px;
+		background-color: white;
+		margin-left: 25%;	
+	}
+
+	input[type=text], textarea {
+		width: 100%;
+		padding: 15px;
+  		margin: 5px 0 20px 0 ;
+		border: none;
+ 		background: #f1f1f1;
+	}
+
+	input[type=text]:focus, textarea:focus {
+		background-color: #ddd;
+		outline: none;
+	}
+
+	#cafe_create_btn {
+		width: 100%;
+		background-color: royalblue;
+		color: white;
+		padding: 15px;
+		margin-top: 10px;
+ 		border: none;
+ 		cursor: pointer;
+  		width: 100%;
+ 		font-size: 16px;
+	}
+
+	#cafe_create_btn:hover {
+ 		background-color: forestgreen;
+	}
+{% endblock %}
+
+{% block script %}
+
+function sendAjax(e){
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const formProps = Object.fromEntries(formData);
+
+    let request = new XMLHttpRequest();
+    request.addEventListener("load", ()=>{
+      let response = JSON.parse(request.responseText);
+      document.getElementById("try").innerHTML = JSON.stringify(response);
+    });
+
+    request.open("POST", "/createCafe");
+    request.setRequestHeader("Content-Type", "application/json");
+    request.send((JSON.stringify(formProps)));
+  }
+  document.getElementById("Form").onsubmit = sendAjax;
+
+{% endblock %}
+
+
+
+
+
