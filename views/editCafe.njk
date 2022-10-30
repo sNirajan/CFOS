@@ -8,29 +8,29 @@
 
 {% block main_body %}	
 	<h3>Create New Cafe</h3>
-  	<form method = "POST" action="/createCafe" id="cafe_create_form">
+  	<form method = "POST" action="{{ '/cafe/' + cafe._id + '/edit' }}" id="cafe_create_form">
 		<label for="cafe"> Cafeteria Name</label>     
-		<input type="text" name="name" required>
+		<input type="text" name="name" value="{{ cafe.name }}" required>
 
 		<label for="location">Location</label>
-		<input type="text" name="location" required>
+		<input type="text" name="location" value="{{ cafe.location }}" required>
 
 		<label for="phone">Phone</label>
-		<input type="text" name="phone">
+		<input type="text" name="phone" value="{{ cafe.phone }}">
 
 		<label for="daysOpened">Opening Days (Ex. Monday-Friday)</label>
-		<input type="text" id="days_opened" name="daysOpened" required>
+		<input type="text" id="days_opened" name="daysOpened" value="{{ cafe.daysOpened }}" required>
 
 		<label for="startTime">Start Time (Ex. 2:30pm)</label>
-		<input type="text" id="startTime" name="startTime" required>
+		<input type="text" id="startTime" name="startTime" value="{{ cafe.startTime }}" required>
 
 		<label for="closeTime">Close Time (Ex. 2:30pm)</label>
-		<input type="text" name="closeTime" required>
+		<input type="text" name="closeTime" value="{{ cafe.closeTime }}" required>
 
 		<label for="description">Description</label>
-		<textarea name="description"></textarea>
+		<textarea name="description">{{ cafe.description }}</textarea>
 
-		<button type="submit" id="cafe_create_btn">Create Cafe</button>
+		<button type="submit" id="cafe_create_btn">Update Cafe</button>
  	</form>
 {% endblock %}
 
@@ -71,27 +71,6 @@
 	#cafe_create_btn:hover {
  		background-color: forestgreen;
 	}
-{% endblock %}
-
-{% block script %}
-
-function sendAjax(e){
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const formProps = Object.fromEntries(formData);
-
-    let request = new XMLHttpRequest();
-    request.addEventListener("load", ()=>{
-      let response = JSON.parse(request.responseText);
-      document.getElementById("try").innerHTML = JSON.stringify(response);
-    });
-
-    request.open("POST", "/createCafe");
-    request.setRequestHeader("Content-Type", "application/json");
-    request.send((JSON.stringify(formProps)));
-  }
-  document.getElementById("Form").onsubmit = sendAjax;
-
 {% endblock %}
 
 

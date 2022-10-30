@@ -11,7 +11,7 @@
         <h3>{{ cafe.name }}</h3>
         <p>Location: {{ cafe.location }}</p>
         <p>Hours of Operation: {{ cafe.daysOpened + ' ' + cafe.startTime + ' to ' + cafe.closeTime }}</p>
-        <p>Description: 
+        <p>Description:
             {% if cafe.description.length > 0 %}
                 {{ cafe.description }}
             {% else %}
@@ -44,8 +44,8 @@
         {% if userLevel == 0 %}
             <div id="cafe_action_btns">
                 <a id="item_create_btn" href="{{ '/cafe/' + cafe._id + '/createMenuItem' }}">Add New Menu Item</a>
-                <a id="cafe_edit_btn" href="#">Edit Cafe Info</a>
-                <a id="cafe_delete_btn" href="#">Delete Cafe</a>
+                <a id="cafe_edit_btn" href="{{ '/cafe/' + cafe._id + '/edit' }}">Edit Cafe Info</a>
+                <a id="cafe_delete_btn" href="#">Delete this Cafe</a>
             </div>
         {% endif %}
     </div>

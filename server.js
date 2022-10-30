@@ -3,6 +3,7 @@ const nunjucks = require('nunjucks');
 const fs = require('fs');
 const mongodb = require('mongodb');
 const serveIndex = require('serve-index');
+const { mongo } = require('mongoose');
 
 const app = express();
 const port = 3000;
@@ -47,7 +48,6 @@ app.get('/cafe/:id', (req, res) => {
         } 
         else {
             getCafeMenu(req.params['id']).then(menu => {
-                console.log(menu);
                 res.render('./cafe.njk', {
                     userLevel: 0, //This value should be dynamically assigned when authentication is implemented (0 = admin, 1 = staff, 2 = customer)
                     cafe: cafe,
@@ -79,6 +79,39 @@ app.route('/createCafe')
 
         client.close();
         res.redirect('/');
+    });
+
+app.route('/cafe/:id/edit')
+    .get((req, res) => {
+        getCafe(req.params['id']).then(cafe => {
+            res.render('./editCafe.njk', {
+                cafe: cafe
+            });
+        });
+    })
+    .post((req, res) => {
+        const client = new mongodb.MongoClient(uri);
+        async function updateCafe() {
+            await client.connect();
+            const cafeListCol = await client
+                .db("cafe's").collection("cafe_lists");
+            
+            let query = { _id: mongodb.ObjectId(req.params['id']) };
+            let update = { $set: { 
+                name: req.body.name, 
+                location: req.body.location,
+                phone: req.body.phone,
+                daysOpened: req.body.daysOpened,
+                startTime: req.body.startTime,
+                closeTime: req.body.closeTime,
+                description: req.body.description 
+            }};
+            return cafeListCol.findOneAndUpdate(query, update, {});
+        }
+        updateCafe().then(console.log);
+        
+        client.close();
+        res.redirect('/cafe/' + req.params['id']);
     });
 
 /**
