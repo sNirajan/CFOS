@@ -21,6 +21,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/usefulResources', express.static(__dirname + '/public/usefulResources'));
 app.use('/usefulResources', serveIndex(__dirname + '/public/usefulResources', { icons: true }));
 
+
+///////////////////////////////////////////////////////////////////////////////////////
+//                                                                                   //
+// ROUTE HANDLER FUNCTIONS                                                           //
+//                                                                                   //
+///////////////////////////////////////////////////////////////////////////////////////
+
 /**
  * GET route for the admin index page.
  * TODO: restrict to authenticated users only.
@@ -182,6 +189,25 @@ app.route('/menu/:id/edit')
         });
     });
 
+/**
+ * GET route to show the form for creating new employee.
+ * TODO: Restrict this function only to authenticated admin level user. 
+ */
+app.route('/createEmployee')
+    .get((req, res) => {
+        getCafeList().then(cafeList => {
+            res.render('./createEmployee.njk', {
+                cafeList: cafeList
+            });
+        });
+    });
+
+
+///////////////////////////////////////////////////////////////////////////////////////
+//                                                                                   //
+// UTILITY FUNCTIONS                                                                 //
+//                                                                                   //
+///////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * Function to retrieve the entire collection of cafeterias from DB. 
