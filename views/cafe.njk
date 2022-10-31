@@ -35,7 +35,7 @@
                         <a href="#" class="add_to_cart_btn">Add to Cart</a>
                     {% elif userLevel == 0 %}
                         <a href="{{ '/menu/' + item._id + '/edit' }}" class="item_edit_btn">Edit</a>
-                        <a href="#" class="item_delete_btn">Delete</a>
+                        <button class="item_delete_btn" onclick="onDeleteMenuItemBtnClick('{{ item._id }}', '{{ cafe._id }}')">Delete this Cafe</button>
                     {% endif %}
                 </div>
             </div>
@@ -84,7 +84,7 @@
     .item_description {
         font-size: 12px;
     }
-    a.item_edit_btn, a.item_delete_btn {
+    a.item_edit_btn, .item_delete_btn {
         background-color: white;
         border: 1px solid royalblue;
         color: royalblue;
@@ -93,12 +93,12 @@
         background-color: royalblue;
         color: white;
     }
-    a.item_delete_btn {
+    .item_delete_btn {
         border-color: #C3381A;
         color: #C3381A;
         font-size: 16px;
     }
-    a.item_delete_btn:hover {
+    .item_delete_btn:hover {
         background-color: #C3381A;
         color: white;
     }
@@ -143,7 +143,7 @@
                         window.location.href = '/';
                     } 
                     else {
-                        alert('Sorry, couldn\'t delete the cafe info. PLease try again!');
+                        alert('Sorry, couldn\'t delete the cafe info. Please try again!');
                     }
                 });
         }

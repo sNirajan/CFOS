@@ -35,6 +35,7 @@ app.use('/usefulResources', serveIndex(__dirname + '/public/usefulResources', { 
  */
 app.get('/', (req, res) => {
     getCafeList().then(cafeList => {
+        console.log(cafeList);
         res.render('index.njk', {
             appName: 'UWCFOS',
             username: 'Mr. Test',
@@ -130,7 +131,7 @@ app.get('/cafe/:id/delete', (req, res) => {
         return cafeListCol.deleteOne({_id: mongodb.ObjectId(req.params['id'])});
     }
     deleteCafe().then(console.log);
-    res.redirect('/');
+    res.send('SUCCESS');
 });
 
 /**
