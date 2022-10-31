@@ -20,7 +20,7 @@
         {% if userLevel == 0 %}
             <a class="create_cafe_box" href="/createCafe">Create New Cafeteria</a>
             <a class="create_employee_box" href="/createEmployee">Create an Employee Account</a>
-            <a class="create_employee_box" href="/employeesList">Employees List</a>
+            <a class="employee_list_box" href="/employeeList">Employee List</a>
         {% endif %}
     </div>
 {% endblock %}
@@ -30,19 +30,16 @@
         text-align: center;
         margin: 20px 0 20px 0;
     }
-
     a {
         text-align: center;
         text-decoration: none;
         color: black;
     }
-
     #container {
         width: 60%;
         margin-left: 20%;
     }
-
-    .cafe_box, .create_cafe_box, .create_employee_box {
+    .cafe_box, .create_cafe_box, .create_employee_box, .employee_list_box {
         display: block;
         width: 100%;
         margin-bottom: 20px;
@@ -53,23 +50,20 @@
         flex-direction: row;
         justify-content: space-between;
     }
-
-    .create_cafe_box, .create_employee_box {
+    .create_cafe_box, .create_employee_box, .employee_list_box {
         justify-content: center;
         font-weight: bold;
     }
-
     .cafe_box:hover, 
     .create_cafe_box:hover,
-    .create_employee_box:hover {
+    .create_employee_box:hover,
+    .employee_list_box:hover {
         background-color: royalblue;
         color: white;
-    }
-    
+    } 
     .cafe_name {
         font-weight: bold;
     }
-
     .create-cafe {
         text-align: center;
     }

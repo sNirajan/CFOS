@@ -9,10 +9,10 @@
 {% block main_body %}
     <div id="container">
         <h3>Employees List</h3>
-        {% for employee in employees %}
+        {% for employee in employeeList %}
             <div class="employee">
                 <div>
-                    <p>{{employee.firstName + ' ' + employee.lastName}}</p>
+                    <p>{{ employee.firstName + ' ' + employee.lastName }}</p>
                     {% if employee.note.length > 0 %}
                         <p class="note">{{ employee.note }}</p>
                     {% endif %}
@@ -83,10 +83,10 @@
                                                 'Are you sure you want to delete this employee?');
         
         if(isDeleteConfirmed) {
-            fetch('/employeesList/' + empId + '/delete').
+            fetch('/employee/' + empId + '/delete').
                 then(response => {
                     if(response.status == 200) {
-                        window.location.href = '/';
+                        window.location.href = '/employeeList';
                     } 
                     else {
                         alert('Sorry, couldn\'t delete the employee info. PLease try again!');

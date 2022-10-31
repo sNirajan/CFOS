@@ -21,22 +21,33 @@
         <label for="Wage">Wage</label>     
 		<input type="text" name="wage" value="{{ employee.wage }}">
 
-        {% for cafe in cafeList %}
-            {% if employee.workStationId==cafe._id%}
-            <label for="currentWork">Current Work Station</label>     
-		    <input type="text" name="currentWork" value="{{ cafe.name }}" disabled>
-            {% endif%}
-        {%  endfor%}
-
-        <label for="workStation">Select New Work Station</label>    
-		<select name="workStationId" required>
+        <label for="cafe_id">Work Station</label>     
+		<select name="cafe_id" required>
             {% for cafe in cafeList %}
-                <option value="{{ cafe._id }}">{{ cafe.name }}</option>
+                <option value="{{ cafe._id }}"
+					{% if cafe._id == employee.cafe_id %}
+						selected
+					{% endif %}
+				>{{ cafe.name }}</option>
             {% endfor %}
         </select>
 
+		<label for="user_level">Choose Employee Access Level</label>     
+		<select name="user_level" required>
+            <option value="0"
+				{% if employee.user_level == 0 %}
+					selected
+				{% endif %}
+			>Admin (Can access all features)</option>
+			<option value="1"
+				{% if employee.user_level == 1 %}
+					selected
+				{% endif %}
+			>Kitchen Staff (Can only access order page)</option>
+        </select>
+
 		<label for="note">Any Additional Note</label>
-		<textarea name="note" value="{{ employee.note }}">{{ employee.note}}</textarea>
+		<textarea name="note" value="{{ employee.note }}">{{ employee.note }}</textarea>
 
 		<button type="submit" id="employee_create_btn">Save</button>
  	</form>	  

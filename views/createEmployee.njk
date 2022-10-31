@@ -21,11 +21,17 @@
         <label for="Wage">Wage</label>     
 		<input type="text" name="wage">
 
-        <label for="workStation">Work Station</label>     
-		<select name="workStationId" required>
+        <label for="cafe_id">Work Station</label>     
+		<select name="cafe_id" required>
             {% for cafe in cafeList %}
                 <option value="{{ cafe._id }}">{{ cafe.name }}</option>
             {% endfor %}
+        </select>
+
+		<label for="user_level">Choose Employee Access Level</label>     
+		<select name="user_level" required>
+            <option value="0">Admin (Can access all features)</option>
+			<option value="1">Kitchen Staff (Can only access order page)</option>
         </select>
 
 		<label for="note">Any Additional Note</label>

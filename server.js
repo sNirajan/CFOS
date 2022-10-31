@@ -4,6 +4,7 @@ const fs = require('fs');
 const mongodb = require('mongodb');
 const serveIndex = require('serve-index');
 const { mongo } = require('mongoose');
+const { receiveMessageOnPort } = require('worker_threads');
 
 const app = express();
 const port = 3000;
@@ -205,65 +206,68 @@ app.route('/createEmployee')
         async function insertEmployee() {
             await client.connect();
             const employeeCol = await client.db("cafe's").collection("users");
-            req.body.user_level = "1";
             return employeeCol.insertOne(req.body);
         }
         insertEmployee().then(console.log);
         res.redirect('/');
     });
 
-    // Employees list
-    app.get('/employeesList', (req, res) => {
-        getEmployeeList().then(employee=>{ console.log(employee);
-            res.render('./employeesList.njk', {
-                employees: employee,
-            });
+/**
+ * GET route to show the list of employees.
+ * TODO: Restrict to only authenticated admin level users. 
+ */
+app.get('/employeeList', (req, res) => {
+    getEmployeeList().then(employeeList => { 
+        console.log(employeeList);
+        res.render('./employeeList.njk', {
+            employeeList: employeeList,
         });
-        
     });
+});
 
-    /**
+/**
  * GET route to show the form for editing a Employee.
  * POST route to update the Employee in DB.
  * TODO: Restrict to authenticated admin level users only. 
  */
 app.route('/employee/:id/edit')
-.get((req, res) => {
-    getEmployee(req.params['id']).then(employee => {
-        getCafeList().then(cafeList=>{
-            res.render('./editEmployee.njk', {
-                employee: employee,
-                cafeList: cafeList
+    .get((req, res) => {
+        getEmployee(req.params['id']).then(employee => {
+            getCafeList().then(cafeList => {
+                res.render('./editEmployee.njk', {
+                    employee: employee,
+                    cafeList: cafeList
+                });
             });
+            
         });
-        
+    })
+    .post((req, res) => {
+        async function updateEmployee() {
+            await client.connect();
+            const employeeCol = await client.db("cafe's").collection("users");
+            
+            let query = { _id: mongodb.ObjectId(req.params['id']) };
+            let update = { $set: { 
+                firstName: req.body.firstName, 
+                lastName: req.body.lastName,
+                position: req.body.position,
+                wage: req.body.wage,
+                cafe_id: req.body.cafe_id,
+                user_level: req.body.user_level,
+                note: req.body.note
+            }};
+            return employeeCol.findOneAndUpdate(query, update, {});
+        }
+        updateEmployee().then(console.log);
+        res.redirect('/employeeList');
     });
-})
-.post((req, res) => {
-    async function updateEmployee() {
-        await client.connect();
-        const employeeCol = await client.db("cafe's").collection("users");
-        
-        let query = { _id: mongodb.ObjectId(req.params['id']) };
-        let update = { $set: { 
-            firstName: req.body.firstName, 
-            lastName: req.body.lastName,
-            position: req.body.position,
-            wage: req.body.wage,
-            workStationId: req.body.workStationId,
-            note: req.body.note
-        }};
-        return employeeCol.findOneAndUpdate(query, update, {});
-    }
-    updateEmployee().then(console.log);
-    res.redirect('/employeesList');
-});
 
 /**
  * GET Route to delete a particular employee by id.
  * TODO: Restrict to only authenticated admin level users.
  */
-app.get('/employeesList/:id/delete', (req, res) => {
+app.get('/employee/:id/delete', (req, res) => {
     async function deleteEmployee() {
         await client.connect();
         const employeeCol = await client.db("cafe's").collection("users");
