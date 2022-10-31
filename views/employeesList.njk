@@ -19,7 +19,7 @@
                 </div>
                 <div>
                     <a href="{{ '/employee/' + employee._id + '/edit' }}" class="employee_edit_btn">Edit</a>
-                    <button id="employee_delete_btn" onclick="onDeleteEmployeeBtnClick('{{ employee._id }}')">Delete</button>
+                    <a href="#" class="employee_delete_btn">Delete</a>
                 </div>
             </div>
         {% endfor %}
@@ -54,7 +54,7 @@
     .note {
         font-size: 12px;
     }
-    a.employee_edit_btn, #employee_delete_btn {
+    a.employee_edit_btn, a.employee_delete_btn {
         background-color: white;
         border: 1px solid royalblue;
         color: royalblue;
@@ -63,33 +63,30 @@
         background-color: royalblue;
         color: white;
     }
-    #employee_delete_btn {
+    a.employee_delete_btn {
         border-color: #C3381A;
         color: #C3381A;
         font-size: 16px;
-        padding: 10px;
-        border-radius: 2px;
-        margin-right: 10px;
     }
-    #employee_delete_btn:hover {
+    a.employee_delete_btn:hover {
         background-color: #C3381A;
         color: white;
     }
 {% endblock %}
 
 {% block script %}
-    function onDeleteEmployeeBtnClick(empId) {
-        let isDeleteConfirmed = confirm('This employee and all data associated with it will be permanently deleted. ' + 
-                                        'Are you sure you want to delete this employee?');
+    function onDeleteCafeBtnClick(cafeId) {
+        let isDeleteConfirmed = confirm('This cafe and all data associated with it will be permanently deleted. ' + 
+                                        'Are you sure you want to delete this cafe?');
         
         if(isDeleteConfirmed) {
-            fetch('/employeesList/' + empId + '/delete').
+            fetch('/cafe/' + cafeId + '/delete').
                 then(response => {
                     if(response.status == 200) {
                         window.location.href = '/';
                     } 
                     else {
-                        alert('Sorry, couldn\'t delete the employee info. PLease try again!');
+                        alert('Sorry, couldn\'t delete the cafe info. PLease try again!');
                     }
                 });
         }
