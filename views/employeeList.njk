@@ -8,7 +8,7 @@
 
 {% block main_body %}
     <div id="container">
-        <h3>Employees List</h3>
+        <h3>Employee List</h3>
         {% for employee in employeeList %}
             <div class="employee">
                 <div>
@@ -89,7 +89,7 @@
                         window.location.href = '/employeeList';
                     } 
                     else {
-                        alert('Sorry, couldn\'t delete the employee info. PLease try again!');
+                        alert('Sorry, couldn\'t delete the employee info. Please try again!');
                     }
                 });
         }

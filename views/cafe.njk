@@ -99,6 +99,9 @@
         border-color: #C3381A;
         color: #C3381A;
         font-size: 16px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        cursor: pointer;
     }
     .item_delete_btn:hover {
         background-color: #C3381A;
@@ -134,7 +137,7 @@
 {% endblock %}
 
 {% block script %}
-    {# function to delete Cafe #}
+    {# function to amke Ajx call to delete Cafe #}
     function onDeleteCafeBtnClick(cafeId) {
         let isDeleteConfirmed = confirm('This cafe and all data associated with it will be permanently deleted. ' + 
                                         'Are you sure you want to delete this cafe?');
@@ -152,7 +155,7 @@
         }
     }
 
-{# function to delete an item from menu #}
+    {# function to make Ajax call to delete an item from menu #}
     function onDeleteMenuItemBtnClick(itemId, cafeId) {
         let isDeleteConfirmed = confirm('This item will be permanently deleted. ' + 
                                         'Are you sure you want to delete this item?');

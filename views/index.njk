@@ -17,6 +17,8 @@
             </a>
         {% endfor %}
 
+        <h3>Admin Settings</h3>
+
         {% if userLevel == 0 %}
             <a class="create_cafe_box" href="/createCafe">Create New Cafeteria</a>
             <a class="create_employee_box" href="/createEmployee">Create an Employee Account</a>
@@ -34,6 +36,11 @@
         text-align: center;
         text-decoration: none;
         color: black;
+    }
+    h3 {
+        margin-top: 30px;
+        margin-bottom: 5px;
+        border-bottom: 1px solid gray;
     }
     #container {
         width: 60%;
