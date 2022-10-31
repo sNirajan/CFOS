@@ -35,7 +35,9 @@
                         <a href="#" class="add_to_cart_btn">Add to Cart</a>
                     {% elif userLevel == 0 %}
                         <a href="{{ '/menu/' + item._id + '/edit' }}" class="item_edit_btn">Edit</a>
-                        <button class="item_delete_btn" onclick="onDeleteMenuItemBtnClick('{{ item._id }}', '{{ cafe._id }}')">Delete this Cafe</button>
+                        <button class="item_delete_btn" onclick="onDeleteMenuItemBtnClick('{{ item._id }}', '{{cafe._id }}')">Delete item</button>
+                         
+                        
                     {% endif %}
                 </div>
             </div>
@@ -132,6 +134,7 @@
 {% endblock %}
 
 {% block script %}
+    {# function to delete Cafe #}
     function onDeleteCafeBtnClick(cafeId) {
         let isDeleteConfirmed = confirm('This cafe and all data associated with it will be permanently deleted. ' + 
                                         'Are you sure you want to delete this cafe?');
@@ -148,4 +151,23 @@
                 });
         }
     }
+
+{# function to delete an item from menu #}
+    function onDeleteMenuItemBtnClick(itemId, cafeId) {
+        let isDeleteConfirmed = confirm('This item will be permanently deleted. ' + 
+                                        'Are you sure you want to delete this item?');
+        
+        if(isDeleteConfirmed) {
+            fetch('/menu/' + itemId + '/delete').
+                then(response => {
+                    if(response.status == 200) {
+                        window.location.href = '/cafe/' + cafeId;
+                    } 
+                    else {
+                        alert('Sorry, couldn\'t delete the item. Please try again!');
+                    }
+                });
+        }
+    }
 {% endblock %}
+   

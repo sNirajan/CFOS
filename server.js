@@ -191,6 +191,22 @@ app.route('/menu/:id/edit')
         });
     });
 
+ /**
+ * GET Route to delete a particular menu item by id.
+ * TODO: Restrict to only authenticated admin level users.
+ */
+
+app.get('/menu/:id/delete', (req, res) => {
+    async function deleteMenuItem() {
+        await client.connect();
+        const menuItemCol = await client.db("cafe's").collection("menu_items");
+        return menuItemCol.deleteOne({_id: mongodb.ObjectId(req.params['id'])});
+    }
+    deleteMenuItem().then(console.log);
+    res.send('SUCCESS');
+});
+
+
 /**
  * GET route to show the form for creating new employee.
  * TODO: Restrict this function only to authenticated admin level user. 
