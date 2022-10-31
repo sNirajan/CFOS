@@ -1,0 +1,94 @@
+<!--
+ * Reza Saker Hossain
+ * Gagandeep Singh
+ * Niranjan Bikram Shah
+-->
+
+{% extends 'layouts/main_layout.njk' %}
+
+{% block main_body %}
+    <div id="container">
+        <h3>Employees List</h3>
+        {% for employee in employees %}
+            <div class="employee">
+                <div>
+                    <p>{{employee.firstName + ' ' + employee.lastName}}</p>
+                    {% if employee.note.length > 0 %}
+                        <p class="note">{{ employee.note }}</p>
+                    {% endif %}
+                </div>
+                <div>
+                    <a href="{{ '/employee/' + employee._id + '/edit' }}" class="employee_edit_btn">Edit</a>
+                    <a href="#" class="employee_delete_btn">Delete</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block style %}
+    #container {
+        width: 70%;
+        margin-left: 15%;
+        margin-bottom: 50px;
+        margin-top: 10px;
+    }
+    .employee {
+        width: 100%;
+        padding: 20px;
+        border: 1px solid dimgray;
+        border-radius: 2px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+    .employee a {
+        color: white;
+        padding: 10px 15px 10px 15px;
+        margin-left: 10px;
+        background-color: royalblue;
+        text-decoration: none;
+        border-radius: 2px;
+    }
+    .note {
+        font-size: 12px;
+    }
+    a.employee_edit_btn, a.employee_delete_btn {
+        background-color: white;
+        border: 1px solid royalblue;
+        color: royalblue;
+    }
+    a.employee_edit_btn:hover {
+        background-color: royalblue;
+        color: white;
+    }
+    a.employee_delete_btn {
+        border-color: #C3381A;
+        color: #C3381A;
+        font-size: 16px;
+    }
+    a.employee_delete_btn:hover {
+        background-color: #C3381A;
+        color: white;
+    }
+{% endblock %}
+
+{% block script %}
+    function onDeleteCafeBtnClick(cafeId) {
+        let isDeleteConfirmed = confirm('This cafe and all data associated with it will be permanently deleted. ' + 
+                                        'Are you sure you want to delete this cafe?');
+        
+        if(isDeleteConfirmed) {
+            fetch('/cafe/' + cafeId + '/delete').
+                then(response => {
+                    if(response.status == 200) {
+                        window.location.href = '/';
+                    } 
+                    else {
+                        alert('Sorry, couldn\'t delete the cafe info. PLease try again!');
+                    }
+                });
+        }
+    }
+{% endblock %}

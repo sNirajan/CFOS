@@ -197,10 +197,68 @@ app.route('/createEmployee')
     .get((req, res) => {
         getCafeList().then(cafeList => {
             res.render('./createEmployee.njk', {
+                cafeList: cafeList,
+            });
+        });
+    })
+    .post((req, res) => {
+        async function insertEmployee() {
+            await client.connect();
+            const employeeCol = await client.db("cafe's").collection("users");
+            req.body.user_level = "1";
+            return employeeCol.insertOne(req.body);
+        }
+        insertEmployee().then(console.log);
+        res.redirect('/');
+    });
+
+    // Employees list
+    app.get('/EmployeesList', (req, res) => {
+        getEmployeeList().then(employee=>{ console.log(employee);
+            res.render('./employeesList.njk', {
+                employees: employee,
+            });
+        });
+        
+    });
+
+    /**
+ * GET route to show the form for editing a Employee.
+ * POST route to update the Employee in DB.
+ * TODO: Restrict to authenticated admin level users only. 
+ */
+app.route('/employee/:id/edit')
+.get((req, res) => {
+    getEmployee(req.params['id']).then(employee => {
+        getCafeList().then(cafeList=>{
+            res.render('./editEmployee.njk', {
+                employee: employee,
                 cafeList: cafeList
             });
         });
+        
     });
+})
+.post((req, res) => {
+    async function updateEmployee() {
+        await client.connect();
+        const employeeCol = await client.db("cafe's").collection("users");
+        
+        let query = { _id: mongodb.ObjectId(req.params['id']) };
+        let update = { $set: { 
+            firstName: req.body.firstName, 
+            lastName: req.body.lastName,
+            position: req.body.position,
+            wage: req.body.wage,
+            workStationId: req.body.workStationId,
+            note: req.body.note
+        }};
+        return employeeCol.findOneAndUpdate(query, update, {});
+    }
+    updateEmployee().then(console.log);
+    res.redirect('/EmployeesList');
+});
+    
 
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -253,6 +311,29 @@ async function getCafeMenu(cafeId){
     await client.connect();
     const menuItemCol = await client.db("cafe's").collection("menu_items");
     const cursor = menuItemCol.findOne({ _id: mongodb.ObjectId(menuId) });
+    return await cursor;
+}
+
+/**
+ * Function to retrieve Employees List from a DB.
+ * @returns { Object } List of the Employees
+ */
+ async function getEmployeeList(){
+    await client.connect();
+    const employeeCol = await client.db("cafe's").collection("users");
+    const cursor = employeeCol.find({});
+    return await cursor.toArray();
+}
+
+/**
+ * Function to retrieve a single Employee from a DB.
+ * @param { string } empId Id of the Employee to retrieve.
+ * @returns { Object } The Employee object.
+ */
+ async function getEmployee(empId){
+    await client.connect();
+    const employeeCol = await client.db("cafe's").collection("users");
+    const cursor = employeeCol.findOne({ _id: mongodb.ObjectId(empId) });
     return await cursor;
 }
 
