@@ -213,7 +213,7 @@ app.route('/createEmployee')
     });
 
     // Employees list
-    app.get('/EmployeesList', (req, res) => {
+    app.get('/employeesList', (req, res) => {
         getEmployeeList().then(employee=>{ console.log(employee);
             res.render('./employeesList.njk', {
                 employees: employee,
@@ -256,7 +256,22 @@ app.route('/employee/:id/edit')
         return employeeCol.findOneAndUpdate(query, update, {});
     }
     updateEmployee().then(console.log);
-    res.redirect('/EmployeesList');
+    res.redirect('/employeesList');
+});
+
+
+/**
+ * GET Route to delete a particular employee by id.
+ * TODO: Restrict to only authenticated admin level users.
+ */
+ app.get('/employeesList/:id/delete', (req, res) => {
+    async function deleteEmployee() {
+        await client.connect();
+        const employeeCol = await client.db("cafe's").collection("users");
+        return employeeCol.deleteOne({_id: mongodb.ObjectId(req.params['id'])});
+    }
+    deleteEmployee().then(console.log);
+    res.redirect('/');
 });
     
 
