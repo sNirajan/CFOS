@@ -1,1 +1,1 @@
-"ACS 3909 Project - Niarajan, Reza, Gagandeep" 
+"ACS 3909 Project - Nirajan, Reza, Gagandeep" 
