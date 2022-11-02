@@ -1,0 +1,72 @@
+<!--
+ * Reza Saker Hossain
+ * Gagandeep Singh
+ * Niranjan Bikram Shah
+-->
+
+{% extends 'layouts/main_layout.njk' %}
+
+{% block main_body %}
+    <h2>InstaFood</h2>
+
+    <form method="POST" action="/instafood/uploadImage" encType="multipart/form-data" id="foodImgUploadForm">
+        <label for="img_file">Upload your food picture</label>
+        <input type="file" name="img_file" required></input>
+        <button type="submit">Uplaod</button>
+    </form>
+
+    <h3>Picture from other users</h3>
+    <div id="container">
+        {% for img in foodImgList %}
+            <img src="{{ '/public/instafood/' + img }}" onclick="onImgClick('{{ '/public/instafood/' + img }}')">
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block style %}
+    h2, h3 {
+        text-align: center;
+        padding: 20px 0 20px 0;
+        border-bottom: 1px solid dimgray;
+    }
+    h3 {
+        border: none;
+    }
+    #container {
+        width: 90%;
+        margin-left: 5%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        flex-wrap: wrap;
+    }
+    #container img {
+        width: 30%;
+        height: auto;
+        cursor: pointer;
+        margin-bottom: 20px;
+    }
+    #foodImgUploadForm {
+        padding: 20px 0 20px 5%;
+        border-bottom: 1px solid dimgray;
+    }
+    #foodImgUploadForm label {
+        margin-right: 10px
+    }
+    #foodImgUploadForm button {
+        background-color: royalblue;
+        border: none;
+        color: white;
+        padding: 5px 10px 5px 10px;
+    }
+    #foodImgUploadForm button:hover {
+        background-color: forestgreen;
+    }
+
+{% endblock %}
+
+{% block script %}
+    function onImgClick(imgUrl) {
+        window.location.href = imgUrl;
+    }
+{% endblock %}

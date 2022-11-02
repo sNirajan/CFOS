@@ -2,7 +2,8 @@ const express = require('express');
 const nunjucks = require('nunjucks');
 const mongodb = require('mongodb');
 const serveIndex = require('serve-index');
-const multipart = require('multiparty');
+const multiparty = require('multiparty');
+const fs = require('fs');
 
 const app = express();
 const port = 3000;
@@ -292,7 +293,23 @@ app.get('/employee/:id/delete', (req, res) => {
     res.redirect('/');
 });
     
+app.get('/instafood', (req, res) => {
+    let foodImgList = [];
+    fs.readdirSync('./public/instafood/').forEach(file => {
+        foodImgList.push(file);
+    });
+    res.render('instafood.njk', {
+        foodImgList: foodImgList
+    });
+});
 
+app.post('/instafood/uploadImage', (req, res) => {
+    let form = new multiparty.Form({ uploadDir: './public/instafood' });
+
+    form.parse(req, (err, fields, files) => {
+        res.redirect('/instafood');
+    });
+})
 
 ///////////////////////////////////////////////////////////////////////////////////////
 //                                                                                   //
