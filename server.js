@@ -1,10 +1,8 @@
 const express = require('express');
 const nunjucks = require('nunjucks');
-const fs = require('fs');
 const mongodb = require('mongodb');
 const serveIndex = require('serve-index');
-const { mongo } = require('mongoose');
-const { receiveMessageOnPort } = require('worker_threads');
+const multipart = require('multiparty');
 
 const app = express();
 const port = 3000;
@@ -19,8 +17,8 @@ nunjucks.configure('views', {
 });
 
 app.use(express.urlencoded({ extended: true }));
-app.use('/usefulResources', express.static(__dirname + '/public/usefulResources'));
-app.use('/usefulResources', serveIndex(__dirname + '/public/usefulResources', { icons: true }));
+app.use('/public', express.static(__dirname + '/public'));
+//app.use('/instafood', serveIndex(__dirname + '/public/instafood', { icons: true }));
 
 
 ///////////////////////////////////////////////////////////////////////////////////////
