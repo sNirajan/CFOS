@@ -44,6 +44,19 @@ app.get('/', (req, res) => {
     });
 });
 
+
+// custom 404 page
+app.use( (req, res) =>{
+    res.status(404).sendFile(__dirname + "/public/404.html")
+    });
+
+//custom 500 page
+app.use( (err, req, res, next) =>{
+    console.log(err.stack);
+    res.status(500).sendFile(__dirname + "/public/500.html")
+    });
+
+
 /**
  * GET route for showing a particular cafe
  * TODO: Restrict to authenticated users only. 
@@ -51,7 +64,7 @@ app.get('/', (req, res) => {
 app.get('/cafe/:id', (req, res) => {
     getCafe(req.params['id']).then(cafe => {
         if(cafe == null) {
-            res.status(404).send('404.html');
+            res.status(404).sendFile('404.html');
         } 
         else {
             getCafeMenu(req.params['id']).then(menu => {
