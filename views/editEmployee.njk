@@ -23,6 +23,11 @@
 
         <label for="cafe_id">Work Station</label>     
 		<select name="cafe_id" required>
+			<option value="AAA"
+				{% if employee.cafe_id == "AAA" %}
+					selected
+				{% endif %}
+			>No Specific Work Station</option>
             {% for cafe in cafeList %}
                 <option value="{{ cafe._id }}"
 					{% if cafe._id == employee.cafe_id %}

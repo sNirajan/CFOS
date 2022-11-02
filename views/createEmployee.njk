@@ -23,6 +23,7 @@
 
         <label for="cafe_id">Work Station</label>     
 		<select name="cafe_id" required>
+			<option value="AAA">No Specific Work Station</option>
             {% for cafe in cafeList %}
                 <option value="{{ cafe._id }}">{{ cafe.name }}</option>
             {% endfor %}

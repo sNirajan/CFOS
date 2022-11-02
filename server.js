@@ -7,7 +7,7 @@ const fs = require('fs');
 const app = express();
 const port = 3000;
 
-const uri = "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/?retryWrites=true&w=majority";
+const uri = 'mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/?retryWrites=true&w=majority';
 const client = new mongodb.MongoClient(uri);
 
 nunjucks.configure('views', {
@@ -73,7 +73,7 @@ app.route('/createCafe')
     .post((req, res) => {
         async function insertCafe() {
             await client.connect();
-            const cafeListCol = await client.db("cafe's").collection("cafe_lists");
+            const cafeListCol = await client.db("cafe's").collection('cafe_lists');
             return cafeListCol.insertOne(req.body);
         }
         insertCafe();
@@ -101,7 +101,7 @@ app.route('/cafe/:id/edit')
     .post((req, res) => {
         async function updateCafe() {
             await client.connect();
-            const cafeListCol = await client.db("cafe's").collection("cafe_lists");
+            const cafeListCol = await client.db("cafe's").collection('cafe_lists');
             
             let query = { _id: mongodb.ObjectId(req.params['id']) };
             let update = { $set: { 
@@ -126,7 +126,7 @@ app.route('/cafe/:id/edit')
 app.get('/cafe/:id/delete', (req, res) => {
     async function deleteCafe() {
         await client.connect();
-        const cafeListCol = await client.db("cafe's").collection("cafe_lists");
+        const cafeListCol = await client.db("cafe's").collection('cafe_lists');
         return cafeListCol.deleteOne({_id: mongodb.ObjectId(req.params['id'])});
     }
     deleteCafe();
@@ -153,7 +153,7 @@ app.route('/cafe/:id/createMenuItem')
     .post((req, res) => {
         async function insertMenuItem() {
             await client.connect();
-            const menuItemCol = await client.db("cafe's").collection("menu_items");
+            const menuItemCol = await client.db("cafe's").collection('menu_items');
             req.body.cafe_id = req.params['id'];
             return menuItemCol.insertOne(req.body);
         }
@@ -182,7 +182,7 @@ app.route('/menu/:id/edit')
     .post((req, res) => {
         async function updateMenuItem() {
             await client.connect();
-            const menuItemCol = await client.db("cafe's").collection("menu_items");
+            const menuItemCol = await client.db("cafe's").collection('menu_items');
             
             let query = { _id: mongodb.ObjectId(req.params['id']) };
             let update = { $set: { 
@@ -213,7 +213,7 @@ app.route('/menu/:id/edit')
 app.get('/menu/:id/delete', (req, res) => {
     async function deleteMenuItem() {
         await client.connect();
-        const menuItemCol = await client.db("cafe's").collection("menu_items");
+        const menuItemCol = await client.db("cafe's").collection('menu_items');
         return menuItemCol.deleteOne({_id: mongodb.ObjectId(req.params['id'])});
     }
     deleteMenuItem();
@@ -236,7 +236,7 @@ app.route('/createEmployee')
     .post((req, res) => {
         async function insertEmployee() {
             await client.connect();
-            const employeeCol = await client.db("cafe's").collection("users");
+            const employeeCol = await client.db("cafe's").collection('users');
             return employeeCol.insertOne(req.body);
         }
         insertEmployee();
@@ -279,7 +279,7 @@ app.route('/employee/:id/edit')
     .post((req, res) => {
         async function updateEmployee() {
             await client.connect();
-            const employeeCol = await client.db("cafe's").collection("users");
+            const employeeCol = await client.db("cafe's").collection('users');
             
             let query = { _id: mongodb.ObjectId(req.params['id']) };
             let update = { $set: { 
@@ -304,7 +304,7 @@ app.route('/employee/:id/edit')
 app.get('/employee/:id/delete', (req, res) => {
     async function deleteEmployee() {
         await client.connect();
-        const employeeCol = await client.db("cafe's").collection("users");
+        const employeeCol = await client.db("cafe's").collection('users');
         return employeeCol.deleteOne({_id: mongodb.ObjectId(req.params['id'])});
     }
     deleteEmployee();
@@ -351,7 +351,7 @@ app.post('/instafood/uploadImage', (req, res) => {
  */
 async function getCafeList(){
     await client.connect();
-    const cafeListCol = await client.db("cafe's").collection("cafe_lists");
+    const cafeListCol = await client.db("cafe's").collection('cafe_lists');
     const cursor = cafeListCol.find({});
     return await cursor.toArray();
 }
@@ -363,7 +363,7 @@ async function getCafeList(){
  */
 async function getCafe(cafeId){
     await client.connect();
-    const cafeListCol = await client.db("cafe's").collection("cafe_lists");
+    const cafeListCol = await client.db("cafe's").collection('cafe_lists');
     const cursor = cafeListCol.findOne({ '_id': mongodb.ObjectId(cafeId)});
     return await cursor;
 }
@@ -375,7 +375,7 @@ async function getCafe(cafeId){
  */
 async function getCafeMenu(cafeId){
     await client.connect();
-    const menuItemCol = await client.db("cafe's").collection("menu_items");
+    const menuItemCol = await client.db("cafe's").collection('menu_items');
     const cursor = menuItemCol.find({ cafe_id: cafeId });
     return await cursor.toArray();
 }
@@ -387,7 +387,7 @@ async function getCafeMenu(cafeId){
  */
  async function getMenuItem(menuId){
     await client.connect();
-    const menuItemCol = await client.db("cafe's").collection("menu_items");
+    const menuItemCol = await client.db("cafe's").collection('menu_items');
     const cursor = menuItemCol.findOne({ _id: mongodb.ObjectId(menuId) });
     return await cursor;
 }
@@ -398,7 +398,7 @@ async function getCafeMenu(cafeId){
  */
  async function getEmployeeList(){
     await client.connect();
-    const employeeCol = await client.db("cafe's").collection("users");
+    const employeeCol = await client.db("cafe's").collection('users');
     const cursor = employeeCol.find({});
     return await cursor.toArray();
 }
@@ -410,7 +410,7 @@ async function getCafeMenu(cafeId){
  */
  async function getEmployee(empId){
     await client.connect();
-    const employeeCol = await client.db("cafe's").collection("users");
+    const employeeCol = await client.db("cafe's").collection('users');
     const cursor = employeeCol.findOne({ _id: mongodb.ObjectId(empId) });
     return await cursor;
 }
@@ -422,14 +422,14 @@ async function getCafeMenu(cafeId){
  * 404 page not found error handler middleware.
  */
  app.use((req, res) => {
-    res.status(404).sendFile(__dirname + "/public/404.html")
+    res.status(404).sendFile(__dirname + '/public/404.html')
 });
 
 /**
  * 500 internal server error handler middleware.
  */
 app.use( (err, req, res, next) => {
-    res.status(500).sendFile(__dirname + "/public/500.html")
+    res.status(500).sendFile(__dirname + '/public/500.html')
 });
 
 app.listen(port, () => {

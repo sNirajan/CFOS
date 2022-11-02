@@ -12,9 +12,13 @@
         {% for employee in employeeList %}
             <div class="employee">
                 <div>
-                    <p>{{ employee.firstName + ' ' + employee.lastName }}</p>
-                    {% if employee.note.length > 0 %}
-                        <p class="note">{{ employee.note }}</p>
+                    <p>Name: {{ employee.firstName + ' ' + employee.lastName }}</p>
+                    <p>Position: {{ employee.position }}</p>
+                    <p>Wage: {{ '$' + employee.wage }}</p>
+                    {% if employee.user_level == 0 %}
+                        <p>Employee Access Level: Admin (can access all features in the app)</p>
+                    {% else %}
+                        <p>Employee Access level: Employee (can only access order page for their work station)</p>
                     {% endif %}
                 </div>
                 <div>
