@@ -1,7 +1,6 @@
 const express = require('express');
 const nunjucks = require('nunjucks');
 const mongodb = require('mongodb');
-const serveIndex = require('serve-index');
 const multiparty = require('multiparty');
 const fs = require('fs');
 
@@ -19,8 +18,6 @@ nunjucks.configure('views', {
 
 app.use(express.urlencoded({ extended: true }));
 app.use('/public', express.static(__dirname + '/public'));
-//app.use('/instafood', serveIndex(__dirname + '/public/instafood', { icons: true }));
-
 
 ///////////////////////////////////////////////////////////////////////////////////////
 //                                                                                   //
@@ -34,8 +31,7 @@ app.use('/public', express.static(__dirname + '/public'));
  */
 app.get('/', (req, res) => {
     getCafeList().then(cafeList => {
-        console.log(cafeList);
-        res.render('index.njk', {
+        res.status(200).render('index.njk', {
             appName: 'UWCFOS',
             username: 'Mr. Test',
             userLevel: 0, //This value should be dynamically assigned when authentication is implemented (0 = admin, 1 = staff, 2 = customer)
@@ -44,19 +40,6 @@ app.get('/', (req, res) => {
     });
 });
 
-
-// custom 404 page
-app.use( (req, res) =>{
-    res.status(404).sendFile(__dirname + "/public/404.html")
-    });
-
-//custom 500 page
-app.use( (err, req, res, next) =>{
-    console.log(err.stack);
-    res.status(500).sendFile(__dirname + "/public/500.html")
-    });
-
-
 /**
  * GET route for showing a particular cafe
  * TODO: Restrict to authenticated users only. 
@@ -64,12 +47,11 @@ app.use( (err, req, res, next) =>{
 app.get('/cafe/:id', (req, res) => {
     getCafe(req.params['id']).then(cafe => {
         if(cafe == null) {
-            res.status(404).sendFile('404.html');
+            res.status(404).sendFile('./public/404.html');
         } 
         else {
             getCafeMenu(req.params['id']).then(menu => {
-                console.log(menu);
-                res.render('./cafe.njk', {
+                res.status(200).render('./cafe.njk', {
                     userLevel: 0, //This value should be dynamically assigned when authentication is implemented (0 = admin, 1 = staff, 2 = customer)
                     cafe: cafe,
                     menu: menu
@@ -86,7 +68,7 @@ app.get('/cafe/:id', (req, res) => {
  */
 app.route('/createCafe')
     .get((req, res) => {
-        res.render('./createCafe.njk')
+        res.status(200).render('./createCafe.njk')
     })
     .post((req, res) => {
         async function insertCafe() {
@@ -94,7 +76,7 @@ app.route('/createCafe')
             const cafeListCol = await client.db("cafe's").collection("cafe_lists");
             return cafeListCol.insertOne(req.body);
         }
-        insertCafe().then(console.log);
+        insertCafe();
         res.redirect('/');
     });
 
@@ -106,9 +88,14 @@ app.route('/createCafe')
 app.route('/cafe/:id/edit')
     .get((req, res) => {
         getCafe(req.params['id']).then(cafe => {
-            res.render('./editCafe.njk', {
-                cafe: cafe
-            });
+            if(cafe == null) {
+                res.status(404).sendFile('./public/404.html');
+            }
+            else {
+                res.status(200).render('./editCafe.njk', {
+                    cafe: cafe
+                });
+            }
         });
     })
     .post((req, res) => {
@@ -128,7 +115,7 @@ app.route('/cafe/:id/edit')
             }};
             return cafeListCol.findOneAndUpdate(query, update, {});
         }
-        updateCafe().then(console.log);
+        updateCafe();
         res.redirect('/cafe/' + req.params['id']);
     });
 
@@ -142,7 +129,7 @@ app.get('/cafe/:id/delete', (req, res) => {
         const cafeListCol = await client.db("cafe's").collection("cafe_lists");
         return cafeListCol.deleteOne({_id: mongodb.ObjectId(req.params['id'])});
     }
-    deleteCafe().then(console.log);
+    deleteCafe();
     res.send('SUCCESS');
 });
 
@@ -153,9 +140,14 @@ app.get('/cafe/:id/delete', (req, res) => {
 app.route('/cafe/:id/createMenuItem')
     .get((req, res) => {
         getCafe(req.params['id']).then(cafe => {
-            res.render('createMenuItem.njk', {
-                cafe: cafe
-            });
+            if(cafe == null) {
+                res.status(404).sendFile('./public/404.html');
+            }
+            else  { 
+                res.status(200).render('createMenuItem.njk', {
+                    cafe: cafe
+                });
+            }
         });
     })
     .post((req, res) => {
@@ -165,7 +157,7 @@ app.route('/cafe/:id/createMenuItem')
             req.body.cafe_id = req.params['id'];
             return menuItemCol.insertOne(req.body);
         }
-        insertMenuItem().then(console.log);
+        insertMenuItem();
         res.redirect(`/cafe/${req.params['id']}`);
     });
 
@@ -177,9 +169,14 @@ app.route('/cafe/:id/createMenuItem')
 app.route('/menu/:id/edit')
     .get((req, res) => {
         getMenuItem(req.params['id']).then(menuItem => {
-            res.render('./editMenuItem.njk', {
-                menuItem: menuItem
-            });
+            if(menuItem == null) {
+                res.status(404).sendFile('./public/404.html');
+            }
+            else { 
+                res.status(200).render('./editMenuItem.njk', {
+                    menuItem: menuItem
+                });
+            }
         });
     })
     .post((req, res) => {
@@ -196,10 +193,15 @@ app.route('/menu/:id/edit')
             }};
             return menuItemCol.findOneAndUpdate(query, update, {});
         }
-        updateMenuItem().then(console.log);
+        updateMenuItem();
 
         getMenuItem(req.params['id']).then(menuItem => {
-            res.redirect('/cafe/' + menuItem.cafe_id);
+            if(menuItem == null) {
+                res.status(404).sendFile('./public/404.html');
+            }
+            else {
+                res.redirect('/cafe/' + menuItem.cafe_id);
+            }
         });
     });
 
@@ -214,7 +216,7 @@ app.get('/menu/:id/delete', (req, res) => {
         const menuItemCol = await client.db("cafe's").collection("menu_items");
         return menuItemCol.deleteOne({_id: mongodb.ObjectId(req.params['id'])});
     }
-    deleteMenuItem().then(console.log);
+    deleteMenuItem();
     res.send('SUCCESS');
 });
 
@@ -226,7 +228,7 @@ app.get('/menu/:id/delete', (req, res) => {
 app.route('/createEmployee')
     .get((req, res) => {
         getCafeList().then(cafeList => {
-            res.render('./createEmployee.njk', {
+            res.status(200).render('./createEmployee.njk', {
                 cafeList: cafeList,
             });
         });
@@ -237,8 +239,8 @@ app.route('/createEmployee')
             const employeeCol = await client.db("cafe's").collection("users");
             return employeeCol.insertOne(req.body);
         }
-        insertEmployee().then(console.log);
-        res.redirect('/');
+        insertEmployee();
+        res.redirect('/employeeList');
     });
 
 /**
@@ -247,8 +249,7 @@ app.route('/createEmployee')
  */
 app.get('/employeeList', (req, res) => {
     getEmployeeList().then(employeeList => { 
-        console.log(employeeList);
-        res.render('./employeeList.njk', {
+        res.status(200).render('./employeeList.njk', {
             employeeList: employeeList,
         });
     });
@@ -262,13 +263,17 @@ app.get('/employeeList', (req, res) => {
 app.route('/employee/:id/edit')
     .get((req, res) => {
         getEmployee(req.params['id']).then(employee => {
-            getCafeList().then(cafeList => {
-                res.render('./editEmployee.njk', {
-                    employee: employee,
-                    cafeList: cafeList
+            if(employee == null) {
+                res.status(404).sendFile('./public/404.html');
+            }
+            else {
+                getCafeList().then(cafeList => {
+                    res.status(200).render('./editEmployee.njk', {
+                        employee: employee,
+                        cafeList: cafeList
+                    });
                 });
-            });
-            
+            }       
         });
     })
     .post((req, res) => {
@@ -288,7 +293,7 @@ app.route('/employee/:id/edit')
             }};
             return employeeCol.findOneAndUpdate(query, update, {});
         }
-        updateEmployee().then(console.log);
+        updateEmployee();
         res.redirect('/employeeList');
     });
 
@@ -302,27 +307,37 @@ app.get('/employee/:id/delete', (req, res) => {
         const employeeCol = await client.db("cafe's").collection("users");
         return employeeCol.deleteOne({_id: mongodb.ObjectId(req.params['id'])});
     }
-    deleteEmployee().then(console.log);
-    res.redirect('/');
+    deleteEmployee();
+    res.redirect('/employeeList');
 });
-    
+
+/**
+ * GET route to show the Instafood page.
+ */
 app.get('/instafood', (req, res) => {
     let foodImgList = [];
     fs.readdirSync('./public/instafood/').forEach(file => {
         foodImgList.push(file);
     });
-    res.render('instafood.njk', {
+    res.status(200).render('instafood.njk', {
         foodImgList: foodImgList
     });
 });
 
+/**
+ * POST route to save uploaded image to the local disk. 
+ * TODO: Resctrict to authenticated users only. 
+ */
 app.post('/instafood/uploadImage', (req, res) => {
     let form = new multiparty.Form({ uploadDir: './public/instafood' });
-
     form.parse(req, (err, fields, files) => {
         res.redirect('/instafood');
     });
-})
+});
+//------------------------------------------------------------------------------------
+//DO NOT WRITE ANY ROUTE HANDLER METHOD UNDER THIS LINE
+//------------------------------------------------------------------------------------
+
 
 ///////////////////////////////////////////////////////////////////////////////////////
 //                                                                                   //
@@ -399,6 +414,23 @@ async function getCafeMenu(cafeId){
     const cursor = employeeCol.findOne({ _id: mongodb.ObjectId(empId) });
     return await cursor;
 }
+//-----------------------------------------------------------------------------
+//UTILITY METHODS END HERE
+//-----------------------------------------------------------------------------
+
+/**
+ * 404 page not found error handler middleware.
+ */
+ app.use((req, res) => {
+    res.status(404).sendFile(__dirname + "/public/404.html")
+});
+
+/**
+ * 500 internal server error handler middleware.
+ */
+app.use( (err, req, res, next) => {
+    res.status(500).sendFile(__dirname + "/public/500.html")
+});
 
 app.listen(port, () => {
     console.log('App listening on http://localhost:' + port);
