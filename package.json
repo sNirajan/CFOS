@@ -5,6 +5,7 @@
     "init": "^0.1.2",
     "mongodb": "^4.11.0",
     "mongoose": "^6.7.0",
+    "multiparty": "^4.2.3",
     "node.js": "^0.0.1-security",
     "nodemon": "^2.0.20",
     "nunjucks": "^3.2.3",
