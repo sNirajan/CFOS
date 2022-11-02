@@ -34,6 +34,26 @@
             margin-left: 15px;
             margin-top: 5px;
         }
+        #footer {
+            background-color: dimgray;
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            margin-top: 20px;
+        }
+        #footer p, #footer a {
+            padding: 5px;
+            margin: 0;
+            color: white;
+        }
+        #footer a {
+            text-decoration: underline;
+        }
+        #footer a:hover {
+            color: blue;
+        }
         {% block style %} {% endblock %}
     </style>
 </head>
@@ -52,13 +72,29 @@
         </div>
     {% endblock %}
 
-    {% block main_body %}
-        <h1> Default body </h1>
+    <div id="main">
+        {% block main_body %}
+            <h1> Default body </h1>
+        {% endblock %}
+    </div>
+
+    {% block footer %}
+        <div id="footer">
+            <p>&copy; All Rights Reserved.</p>
+            <a href="/public/credits.html">Credits and Acknowledgement</a>
+        </div>
     {% endblock %}
 </body>
 </html>
 
 <script>
+    window.onload = () => {
+        let docHeight = main.clientHeight + 200;
+        
+        if (innerHeight < docHeight) {
+            footer.style.position = 'relative';
+        } 
+    }
     {% block script %}  {% endblock %}
 </script>
 
