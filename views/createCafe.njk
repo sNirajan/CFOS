@@ -9,6 +9,8 @@
 {% block main_body %}	
 	<h3>Create New Cafe</h3>
   	<form method = "POST" action="/createCafe" id="cafe_create_form">
+		<input type="hidden" name="csrf_key" value="{{ csrfKey }}">
+		
 		<label for="cafe"> Cafeteria Name</label>     
 		<input type="text" name="name" required>
 

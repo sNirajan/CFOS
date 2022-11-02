@@ -15,6 +15,18 @@ const port = 3000;
 const uri = 'mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/?retryWrites=true&w=majority';
 const client = new mongodb.MongoClient(uri);
 
+const csrf_key = makeid(20);
+
+function makeid(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
+
 nunjucks.configure('views', {
     autoescape: true,
     express: app,
@@ -73,16 +85,27 @@ app.get('/cafe/:id', (req, res) => {
  */
 app.route('/createCafe')
     .get((req, res) => {
-        res.status(200).render('./createCafe.njk')
+        res.status(200).render('./createCafe.njk', {
+            csrfKey: csrf_key
+        })
     })
     .post((req, res) => {
         async function insertCafe() {
-            await client.connect();
-            const cafeListCol = await client.db("cafe's").collection('cafe_lists');
-            return cafeListCol.insertOne(req.body);
+            if(req.body.csrf_key == csrf_key) {
+                await client.connect();
+                const cafeListCol = await client.db("cafe's").collection('cafe_lists');
+                return cafeListCol.insertOne(req.body);
+            }
+            else {
+                return null;
+            }
         }
-        insertCafe();
-        res.redirect('/');
+        if(insertCafe() == null) {
+            res.status(500).sendFile('./public/500.html');
+        }
+        else {
+            res.redirect('/');
+        }
     });
 
 /**
