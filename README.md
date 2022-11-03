@@ -9,7 +9,7 @@ Dr. Michael Beck
 ## Contributors (Developers)
 - Reza Saker Hossain
 - Gagandeep Singh
-- Niranjan Bikran Shah
+- Nirajan Bikran Shah
 
 ## Credits and Acknowledgements
 Please refer to public/credits.html page to check the credits. 
