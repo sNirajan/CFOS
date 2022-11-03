@@ -9,7 +9,7 @@
 {% block main_body %}	
 	<h3>Create New Cafe</h3>
   	<form method = "POST" action="/createCafe" id="cafe_create_form">
-		<input type="hidden" name="csrf_key" value="{{ csrfKey }}">
+		<input type="hidden" name="csrf_token" value="{{ csrfToken }}">
 		
 		<label for="cafe"> Cafeteria Name</label>     
 		<input type="text" name="name" required>
@@ -21,10 +21,10 @@
 		<input type="text" name="phone">
 
 		<label for="daysOpened">Opening Days (Ex. Monday-Friday)</label>
-		<input type="text" id="days_opened" name="daysOpened" required>
+		<input type="text" name="daysOpened" required>
 
 		<label for="startTime">Start Time (Ex. 2:30pm)</label>
-		<input type="text" id="startTime" name="startTime" required>
+		<input type="text" name="startTime" required>
 
 		<label for="closeTime">Close Time (Ex. 2:30pm)</label>
 		<input type="text" name="closeTime" required>

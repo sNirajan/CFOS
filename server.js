@@ -15,18 +15,6 @@ const port = 3000;
 const uri = 'mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/?retryWrites=true&w=majority';
 const client = new mongodb.MongoClient(uri);
 
-const csrf_key = makeid(20);
-
-function makeid(length) {
-    var result           = '';
-    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var charactersLength = characters.length;
-    for ( var i = 0; i < length; i++ ) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return result;
-}
-
 nunjucks.configure('views', {
     autoescape: true,
     express: app,
@@ -35,6 +23,9 @@ nunjucks.configure('views', {
 
 app.use(express.urlencoded({ extended: true }));
 app.use('/public', express.static(__dirname + '/public'));
+
+let csrf_token = generateCSRFToken(64); //TODO: This has to be replaced with cookie/session. 
+
 
 ///////////////////////////////////////////////////////////////////////////////////////
 //                                                                                   //
@@ -85,13 +76,14 @@ app.get('/cafe/:id', (req, res) => {
  */
 app.route('/createCafe')
     .get((req, res) => {
+        csrf_token = generateCSRFToken(64);
         res.status(200).render('./createCafe.njk', {
-            csrfKey: csrf_key
-        })
+            csrfToken: csrf_token
+        });
     })
     .post((req, res) => {
         async function insertCafe() {
-            if(req.body.csrf_key == csrf_key) {
+            if(csrf_token == req.body.csrf_token) {
                 await client.connect();
                 const cafeListCol = await client.db("cafe's").collection('cafe_lists');
                 return cafeListCol.insertOne(req.body);
@@ -100,12 +92,14 @@ app.route('/createCafe')
                 return null;
             }
         }
-        if(insertCafe() == null) {
-            res.status(500).sendFile('./public/500.html');
-        }
-        else {
-            res.redirect('/');
-        }
+        insertCafe().then(result => {
+            if(result == null) {
+                res.status(500).sendFile('./public/500.html');
+            }
+            else {
+                res.redirect('/');
+            }
+        });
     });
 
 /**
@@ -442,6 +436,20 @@ async function getCafeMenu(cafeId){
     const cursor = employeeCol.findOne({ _id: mongodb.ObjectId(empId) });
     return await cursor;
 }
+
+/**
+ * Function to generate a random string for csrf token.
+ * @param { int } length Length of the random string.
+ * @returns a string of random characters.
+ */
+function generateCSRFToken(length) {
+    let token = '';
+    let charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for (let i = 0; i < length; i++) {
+        token += charset.charAt(Math.floor(Math.random() * charset.length));
+    }
+    return token;
+}
 //-----------------------------------------------------------------------------
 //UTILITY METHODS END HERE
 //-----------------------------------------------------------------------------
@@ -457,6 +465,7 @@ async function getCafeMenu(cafeId){
  * 500 internal server error handler middleware.
  */
 app.use( (err, req, res, next) => {
+    console.log(err);
     res.status(500).sendFile(__dirname + '/public/500.html')
 });
 
