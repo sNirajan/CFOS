@@ -55,7 +55,7 @@ app.get('/', (req, res) => {
 app.get('/cafe/:id', (req, res) => {
     getCafe(req.params['id']).then(cafe => {
         if(cafe == null) {
-            res.status(404).sendFile('./public/404.html');
+            res.status(404).sendFile('/public/404.html');
         } 
         else {
             getCafeMenu(req.params['id']).then(menu => {
@@ -94,7 +94,7 @@ app.route('/createCafe')
         }
         insertCafe().then(result => {
             if(result == null) {
-                res.status(500).sendFile('./public/500.html');
+                res.status(500).sendFile(__dirname + '/public/500.html');
             }
             else {
                 res.redirect('/');
@@ -111,7 +111,7 @@ app.route('/cafe/:id/edit')
     .get((req, res) => {
         getCafe(req.params['id']).then(cafe => {
             if(cafe == null) {
-                res.status(404).sendFile('./public/404.html');
+                res.status(404).sendFile(__dirname + '/public/404.html');
             }
             else {
                 res.status(200).render('./editCafe.njk', {
@@ -163,7 +163,7 @@ app.route('/cafe/:id/createMenuItem')
     .get((req, res) => {
         getCafe(req.params['id']).then(cafe => {
             if(cafe == null) {
-                res.status(404).sendFile('./public/404.html');
+                res.status(404).sendFile(__dirname + '/public/404.html');
             }
             else  { 
                 res.status(200).render('createMenuItem.njk', {
@@ -192,7 +192,7 @@ app.route('/menu/:id/edit')
     .get((req, res) => {
         getMenuItem(req.params['id']).then(menuItem => {
             if(menuItem == null) {
-                res.status(404).sendFile('./public/404.html');
+                res.status(404).sendFile(__dirname + '/public/404.html');
             }
             else { 
                 res.status(200).render('./editMenuItem.njk', {
@@ -219,7 +219,7 @@ app.route('/menu/:id/edit')
 
         getMenuItem(req.params['id']).then(menuItem => {
             if(menuItem == null) {
-                res.status(404).sendFile('./public/404.html');
+                res.status(404).sendFile(__dirname + '/public/404.html');
             }
             else {
                 res.redirect('/cafe/' + menuItem.cafe_id);
@@ -286,7 +286,7 @@ app.route('/employee/:id/edit')
     .get((req, res) => {
         getEmployee(req.params['id']).then(employee => {
             if(employee == null) {
-                res.status(404).sendFile('./public/404.html');
+                res.status(404).sendFile(__dirname + '/public/404.html');
             }
             else {
                 getCafeList().then(cafeList => {
