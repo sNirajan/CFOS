@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {% block title %}
+        <title>Sign Up</title>
+    {% endblock %}
+
+    <style>
+        #signup_form {
+		    width: 30%;
+		    padding: 15px;
+		    background-color: white;
+		    margin-left: 750px;	
+            margin-top: 20px;
+            position: absolute;
+            opacity: 0.9;
+            border-radius: 10px;
+	    }
+
+        input[type=text], input[type=password] {
+		    width: 92%;
+		    padding: 15px;
+  		    margin: 5px 0 15px 0 ;
+		    border: none;
+ 		    background: #f1f1f1;
+            border-radius: 5px;
+	    }
+
+	    input[type=text]:focus, input[type=password]:focus {
+		    background-color: #ddd;
+		    outline: none;
+	    }
+
+        #login_btn {
+            background-color: darkmagenta;
+            color: white;
+            border-radius: 10px;
+            border-style: hidden;
+            width: 100%;
+		    padding: 15px; 
+            opacity: 0.9;
+        }
+
+        #login_btn:hover{
+            opacity: 1;
+        }
+
+        h3{
+            margin-top: 5px;
+        }
+        body, html {
+            height: 100%;
+        }
+        #bg_img {
+            /* The image used */
+            background-image: url("../public/signup.jpg");	
+  		    /* Full height */
+            height: 100%;
+
+            /* Center and scale the image nicely */ 
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        p{
+            margin-top: auto;
+            text-align: right; 
+        }
+
+        a{
+            text-decoration: none;
+            color: black;
+        }
+
+        a:hover{
+            color: red;
+        }
+        
+        {% block style %} {% endblock %}
+    </style>
+</head>
+
+<body>
+    <div id="bg_img">
+            
+            <form id="signup_form">
+                <h3>SIGN UP</h3>
+                <label for="fname">First Name</label>     
+		        <input type="text" name="fname" id="fname" required>
+
+                <label for="lname">Last Name</label>     
+		        <input type="text" name="lname" id="lname" required>
+
+                <label for="email">Email</label>     
+		        <input type="text" name="email" id="email" required>
+
+                <label for="password">Password</label>     
+		        <input type="password" name="password" id="password" required>
+
+                <label for="ConfirmPassword">Confirm Password</label>     
+		        <input type="password" name="confirmPassword" id="confirmPassword" required>
+
+                <button type="submit" id="login_btn">SIGN UP</button>
+                
+            </form>
+        </div>
+</body>
+</html>
+
+<script>
+    console.log(signup_form);
+    signup_form = document.getElementById("signup_form");
+    signup_form.addEventListener('submit', signupRequest);
+
+    function signupRequest(e) {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const plainFormData = Object.fromEntries(formData.entries());
+	    const formDataJsonString = JSON.stringify(plainFormData);
+        if(password.value == confirmPassword.value) {
+            console.log('Password match', password.value);
+            fetch('/signup',  {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: formDataJsonString,
+            }).then(response => {
+                if(response.status == 200) {
+                    console.log('OK');
+                    window.location.href = '/';
+                }
+                else {
+                    console.log('NOT OK');
+                }
+            });
+        }
+        else {
+            console.log('NO');
+            alert("Password not matched");
+        }
+    }
+    
+</script>

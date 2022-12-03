@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {% block title %}
+        <title>Login</title>
+    {% endblock %}
+
+    <style>
+        #login {
+		    margin: 20px 0 50px 0;
+		    width: 30%;
+		    padding: 15px;
+		    background-color: white;
+		    margin-left: 750px;	
+            margin-top: 90px;
+            position: absolute;
+            opacity: 0.9;
+            border-radius: 10px;
+	    }
+
+        input[type=text], input[type=password] {
+		    width: 92%;
+		    padding: 15px;
+  		    margin: 5px 0 20px 0 ;
+		    border: none;
+ 		    background: #f1f1f1;
+            border-radius: 5px;
+	    }
+
+	    input[type=text]:focus, input[type=password]:focus {
+		    background-color: #ddd;
+		    outline: none;
+	    }
+
+        #login_btn {
+            background-color: darkmagenta;
+            color: white;
+            border-radius: 10px;
+            border-style: hidden;
+            width: 100%;
+		    padding: 15px;
+  		    margin: 5px 0 20px 0 ;  
+            opacity: 0.9;
+        }
+
+        #login_btn:hover{
+            opacity: 1;
+        }
+
+        h4{
+            text-align: center;
+        }
+        body, html {
+            height: 100%;
+        }
+        #bg_img {
+            /* The image used */
+            background-image: url("../public/login.jpg");	
+  		    /* Full height */
+            height: 100%;
+
+            /* Center and scale the image nicely */ 
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        p{
+            margin-top: auto;
+            text-align: right; 
+        }
+
+        a{
+            text-decoration: none;
+            color: black;
+        }
+
+        a:hover{
+            color: red;
+        }
+        
+        {% block style %} {% endblock %}
+    </style>
+</head>
+
+<body>
+    <div id="bg_img">
+            
+            <form method="POST" id="login" action="/">
+                <h3>LOGIN</h3>
+                <label for="email">Email</label>     
+		        <input type="text" name="email" required>
+
+                <label for="password">Password</label>     
+		        <input type="password" name="password" required>
+
+                <button type="submit" id="login_btn" >LOGIN</button>
+                <p><a href="#">Forgot Password?</a></p>
+                <hr>
+                <h4>Need an account?<a href="{{ '/signup' }}">SIGN UP</a></h4>
+            </form>
+        </div>
+</body>
+</html>

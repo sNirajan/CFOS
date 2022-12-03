@@ -7,6 +7,7 @@
 {% extends 'layouts/main_layout.njk' %}
 
 {% block main_body %}
+    <p>{{username}}</p>
     <p>List of All Campus Cafeterias</p>
 
     <div id="container">
@@ -17,9 +18,8 @@
             </a>
         {% endfor %}
 
-        <h3>Admin Settings</h3>
-
         {% if userLevel == 0 %}
+            <h3>Admin Settings</h3>
             <a class="create_cafe_box" href="/createCafe">Create New Cafeteria</a>
             <a class="create_employee_box" href="/createEmployee">Create an Employee Account</a>
             <a class="employee_list_box" href="/employeeList">Employee List</a>

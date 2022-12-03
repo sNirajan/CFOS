@@ -8,8 +8,10 @@ const nunjucks = require('nunjucks');
 const mongodb = require('mongodb');
 const multiparty = require('multiparty');
 const fs = require('fs');
+let bodyParser = require('body-parser');
 
 const app = express();
+const router = express.Router();
 const port = 3000;
 
 const uri = 'mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/?retryWrites=true&w=majority';
@@ -21,6 +23,7 @@ nunjucks.configure('views', {
     noCache: true
 });
 
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/public', express.static(__dirname + '/public'));
 
@@ -37,16 +40,75 @@ let csrf_token = generateCSRFToken(64); //TODO: This has to be replaced with coo
  * GET route for the admin index page.
  * TODO: restrict to authenticated users only.
  */
+
+/** 
 app.get('/', (req, res) => {
     getCafeList().then(cafeList => {
         res.status(200).render('index.njk', {
-            appName: 'UWCFOS',
+            //appName: 'UWCFOS',
             username: 'Mr. Test',
             userLevel: 0, //This value should be dynamically assigned when authentication is implemented (0 = admin, 1 = staff, 2 = customer)
             cafeList: cafeList
         });
     });
 });
+*/
+
+/**
+ * GET route for the login page.
+ * TODO: restrict to authenticated users only.
+ */
+app.route('/')
+    .get((req, res) => {
+        res.status(200).render('./loginPage.njk', {
+        });
+    })
+    .post((req, res) => {
+        email = req.body.email;
+        password = req.body.password;
+        findUserCredentials(email,password).then(userList=>{
+            if(userList == null) {
+                res.redirect('/');
+            }
+            else {
+                getCafeList().then(cafeList => {
+                    res.status(200).render('index.njk', {
+                        username: userList.firstName + " "+ userList.lastName,
+                        userLevel: userList.user_level, // (0 = admin, 1 = staff, 2 = customer)
+                        cafeList: cafeList
+                    });
+                });
+            }
+        })
+    });
+
+/**
+ * GET route for the signUp page.
+ * TODO: insert new user as customer in MongoDB
+ */
+app.route('/signup')
+    .get((req, res) => {
+        res.status(200).render('./signUp.njk', {
+        });
+    })
+    .post((req, res) => {
+        async function insertUser() {
+                await client.connect();
+                const userCol = await client.db("cafe's").collection('users');
+                console.log(req.body);
+                req.body.user_level = 2;
+                delete req.body.ConfirmPassword;
+                return userCol.insertOne(req.body);
+        }
+        insertUser().then(result => {
+            if(result == null) {
+                res.status(500).sendFile(__dirname + '/public/500.html');
+            }
+            else {
+                res.redirect('/');
+            }
+        });
+    });
 
 /**
  * GET route for showing a particular cafe
@@ -356,6 +418,8 @@ app.post('/instafood/uploadImage', (req, res) => {
         res.redirect('/instafood');
     });
 });
+
+
 //------------------------------------------------------------------------------------
 //DO NOT WRITE ANY ROUTE HANDLER METHOD UNDER THIS LINE
 //------------------------------------------------------------------------------------
@@ -450,6 +514,18 @@ function generateCSRFToken(length) {
     }
     return token;
 }
+
+/**
+ * Function to retrieve the entire collection of users from DB. 
+ * @returns { [Object] } the list of users. 
+ */
+async function findUserCredentials(email,password){
+    await client.connect();
+    const userCol = await client.db("cafe's").collection('users');
+    const cursor = userCol.findOne({ email,password });
+    return await cursor;
+}
+
 //-----------------------------------------------------------------------------
 //UTILITY METHODS END HERE
 //-----------------------------------------------------------------------------
