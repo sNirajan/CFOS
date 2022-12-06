@@ -35,34 +35,6 @@ router.post("/", (req, res) => {
 });
 
 /**
- * GET route for the signUp page.
- * POST route to add the user to the DB.
- * TODO: insert new user as customer in MongoDB
- */
-
-router.get("/signup", (req, res) => {
-  res.status(200).render("./signUp.njk", {});
-});
-
-router.post("/", (req, res) => {
-  async function insertUser() {
-    await client.connect();
-    const userCol = await client.db("cafe's").collection("users");
-    console.log(req.body);
-    req.body.user_level = 2;
-    delete req.body.ConfirmPassword;
-    return userCol.insertOne(req.body);
-  }
-  insertUser().then((result) => {
-    if (result == null) {
-      res.status(500).sendFile(__dirname + "/public/500.html");
-    } else {
-      res.redirect("/");
-    }
-  });
-});
-
-/**
  * Function to retrieve the entire collection of users from DB.
  * @returns { [Object] } the list of users.
  */

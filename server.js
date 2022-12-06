@@ -15,7 +15,8 @@ const employeeRoutes = require("./routes/employee");
 const cafeRoutes = require("./routes/cafe");
 const menuRoutes = require("./routes/menu");
 const serveDirectoryRoutes = require("./routes/serveDirectory");
-const userAccessRoutes = require("./routes/userAccess");
+const userAccessRoutes = require("./routes/userLogin");
+const userSignup = require("./routes/userSignup");
 
 const uri =
   "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/?retryWrites=true&w=majority";
@@ -36,6 +37,7 @@ app.use("/", cafeRoutes);
 app.use("/", menuRoutes);
 app.use("/", serveDirectoryRoutes);
 app.use("/", userAccessRoutes);
+app.use("/", userSignup);
 
 let csrf_token = generateCSRFToken(64); //TODO: This has to be replaced with cookie/session.
 
