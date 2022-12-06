@@ -12,7 +12,7 @@
         {% for employee in employeeList %}
             <div class="employee">
                 <div>
-                    <p>Name: {{ employee.firstName + ' ' + employee.lastName }}</p>
+                    <p id = "name">Name: {{ employee.firstName + ' ' + employee.lastName }}</p>
                     <p>Position: {{ employee.position }}</p>
                     <p>Wage: {{ '$' + employee.wage }}</p>
                     {% if employee.user_level == 0 %}
@@ -78,6 +78,10 @@
     #employee_delete_btn:hover {
         background-color: #C3381A;
         color: white;
+    }
+
+    #name {
+        font-weight: bold;
     }
 {% endblock %}
 
