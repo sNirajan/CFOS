@@ -42,6 +42,33 @@ app.use("/", userSignup);
 let csrf_token = generateCSRFToken(64); //TODO: This has to be replaced with cookie/session.
 
 /**
+ * GET route for the admin index page.
+ * TODO: restrict to authenticated users only.
+ */
+
+app.get("/home", (req, res) => {
+  getCafeList().then((cafeList) => {
+    res.status(200).render("index.njk", {
+      // get username from database on login
+      username: "admin",
+      userLevel: 0, //This value should be dynamically assigned when authentication is implemented (0 = admin, 1 = staff, 2 = customer)
+      cafeList: cafeList,
+    });
+  });
+});
+
+/**
+ * Function to retrieve the entire collection of cafeterias from DB.
+ * @returns { [Object] } the list of cafeterias.
+ */
+async function getCafeList() {
+  await client.connect();
+  const cafeListCol = await client.db("cafe's").collection("cafe_lists");
+  const cursor = cafeListCol.find({});
+  return await cursor.toArray();
+}
+
+/**
  * Function to generate a random string for csrf token.
  * @param { int } length Length of the random string.
  * @returns a string of random characters.
