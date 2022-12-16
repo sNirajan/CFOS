@@ -19,9 +19,8 @@ router.post("/signup", (req, res) => {
   async function insertUser() {
     await client.connect();
     const userCol = await client.db("cafe's").collection("users");
-    console.log(req.body);
     req.body.user_level = 2;
-    delete req.body.ConfirmPassword;
+    delete req.body.confirmPassword;
     return userCol.insertOne(req.body);
   }
   insertUser().then((result) => {
