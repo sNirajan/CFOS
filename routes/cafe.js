@@ -22,6 +22,9 @@ router.get("/cafe/:id", (req, res) => {
         if(req.cookies.user_level == 2) {
           cafeTemplate = "./cafeCustomer.njk";
         }
+        else if(req.cookies.user_level == 1) {
+          cafeTemplate = "./cafeEmployee.njk";
+        }
         res.status(200).render(cafeTemplate, {
           userLevel: 0, //This value should be dynamically assigned when authentication is implemented (0 = admin, 1 = staff, 2 = customer)
           cafe: cafe,

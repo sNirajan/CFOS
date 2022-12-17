@@ -1,0 +1,155 @@
+<!--
+ * Reza Saker Hossain
+ * Gagandeep Singh
+ * Niranjan Bikram Shah
+-->
+
+{% extends 'layouts/main_layout.njk' %}
+
+{% block main_body %}
+    <div id="cafe_info">
+        <h3>{{ cafe.name }}</h3>
+        <p>Location: {{ cafe.location }}</p>
+        <p>Open: {{ cafe.daysOpened + ' ' + cafe.startTime + ' to ' + cafe.closeTime }}</p>
+        <p>Description:
+            {% if cafe.description.length > 0 %}
+                {{ cafe.description }}
+            {% else %}
+                N/A
+            {% endif %}
+        </p>
+    </div>
+
+    <div id="container">
+        <div class="order_container">
+            <h3>New Order</h3>
+            {% for item in menu %}
+                <div class="menu_item">
+                    <div>
+                        <p>{{item.name + ' ($' + item.price + ')' }}</p>
+                        {% if item.description.length > 0 %}
+                            <p class="item_description">{{ item.description }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <a href="#" class="add_to_order_btn" onclick="addItem('{{item._id}}', '{{item.name}}', '{{item.price}}')">Add to Order</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="order_container">
+            <h3>Order In-progress</h3>
+            {% for item in menu %}
+                <div class="menu_item">
+                    <div>
+                        <p>{{item.name + ' ($' + item.price + ')' }}</p>
+                        {% if item.description.length > 0 %}
+                            <p class="item_description">{{ item.description }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <a href="#" class="add_to_order_btn" onclick="addItem('{{item._id}}', '{{item.name}}', '{{item.price}}')">Add to Order</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block style %}
+    #cafe_info  {
+        width: 90%;
+        margin: 10px 0 20px 5%;
+        border-bottom: 1px solid dimgray;
+        padding-bottom: 5px;
+    }
+    #container {
+        width: 90%;
+        margin-left: 5%;
+        margin-bottom: 100px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: start;
+    }
+    .order_container {
+        width: 40%;
+    }
+    .menu_item {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid dimgray;
+        border-radius: 2px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+    .menu_item a {
+        color: forestgreen;
+        padding: 5px;
+        margin-left: 10px;
+        display: block;
+        background-color: white;
+        border: 1px solid forestgreen;
+        text-decoration: none;
+        border-radius: 2px;
+        text-align: center;
+    }
+    .item_description {
+        font-size: 12px;
+    }
+    .menu_item a:hover {
+        background-color: forestgreen;
+        color: white;
+    }
+{% endblock %}
+
+{% block script %}
+    document.addEventListener('DOMContentLoaded', () => {
+        //localStorage.clear()
+        if(localStorage.getItem('cart') != null) {
+            let cart = JSON.parse(localStorage.getItem('cart'));
+            console.log(cart);
+            for(const item of cart) {
+                addItemToView(item.name, item.price);
+            }
+        }
+    });
+    
+    function addItem(id, name, price) {
+        addItemToView(name, price);
+
+        let cart = [];
+        if(localStorage.getItem('cart') != null) {
+            cart = JSON.parse(localStorage.getItem('cart'));
+        }
+        cart.push({
+            id: id,
+            name: name,
+            price: price
+        });
+        localStorage.setItem('cart', JSON.stringify(cart));
+
+        if(localStorage.getItem('draftOrderCafeId') == null) {
+            localStorage.setItem('draftOrderCafeId', '{{ cafe._id }}');
+        }
+    }
+
+    function addItemToView(name, price) {
+        const p = document.createElement('p');
+        p.textContent = (order_list.children.length + 1) + '. ' + name;
+        order_list.appendChild(p);
+
+        let float_price = parseFloat(price);
+        let subtotal = parseFloat(document.getElementById('subtotal').textContent);
+        subtotal += float_price;
+        let tax = (subtotal / 100) * 13;
+        let total = tax + subtotal;
+        document.getElementById('subtotal').textContent = subtotal;
+        document.getElementById('tax').textContent = tax;
+        document.getElementById('total').textContent = total;
+        checkout_btn.style.visibility = "visible";
+    }
+{% endblock %}
+   
