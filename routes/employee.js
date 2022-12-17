@@ -118,7 +118,7 @@ async function getCafeList() {
 async function getEmployeeList() {
   await client.connect();
   const employeeCol = client.db("cafe's").collection("users");
-  const cursor = employeeCol.find({});
+  const cursor = employeeCol.find({$or: [{user_level: '1'}, {user_level: '0'}]});
   return await cursor.toArray();
 }
 
