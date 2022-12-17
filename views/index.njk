@@ -12,7 +12,7 @@
 
     <div id="container">
         {% for cafe in cafeList %}
-            <a class="cafe_box" href="{{ '/cafe/' + cafe._id }}">
+            <a class="cafe_box" href="#" onclick="openCafePage('{{cafe._id}}')">
                 <span class="cafe_name">{{ cafe.name }}</span>
                 <span class="cafe_hours">{{ 'Open ' + cafe.daysOpened + ' ' + cafe.startTime + ' to ' + cafe.closeTime }}</span>
             </a>
@@ -73,5 +73,27 @@
     }
     .create-cafe {
         text-align: center;
+    }
+{% endblock %}
+
+{% block script %}
+    function openCafePage(cafeId) {
+        if(localStorage.getItem('draftOrderCafeId') == null) {
+            window.location.href = "/cafe/" + cafeId;
+        }
+        else {
+            const draftOrderCafeId = localStorage.getItem('draftOrderCafeId');
+            if(draftOrderCafeId == cafeId) {
+                window.location.href = "/cafe/" + cafeId;
+            }
+            else {
+                let isConfirmed = confirm('You have saved order in another cafe. ' +
+                                  'Are you sure you want to discard your current order and start a new order?');
+                if(isConfirmed) {
+                    localStorage.clear();
+                    window.location.href = "/cafe/" + cafeId;
+                }
+            }
+        }
     }
 {% endblock %}

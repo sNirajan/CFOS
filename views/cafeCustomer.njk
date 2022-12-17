@@ -133,8 +133,10 @@
 
 {% block script %}
     document.addEventListener('DOMContentLoaded', () => {
+        //localStorage.clear()
         if(localStorage.getItem('cart') != null) {
             let cart = JSON.parse(localStorage.getItem('cart'));
+            console.log(cart);
             for(c of cart) {
                 addItemToView(c.name, c.price);
             }
@@ -153,6 +155,10 @@
             price: price
         });
         localStorage.setItem('cart', JSON.stringify(cart));
+
+        if(localStorage.getItem('draftOrderCafeId') == null) {
+            localStorage.setItem('draftOrderCafeId', '{{ cafe._id }}');
+        }
     }
 
     function addItemToView(name, price) {
