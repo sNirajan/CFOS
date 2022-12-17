@@ -18,6 +18,7 @@ const menuRoutes = require("./routes/menu");
 const serveDirectoryRoutes = require("./routes/serveDirectory");
 const userAccessRoutes = require("./routes/userLogin");
 const userSignup = require("./routes/userSignup");
+const orderReview = require("./routes/orderReview");
 
 const uri =
   "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/?retryWrites=true&w=majority";
@@ -42,7 +43,7 @@ app.use("/", menuRoutes);
 app.use("/", serveDirectoryRoutes);
 app.use("/", userAccessRoutes);
 app.use("/", userSignup);
-
+app.use("/", orderReview);
 let csrf_token = generateCSRFToken(64); //TODO: This has to be replaced with cookie/session.
 
 /**

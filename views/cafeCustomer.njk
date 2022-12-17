@@ -8,9 +8,9 @@
 
 {% block main_body %}
     <div id="cafe_info">
-        <h3>Order from {{ cafe.name }}</h3>
+        <h3>{{ cafe.name }}</h3>
         <p>Location: {{ cafe.location }}</p>
-        <p>Hours of Operation: {{ cafe.daysOpened + ' ' + cafe.startTime + ' to ' + cafe.closeTime }}</p>
+        <p>Open: {{ cafe.daysOpened + ' ' + cafe.startTime + ' to ' + cafe.closeTime }}</p>
         <p>Description:
             {% if cafe.description.length > 0 %}
                 {{ cafe.description }}
@@ -32,7 +32,7 @@
                         {% endif %}
                     </div>
                     <div>
-                        <a href="#" class="add_to_order_btn" onclick="addItem('{{item.name}}', '{{item.price}}')">Add to Order</a>
+                        <a href="#" class="add_to_order_btn" onclick="addItem('{{item._id}}', '{{item.name}}', '{{item.price}}')">Add to Order</a>
                     </div>
                 </div>
             {% endfor %}
@@ -44,11 +44,11 @@
                 <div id="order_list"></div>
                 <div id="price">
                     <p>Subtotal: $<span id="subtotal">0.00</span></p>
-                    <p>PST/GST: $<span id="tax">0.00</span></p>
-                    <p>Total: $<span id="total">0.00</span></p>
+                    <p>Taxes: $<span id="tax">0.00</span></p>
+                    <p><b>Total: $<span id="total">0.00</span></b></p>
                 </div>
             </div>
-            <a href="/order" id="checkout_btn">Continue to Checkout</a>
+            <a href="/{{cafe._id}}/review" id="checkout_btn">Continue to Checkout</a>
         </div>
     </div>
 {% endblock %}
@@ -67,7 +67,7 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        align-items: stretch;
+        align-items: start;
     }
     #menu_container {
         width: 70%;
@@ -91,11 +91,12 @@
         border: 1px solid forestgreen;
         text-decoration: none;
         border-radius: 2px;
+        text-align: center;
     }
     .item_description {
         font-size: 12px;
     }
-    a.add_to_order_btn:hover {
+    .menu_item a:hover {
         background-color: forestgreen;
         color: white;
     }
@@ -125,6 +126,8 @@
         color: white;
         padding: 10px;
         visibility: hidden;
+        display: block;
+        text-align: center;
     }
     #order_container a:hover {
         border-color: forestgreen;
@@ -138,13 +141,13 @@
         if(localStorage.getItem('cart') != null) {
             let cart = JSON.parse(localStorage.getItem('cart'));
             console.log(cart);
-            for(c of cart) {
-                addItemToView(c.name, c.price);
+            for(const item of cart) {
+                addItemToView(item.name, item.price);
             }
         }
     });
     
-    function addItem(name, price) {
+    function addItem(id, name, price) {
         addItemToView(name, price);
 
         let cart = [];
@@ -152,6 +155,7 @@
             cart = JSON.parse(localStorage.getItem('cart'));
         }
         cart.push({
+            id: id,
             name: name,
             price: price
         });
@@ -171,7 +175,7 @@
         let subtotal = parseFloat(document.getElementById('subtotal').textContent);
         subtotal += float_price;
         let tax = (subtotal / 100) * 13;
-        total = tax + subtotal;
+        let total = tax + subtotal;
         document.getElementById('subtotal').textContent = subtotal;
         document.getElementById('tax').textContent = tax;
         document.getElementById('total').textContent = total;

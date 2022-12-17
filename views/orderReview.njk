@@ -1,0 +1,179 @@
+<!--
+ * Reza Saker Hossain
+ * Gagandeep Singh
+ * Niranjan Bikram Shah
+-->
+
+{% extends 'layouts/main_layout.njk' %}
+
+{% block main_body %}
+    <div id="cafe_info">
+        <h3>{{ cafe.name }}</h3>
+        <p>Location: {{ cafe.location }}</p>
+        <p>Open: {{ cafe.daysOpened + ' ' + cafe.startTime + ' to ' + cafe.closeTime }}</p>
+        <p>Description:
+            {% if cafe.description.length > 0 %}
+                {{ cafe.description }}
+            {% else %}
+                N/A
+            {% endif %}
+        </p>
+    </div>
+
+    <div id="container">
+        <div id="menu_container">
+            <h3>Your Order</h3>
+        </div>
+        <div id="order_container">
+            <h3>Order Total</h3>
+            <div id="order_box">
+                <div id="price">
+                    <p>Subtotal: $<span id="subtotal">0.00</span></p>
+                    <p>Taxes: $<span id="tax">0.00</span></p>
+                    <p><b>Total: $<span id="total">0.00</span></b></p>
+                </div>
+            </div>
+            <a href="">Place Order</a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block style %}
+    #cafe_info  {
+        width: 80%;
+        margin: 10px 0 20px 10%;
+        border-bottom: 1px solid dimgray;
+        padding-bottom: 5px;
+    }
+    #container {
+        width: 80%;
+        margin-left: 10%;
+        margin-bottom: 100px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: stretch;
+    }
+    #menu_container {
+        width: 70%;
+    }
+    .menu_item {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid dimgray;
+        border-radius: 2px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+    .menu_item a {
+        color: forestgreen;
+        padding: 5px;
+        margin-left: 10px;
+        display: block;
+        background-color: white;
+        border: 1px solid forestgreen;
+        text-decoration: none;
+        border-radius: 2px;
+    }
+    .item_description {
+        font-size: 12px;
+    }
+    .menu_item a:hover {
+        background-color: forestgreen;
+        color: white;
+    }
+    #order_container {
+        width: 25%;
+    }
+    #order_box {
+        width: 100%;
+        height: auto;
+        border: 1px solid dimgray;
+        padding: 5px;
+        display: flex;
+        flex-direction: column;
+        row-gap: 25px;
+        margin-top: 5px;
+        margin-bottom: 20px;
+    }
+    #order_container a {
+        text-decoration: none;
+        border-radius: 2px;
+        border: 1px solid royalblue;
+        background-color: royalblue;
+        color: white;
+        padding: 10px;
+        display: block;
+        text-align: center;
+    }
+    #order_container a:hover {
+        border-color: forestgreen;
+        background-color: forestgreen;
+    }
+{% endblock %}
+
+{% block script %}
+    document.addEventListener('DOMContentLoaded', () => {
+        //localStorage.clear()
+        if(localStorage.getItem('cart') != null) {
+            let cart = JSON.parse(localStorage.getItem('cart'));
+            console.log(cart);
+            let subtotal = 0.0;
+            for(let item of cart) {     
+                const menu_item_div = document.createElement("div");
+                const item_info_div = document.createElement("div");
+                const item_remove_div = document.createElement("div");
+                const item_name_p = document.createElement("p");
+                const item_remove_a = document.createElement("a");
+                item_name_p.textContent = item.name + " ($" + item.price + ")";
+                item_info_div.appendChild(item_name_p);
+                item_remove_a.href = "#";
+                item_remove_a.textContent = "Remove from Order";
+                item_remove_a.addEventListener("click", function () {
+                    removeItem(menu_item_div, item.id, item.price);
+                });
+                item_remove_div.appendChild(item_remove_a);
+                menu_item_div.appendChild(item_info_div);
+                menu_item_div.appendChild(item_remove_div);
+                menu_item_div.classList.add("menu_item");
+                menu_container.appendChild(menu_item_div);
+
+                subtotal += parseFloat(item.price);
+            }
+            let tax = (subtotal/100) * 13;
+            let total = subtotal + tax;
+            document.getElementById("subtotal").textContent = subtotal.toFixed(2);
+            document.getElementById("tax").textContent = tax.toFixed(2);
+            document.getElementById("total").textContent = total.toFixed(2);
+        }
+    });
+    
+    function removeItem(div, id, price) {
+        div.style.display = "none";
+
+        price = parseFloat(price);
+        let subtotal = parseFloat(document.getElementById('subtotal').textContent) - price;
+        let tax = (subtotal / 100) * 13;
+        let total = tax + subtotal;
+        document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+        document.getElementById('tax').textContent = tax.toFixed(2);
+        document.getElementById('total').textContent = total.toFixed(2);
+
+        let newCart = [];
+        let cart = JSON.parse(localStorage.getItem("cart"));
+        
+        for(const item of cart ) {
+            if(item.id != id) {
+                newCart.push({
+                    id: item.id,
+                    name: item.name,
+                    price: item.price
+                });
+            }
+        }
+        localStorage.setItem("cart", JSON.stringify(newCart));
+    }
+{% endblock %}
+   
