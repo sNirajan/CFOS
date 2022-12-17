@@ -48,7 +48,7 @@
                     <p>Total: $<span id="total">0.00</span></p>
                 </div>
             </div>
-            <a href="">Continue to Checkout</a>
+            <a href="/order" id="checkout_btn">Continue to Checkout</a>
         </div>
     </div>
 {% endblock %}
@@ -124,6 +124,7 @@
         background-color: royalblue;
         color: white;
         padding: 10px;
+        visibility: hidden;
     }
     #order_container a:hover {
         border-color: forestgreen;
@@ -174,6 +175,7 @@
         document.getElementById('subtotal').textContent = subtotal;
         document.getElementById('tax').textContent = tax;
         document.getElementById('total').textContent = total;
+        checkout_btn.style.visibility = "visible";
     }
 {% endblock %}
    
