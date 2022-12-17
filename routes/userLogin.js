@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const mongodb = require("mongodb");
+const cookieParser = require("cookie-parser");
 
 const uri =
   "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/?retryWrites=true&w=majority";
@@ -18,11 +19,12 @@ router.get("/", (req, res) => {
 
 router.post("/", (req, res) => {
   email = req.body.email;
-  password = req.body.password;
+  password = req.body.password; 
   findUserCredentials(email, password).then((userList) => {
     if (userList == null) {
       res.redirect("/");
     } else {
+      res.cookie('user_level', userList.user_level /*, { maxAge: 900000, httpOnly: true }*/);
       getCafeList().then((cafeList) => {
         res.status(200).render("./index.njk", {
           username: userList.firstName + " " + userList.lastName,

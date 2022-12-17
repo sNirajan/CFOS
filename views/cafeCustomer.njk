@@ -1,0 +1,173 @@
+<!--
+ * Reza Saker Hossain
+ * Gagandeep Singh
+ * Niranjan Bikram Shah
+-->
+
+{% extends 'layouts/main_layout.njk' %}
+
+{% block main_body %}
+    <div id="cafe_info">
+        <h3>Order from {{ cafe.name }}</h3>
+        <p>Location: {{ cafe.location }}</p>
+        <p>Hours of Operation: {{ cafe.daysOpened + ' ' + cafe.startTime + ' to ' + cafe.closeTime }}</p>
+        <p>Description:
+            {% if cafe.description.length > 0 %}
+                {{ cafe.description }}
+            {% else %}
+                N/A
+            {% endif %}
+        </p>
+    </div>
+
+    <div id="container">
+        <div id="menu_container">
+            <h3>Menu</h3>
+            {% for item in menu %}
+                <div class="menu_item">
+                    <div>
+                        <p>{{item.name + ' ($' + item.price + ')' }}</p>
+                        {% if item.description.length > 0 %}
+                            <p class="item_description">{{ item.description }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <a href="#" class="add_to_order_btn" onclick="addItem('{{item.name}}', '{{item.price}}')">Add to Order</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div id="order_container">
+            <h3 style="display: inline">Order</h3>
+            <p style="display: inline">(you can remove items before placing order)</p>
+            <div id="order_box">
+                <div id="order_list"></div>
+                <div id="price">
+                    <p>Subtotal: $<span id="subtotal">0.00</span></p>
+                    <p>PST/GST: $<span id="tax">0.00</span></p>
+                    <p>Total: $<span id="total">0.00</span></p>
+                </div>
+            </div>
+            <a href="">Continue to Checkout</a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block style %}
+    #cafe_info  {
+        width: 80%;
+        margin: 10px 0 20px 10%;
+        border-bottom: 1px solid dimgray;
+        padding-bottom: 5px;
+    }
+    #container {
+        width: 80%;
+        margin-left: 10%;
+        margin-bottom: 100px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: stretch;
+    }
+    #menu_container {
+        width: 70%;
+    }
+    .menu_item {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid dimgray;
+        border-radius: 2px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+    .menu_item a {
+        color: forestgreen;
+        padding: 5px;
+        margin-left: 10px;
+        display: block;
+        background-color: white;
+        border: 1px solid forestgreen;
+        text-decoration: none;
+        border-radius: 2px;
+    }
+    .item_description {
+        font-size: 12px;
+    }
+    a.add_to_order_btn:hover {
+        background-color: forestgreen;
+        color: white;
+    }
+    #order_container {
+        width: 25%;
+    }
+    #order_box {
+        width: 100%;
+        height: auto;
+        border: 1px solid dimgray;
+        padding: 5px;
+        display: flex;
+        flex-direction: column;
+        row-gap: 25px;
+        margin-top: 5px;
+        margin-bottom: 20px;
+    }
+    #price {
+        border-top: 1px solid dimgray;
+        padding-top: 15px;
+    }
+    #order_container a {
+        text-decoration: none;
+        border-radius: 2px;
+        border: 1px solid royalblue;
+        background-color: royalblue;
+        color: white;
+        padding: 10px;
+    }
+    #order_container a:hover {
+        border-color: forestgreen;
+        background-color: forestgreen;
+    }
+{% endblock %}
+
+{% block script %}
+    document.addEventListener('DOMContentLoaded', () => {
+        if(localStorage.getItem('cart') != null) {
+            let cart = JSON.parse(localStorage.getItem('cart'));
+            for(c of cart) {
+                addItemToView(c.name, c.price);
+            }
+        }
+    });
+    
+    function addItem(name, price) {
+        addItemToView(name, price);
+
+        let cart = [];
+        if(localStorage.getItem('cart') != null) {
+            cart = JSON.parse(localStorage.getItem('cart'));
+        }
+        cart.push({
+            name: name,
+            price: price
+        });
+        localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    function addItemToView(name, price) {
+        const p = document.createElement('p');
+        p.textContent = (order_list.children.length + 1) + '. ' + name;
+        order_list.appendChild(p);
+
+        let float_price = parseFloat(price);
+        let subtotal = parseFloat(document.getElementById('subtotal').textContent);
+        subtotal += float_price;
+        let tax = (subtotal / 100) * 13;
+        total = tax + subtotal;
+        document.getElementById('subtotal').textContent = subtotal;
+        document.getElementById('tax').textContent = tax;
+        document.getElementById('total').textContent = total;
+    }
+{% endblock %}
+   

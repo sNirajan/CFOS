@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const mongodb = require("mongodb");
+const cookieParser = require("cookie-parser");
 
 const uri =
   "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/?retryWrites=true&w=majority";
@@ -16,7 +17,12 @@ router.get("/cafe/:id", (req, res) => {
       res.status(404).sendFile("/public/404.html");
     } else {
       getCafeMenu(req.params["id"]).then((menu) => {
-        res.status(200).render("./cafe.njk", {
+        let cafeTemplate = "./cafe.njk";
+        console.log(req.cookies);
+        if(req.cookies.user_level == 2) {
+          cafeTemplate = "./cafeCustomer.njk";
+        }
+        res.status(200).render(cafeTemplate, {
           userLevel: 0, //This value should be dynamically assigned when authentication is implemented (0 = admin, 1 = staff, 2 = customer)
           cafe: cafe,
           menu: menu,

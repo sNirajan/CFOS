@@ -7,6 +7,7 @@
 const express = require("express");
 const nunjucks = require("nunjucks");
 const mongodb = require("mongodb");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 const port = 3000;
@@ -31,6 +32,9 @@ nunjucks.configure("views", {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/public", express.static(__dirname + "/public"));
+app.use(cookieParser());
+
+let ssn = null;
 
 app.use("/", employeeRoutes);
 app.use("/", cafeRoutes);
