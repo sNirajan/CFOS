@@ -53,10 +53,11 @@ let csrf_token = generateCSRFToken(64); //TODO: This has to be replaced with coo
 
 app.get("/home", (req, res) => {
   getCafeList().then((cafeList) => {
+    console.log(req.cookies);
     res.status(200).render("index.njk", {
       // get username from database on login
       username: "admin",
-      userLevel: 0, //This value should be dynamically assigned when authentication is implemented (0 = admin, 1 = staff, 2 = customer)
+      userLevel: 0, //req.cookies.user_level,
       cafeList: cafeList,
     });
   });
