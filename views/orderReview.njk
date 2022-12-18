@@ -33,7 +33,7 @@
                     <p><b>Total: $<span id="total">0.00</span></b></p>
                 </div>
             </div>
-            <a href="">Place Order</a>
+            <button id="order_place_btn" onclick="onOrderPlacedBtnClicked('{{cafe._id}}')">Place Order</button>
         </div>
     </div>
 {% endblock %}
@@ -98,7 +98,7 @@
         margin-top: 5px;
         margin-bottom: 20px;
     }
-    #order_container a {
+    #order_place_btn {
         text-decoration: none;
         border-radius: 2px;
         border: 1px solid royalblue;
@@ -108,7 +108,7 @@
         display: block;
         text-align: center;
     }
-    #order_container a:hover {
+    #order_place_btn:hover {
         border-color: forestgreen;
         background-color: forestgreen;
     }
@@ -173,7 +173,47 @@
                 });
             }
         }
-        localStorage.setItem("cart", JSON.stringify(newCart));
+        localStorage.setItem("cart", JSON.stringify(newCart)); 
+    }
+
+    function onOrderPlacedBtnClicked(cafeid) {
+        let itemsList =[];
+        const subtotal = document.getElementById('subtotal').textContent;
+        const total = document.getElementById('total').textContent;
+        const tax = document.getElementById('tax').textContent;
+        //console.log(total +  " " + tax + " " + subtotal);
+
+        if(localStorage.getItem('cart') != null) {
+            let cart = JSON.parse(localStorage.getItem("cart"));
+            cart.forEach(element => {
+                itemsList.push(element.name);
+            })
+            data = {
+                subtotal: subtotal,
+                total: total,
+                tax: tax,
+                itemsList: itemsList
+            }
+
+            //data1= JSON.stringify(data);
+
+            fetch('/' + cafeid + '/review/orderPlaced',{
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+
+            }).
+                then(response => {
+                    if(response.status == 200) {
+                        window.location.href = '/home';
+                    } 
+                    else {
+                        alert('Sorry, couldn\'t place and order. Please try again!');
+                    }
+                });
+        }
     }
 {% endblock %}
    

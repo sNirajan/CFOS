@@ -176,9 +176,9 @@
         subtotal += float_price;
         let tax = (subtotal / 100) * 13;
         let total = tax + subtotal;
-        document.getElementById('subtotal').textContent = subtotal;
-        document.getElementById('tax').textContent = tax;
-        document.getElementById('total').textContent = total;
+        document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+        document.getElementById('tax').textContent = tax.toFixed(2);
+        document.getElementById('total').textContent = total.toFixed(2);
         checkout_btn.style.visibility = "visible";
     }
 {% endblock %}

@@ -8,6 +8,7 @@ const express = require("express");
 const nunjucks = require("nunjucks");
 const mongodb = require("mongodb");
 const cookieParser = require("cookie-parser");
+const mongoose = require("mongoose");
 
 const app = express();
 const port = 3000;
@@ -19,6 +20,7 @@ const serveDirectoryRoutes = require("./routes/serveDirectory");
 const userAccessRoutes = require("./routes/userLogin");
 const userSignup = require("./routes/userSignup");
 const orderReview = require("./routes/orderReview");
+const orderPlaced = require("./routes/orderPlaced");
 
 const uri =
   "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/?retryWrites=true&w=majority";
@@ -44,6 +46,7 @@ app.use("/", serveDirectoryRoutes);
 app.use("/", userAccessRoutes);
 app.use("/", userSignup);
 app.use("/", orderReview);
+app.use("/", orderPlaced);
 let csrf_token = generateCSRFToken(64); //TODO: This has to be replaced with cookie/session.
 
 /**
