@@ -1,55 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const mongodb = require("mongodb");
-const cookieParser = require("cookie-parser");
-
+const cafeController = require("../controllers/cafeController");
 const uri =
-  "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/uwcfos";
-const client = new mongodb.MongoClient(uri);
+  "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/?retryWrites=true&w=majority";
 
-/**
- * GET route for showing a particular cafe
- * TODO: Restrict to authenticated users only.
- */
-router.get("/cafe/:id", (req, res) => {
-  getCafe(req.params["id"]).then((cafe) => {
-    if (cafe == null) {
-      res.status(404).sendFile("/public/404.html");
-    } else {
-      getCafeMenu(req.params["id"]).then((menu) => {
-        getCafeOrders(req.params["id"]).then((orders)=>{
-          let cafeTemplate = "./cafe.njk";
-          console.log(req.cookies);
-          if(req.cookies.user_level == 2) {
-            cafeTemplate = "./cafeCustomer.njk";
-          }
-          else if(req.cookies.user_level == 1) {
-            cafeTemplate = "./cafeEmployee.njk";
-          }
-          res.status(200).render(cafeTemplate, {
-            userLevel: 0, //This value should be dynamically assigned when authentication is implemented (0 = admin, 1 = staff, 2 = customer)
-            cafe: cafe,
-            menu: menu,
-            orders: orders,
-          });
-        });
-      });
-    }
-  });
-});
 
-/**
- * GET route to show the form for creating new cafeteria.
- * POST route to store insert new cafeteria into DB.
- * TODO: Restrict to authenticated admin level users only.
- */
-
-router.get("/createCafe", (req, res) => {
-  csrf_token = generateCSRFToken(64);
-  res.status(200).render("./createCafe.njk", {
-    csrfToken: csrf_token,
-  });
-});
+router.get("/cafe/create", cafeController.create);
+router.post("/cafe/insert", cafeController.insert);
+router.get("/cafe/:cafeId", cafeController.index);
 
 router.post("/createCafe", (req, res) => {
   async function insertCafe() {

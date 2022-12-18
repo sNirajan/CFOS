@@ -9,7 +9,8 @@ const uri =
 const client = new mongodb.MongoClient(uri);
 
 router.use((req, res, next) => {
-  req.model = User
+  req.model = User;
+  next();
 });
 
 function restrict(req, res, next) {
