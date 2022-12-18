@@ -8,7 +8,7 @@
 
 {% block main_body %}	
 	<h3>Edit Cafe Information</h3>
-  	<form method = "POST" action="{{ '/cafe/' + cafe._id + '/edit' }}" id="cafe_create_form">
+  	<form method = "POST" action="{{ '/cafe/' + cafe._id + '/update' }}" id="cafe_create_form">
 		<input type="hidden" name="csrf_token" value="{{ csrfToken }}">
 		
 		<label for="cafe"> Cafeteria Name</label>     
@@ -19,15 +19,6 @@
 
 		<label for="phone">Phone</label>
 		<input type="text" name="phone" value="{{ cafe.phone }}">
-
-		<label for="daysOpened">Opening Days (Ex. Monday-Friday)</label>
-		<input type="text" id="days_opened" name="daysOpened" value="{{ cafe.daysOpened }}" required>
-
-		<label for="startTime">Start Time (Ex. 2:30pm)</label>
-		<input type="text" id="startTime" name="startTime" value="{{ cafe.startTime }}" required>
-
-		<label for="closeTime">Close Time (Ex. 2:30pm)</label>
-		<input type="text" name="closeTime" value="{{ cafe.closeTime }}" required>
 
 		<label for="description">Description</label>
 		<textarea name="description">{{ cafe.description }}</textarea>

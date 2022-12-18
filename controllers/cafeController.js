@@ -33,7 +33,7 @@ async function create(req, res) {
     });
 }
 
-async function insert(req, res, next) {
+async function insert(req, res) {
     let newCafe = new Cafe({
         name: req.body.name,
         location: req.body.location,
@@ -49,11 +49,59 @@ async function insert(req, res, next) {
             res.redirect("/");
         }
     });
+}
 
+async function edit(req, res) {
+    await mongoose.connect(DB.uri);
+    Cafe.findOne({_id: mongoose.Types.ObjectId(req.params.cafeId)})
+    .then(function(cafe) {
+        if(Cafe) {
+            res.render("../views/editCafe.njk", {
+                cafe: cafe
+            });
+        }
+        else {
+            res.status(404).send("../public/404.html");
+        }
+    });
+}
+
+async function update(req, res) {
+    await mongoose.connect(DB.uri);
+    Cafe.findOne({_id: mongoose.Types.ObjectId(req.params.cafeId)})
+    .then(function(cafe) {
+        if(cafe) {
+            for([key, value] of Object.entries(req.body)) {
+                cafe[key] = value;
+            }
+            console.log(cafe);
+            cafe.save(function(err) {
+                if(err) throw err;
+                else {
+                    res.redirect("/cafe/" + req.params.cafeId);
+                }
+            });
+        }
+        else {
+            res.status(404).send("../public/404.html");
+        }
+    });
+}
+
+async function deleteCafe(req, res) {
+    Cafe.deleteOne({_id: mongoose.Types.ObjectId(req.params.cafeId)}, function(err, deletedCafe) {
+        if(err) throw err;
+        else {
+            res.redirect("/");
+        }
+    });
 }
 
 module.exports = {
     index,
     create, 
-    insert
+    insert,
+    edit,
+    update,
+    deleteCafe
 }
