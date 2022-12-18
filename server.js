@@ -24,7 +24,7 @@ const port = 3000;
 
 const employeeRoutes = require("./routes/employee");
 const cafeRoutes = require("./routes/cafe");
-const menuRoutes = require("./routes/menu");
+const menuRoutes = require("./routes/menuItem");
 const serveDirectoryRoutes = require("./routes/serveDirectory");
 const userAccessRoutes = require("./routes/userLogin");
 const userSignup = require("./routes/userSignup");

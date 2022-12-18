@@ -11,7 +11,6 @@ async function index(req, res, next) {
     await mongoose.connect(DB.uri);
     Cafe.findOne({_id: mongoose.Types.ObjectId(req.params.cafeId)})
     .then(function(cafe) {
-        console.log(cafe)
         if(cafe) {
             MenuItem.find({cafeId: cafe._id.toString()})
             .then(function(menuItems) {
@@ -94,7 +93,7 @@ async function deleteCafe(req, res) {
     Cafe.deleteOne({_id: mongoose.Types.ObjectId(req.params.cafeId)}, function(err, deletedCafe) {
         if(err) throw err;
         else {
-            res.redirect("/");
+            res.send("OK");
         }
     });
 }

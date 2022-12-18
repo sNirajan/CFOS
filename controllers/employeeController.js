@@ -110,7 +110,7 @@ async function deleteEmployee(req, res) {
     User.deleteOne({_id: mongoose.Types.ObjectId(req.params.employeeId)}, function(err, deletedEmployee) {
         if(err) throw err;
         else {
-            res.redirect("/");
+            res.send("OK");
         }
     });
 }
