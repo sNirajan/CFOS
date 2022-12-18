@@ -1,12 +1,9 @@
 const mongoose = require("mongoose");
 const session = require("express-session");
-const hash = require("pbkdf2-password");
 const path = require("path");
 const { Cafe } = require("../models/cafeModel");
 const { MenuItem } = require("../models/menuItemModel");
 const { DB } = require("../config/config");
-
-const root = path.join(__dirname);
 
 async function create(req, res) {
     await mongoose.connect(DB.uri);

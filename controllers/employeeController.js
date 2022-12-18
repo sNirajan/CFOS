@@ -6,8 +6,6 @@ const { Cafe } = require("../models/cafeModel");
 const { User } = require("../models/userModel");
 const { DB } = require("../config/config");
 
-const root = path.join(__dirname);
-
 async function index(req, res) {
     await mongoose.connect(DB.uri);
     User.find({$or: [{accessLevel: 0}, {accessLevel: 1}]}).then(function(employees) {

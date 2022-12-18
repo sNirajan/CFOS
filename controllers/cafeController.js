@@ -5,9 +5,7 @@ const { Cafe } = require("../models/cafeModel");
 const { MenuItem } = require("../models/menuItemModel");
 const { DB } = require("../config/config");
 
-const uri = "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/uwcfos";
-
-async function index(req, res, next) {
+async function index(req, res) {
     await mongoose.connect(DB.uri);
     Cafe.findOne({_id: mongoose.Types.ObjectId(req.params.cafeId)})
     .then(function(cafe) {
