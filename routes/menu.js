@@ -3,7 +3,7 @@ const router = express.Router();
 const mongodb = require("mongodb");
 
 const uri =
-  "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/?retryWrites=true&w=majority";
+  "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/uwcfos";
 const client = new mongodb.MongoClient(uri);
 
 /**
@@ -27,7 +27,7 @@ router.get("/cafe/:id/createMenuItem", (req, res) => {
 router.post("/cafe/:id/createMenuItem", (req, res) => {
   async function insertMenuItem() {
     await client.connect();
-    const menuItemCol = await client.db("cafe's").collection("menu_items");
+    const menuItemCol = await client.db("uwcfos").collection("menu_items");
     req.body.cafe_id = req.params["id"];
     return menuItemCol.insertOne(req.body);
   }
@@ -56,7 +56,7 @@ router.get("/menu/:id/edit", (req, res) => {
 router.post("/menu/:id/edit", (req, res) => {
   async function updateMenuItem() {
     await client.connect();
-    const menuItemCol = await client.db("cafe's").collection("menu_items");
+    const menuItemCol = await client.db("uwcfos").collection("menu_items");
 
     let query = { _id: mongodb.ObjectId(req.params["id"]) };
     let update = {
@@ -88,7 +88,7 @@ router.post("/menu/:id/edit", (req, res) => {
 router.get("/menu/:id/delete", (req, res) => {
   async function deleteMenuItem() {
     await client.connect();
-    const menuItemCol = await client.db("cafe's").collection("menu_items");
+    const menuItemCol = await client.db("uwcfos").collection("menu_items");
     return menuItemCol.deleteOne({ _id: mongodb.ObjectId(req.params["id"]) });
   }
   deleteMenuItem();
@@ -102,7 +102,7 @@ router.get("/menu/:id/delete", (req, res) => {
  */
 async function getCafe(cafeId) {
   await client.connect();
-  const cafeListCol = await client.db("cafe's").collection("cafe_lists");
+  const cafeListCol = await client.db("uwcfos").collection("cafes");
   const cursor = cafeListCol.findOne({ _id: mongodb.ObjectId(cafeId) });
   return await cursor;
 }
@@ -114,7 +114,7 @@ async function getCafe(cafeId) {
  */
 async function getMenuItem(menuId) {
   await client.connect();
-  const menuItemCol = await client.db("cafe's").collection("menu_items");
+  const menuItemCol = await client.db("uwcfos").collection("menu_items");
   const cursor = menuItemCol.findOne({ _id: mongodb.ObjectId(menuId) });
   return await cursor;
 }

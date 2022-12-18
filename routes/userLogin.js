@@ -5,7 +5,7 @@ const cookieParser = require("cookie-parser");
 const {User} = require("../models/userModel");
 
 const uri =
-  "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/?retryWrites=true&w=majority";
+  "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/uwcfos";
 const client = new mongodb.MongoClient(uri);
 
 router.use((req, res, next) => {
@@ -59,7 +59,7 @@ router.post('/authenticate', (req, res) => {
  */
 async function getCafeList() {
   await client.connect();
-  const cafeListCol = await client.db("cafe's").collection("cafe_lists");
+  const cafeListCol = await client.db("uwcfos").collection("cafes");
   const cursor = cafeListCol.find({});
   return await cursor.toArray();
 }

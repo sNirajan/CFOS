@@ -3,7 +3,7 @@ const router = express.Router();
 const mongodb = require("mongodb");
 
 const uri =
-  "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/?retryWrites=true&w=majority";
+  "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/uwcfos";
 const client = new mongodb.MongoClient(uri);
 
 /**
@@ -23,7 +23,7 @@ router.get("/createEmployee", (req, res) => {
 router.post("/createEmployee", (req, res) => {
   async function insertEmployee() {
     await client.connect();
-    const employeeCol = await client.db("cafe's").collection("users");
+    const employeeCol = await client.db("uwcfos").collection("users");
     return employeeCol.insertOne(req.body);
   }
   insertEmployee();
@@ -66,7 +66,7 @@ router.get("/employee/:id/edit", (req, res) => {
 router.post("/employee/:id/edit", (req, res) => {
   async function updateEmployee() {
     await client.connect();
-    const employeeCol = await client.db("cafe's").collection("users");
+    const employeeCol = await client.db("uwcfos").collection("users");
 
     let query = { _id: mongodb.ObjectId(req.params["id"]) };
     let update = {
@@ -93,7 +93,7 @@ router.post("/employee/:id/edit", (req, res) => {
 router.get("/employee/:id/delete", (req, res) => {
   async function deleteEmployee() {
     await client.connect();
-    const employeeCol = client.db("cafe's").collection("users");
+    const employeeCol = client.db("uwcfos").collection("users");
     return employeeCol.deleteOne({ _id: mongodb.ObjectId(req.params["id"]) });
   }
   deleteEmployee();
@@ -106,7 +106,7 @@ router.get("/employee/:id/delete", (req, res) => {
  */
 async function getCafeList() {
   await client.connect();
-  const cafeListCol = client.db("cafe's").collection("cafe_lists");
+  const cafeListCol = client.db("uwcfos").collection("cafes");
   const cursor = cafeListCol.find({});
   return await cursor.toArray();
 }
@@ -117,7 +117,7 @@ async function getCafeList() {
  */
 async function getEmployeeList() {
   await client.connect();
-  const employeeCol = client.db("cafe's").collection("users");
+  const employeeCol = client.db("uwcfos").collection("users");
   const cursor = employeeCol.find({$or: [{user_level: '1'}, {user_level: '0'}]});
   return await cursor.toArray();
 }
@@ -129,7 +129,7 @@ async function getEmployeeList() {
  */
 async function getEmployee(empId) {
   await client.connect();
-  const employeeCol = client.db("cafe's").collection("users");
+  const employeeCol = client.db("uwcfos").collection("users");
   const cursor = employeeCol.findOne({ _id: mongodb.ObjectId(empId) });
   return await cursor;
 }

@@ -36,7 +36,7 @@ router.post("/:cafeId/review/orderPlaced", (req, res) => {
             };
             async function insertEmployee() {
                 await client.connect();
-                const employeeCol = await client.db("cafe's").collection("orders");
+                const employeeCol = await client.db("uwcfos").collection("orders");
                 return employeeCol.insertOne(newOrder);
             }
             insertEmployee();
@@ -53,7 +53,7 @@ router.post("/:cafeId/review/orderPlaced", (req, res) => {
  */
 async function getCafe(cafeId) {
     await client.connect();
-    const cafeListCol = await client.db("cafe's").collection("cafe_lists");
+    const cafeListCol = await client.db("uwcfos").collection("cafes");
     const cursor = cafeListCol.findOne({ _id: mongodb.ObjectId(cafeId) });
     return await cursor;
   }

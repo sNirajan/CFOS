@@ -3,7 +3,7 @@ const router = express.Router();
 const mongodb = require("mongodb");
 
 const uri =
-  "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/?retryWrites=true&w=majority";
+  "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/uwcfos";
 const client = new mongodb.MongoClient(uri);
 /**
  * GET route for the signUp page.
@@ -18,7 +18,7 @@ router.get("/signup", (req, res) => {
 router.post("/signup", (req, res) => {
   async function insertUser() {
     await client.connect();
-    const userCol = await client.db("cafe's").collection("users");
+    const userCol = await client.db("uwcfos").collection("users");
     req.body.user_level = 2;
     delete req.body.confirmPassword;
     return userCol.insertOne(req.body);

@@ -4,7 +4,7 @@ const mongodb = require("mongodb");
 const cookieParser = require("cookie-parser");
 
 const uri =
-  "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/?retryWrites=true&w=majority";
+  "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/uwcfos";
 const client = new mongodb.MongoClient(uri);
 
 /**
@@ -55,7 +55,7 @@ router.post("/createCafe", (req, res) => {
   async function insertCafe() {
     if (csrf_token == req.body.csrf_token) {
       await client.connect();
-      const cafeListCol = client.db("cafe's").collection("cafe_lists");
+      const cafeListCol = client.db("uwcfos").collection("cafes");
       return cafeListCol.insertOne(req.body);
     } else {
       return null;
@@ -91,7 +91,7 @@ router.get("/cafe/:id/edit", (req, res) => {
 router.post("/cafe/:id/edit", (req, res) => {
   async function updateCafe() {
     await client.connect();
-    const cafeListCol = await client.db("cafe's").collection("cafe_lists");
+    const cafeListCol = await client.db("uwcfos").collection("cafes");
 
     let query = { _id: mongodb.ObjectId(req.params["id"]) };
     let update = {
@@ -118,7 +118,7 @@ router.post("/cafe/:id/edit", (req, res) => {
 router.get("/cafe/:id/delete", (req, res) => {
   async function deleteCafe() {
     await client.connect();
-    const cafeListCol = await client.db("cafe's").collection("cafe_lists");
+    const cafeListCol = await client.db("uwcfos").collection("cafes");
     return cafeListCol.deleteOne({ _id: mongodb.ObjectId(req.params["id"]) });
   }
   deleteCafe();
@@ -132,7 +132,7 @@ router.get("/cafe/:id/delete", (req, res) => {
  */
 async function getCafe(cafeId) {
   await client.connect();
-  const cafeListCol = await client.db("cafe's").collection("cafe_lists");
+  const cafeListCol = await client.db("uwcfos").collection("cafes");
   const cursor = cafeListCol.findOne({ _id: mongodb.ObjectId(cafeId) });
   return await cursor;
 }
@@ -144,7 +144,7 @@ async function getCafe(cafeId) {
  */
 async function getCafeMenu(cafeId) {
   await client.connect();
-  const menuItemCol = await client.db("cafe's").collection("menu_items");
+  const menuItemCol = await client.db("uwcfos").collection("menu_items");
   const cursor = menuItemCol.find({ cafe_id: cafeId });
   return await cursor.toArray();
 }
@@ -156,7 +156,7 @@ async function getCafeMenu(cafeId) {
  */
 async function getCafeOrders(cafeId) {
   await client.connect();
-  const orderCol = await client.db("cafe's").collection("orders");
+  const orderCol = await client.db("uwcfos").collection("orders");
   const cursor = orderCol.find({ cafe_id: cafeId });
   return await cursor.toArray();
 }
