@@ -7,8 +7,17 @@
 const express = require("express");
 const nunjucks = require("nunjucks");
 const mongodb = require("mongodb");
-const cookieParser = require("cookie-parser");
+const session = require("express-session");
 const mongoose = require("mongoose");
+const { User, seedUser } = require("./models/userModel");
+const { Cafe, seedCafe } = require("./models/cafeModel");
+const { MenuItem, seedMenuItem } = require("./models/menuItemModel");
+const { Order, seedOrder } = require("./models/orderModel");
+
+// seedUser().then(result => { console.log(result) });
+// seedCafe();
+// seedMenuItem();
+// seedOrder();
 
 const app = express();
 const port = 3000;
@@ -35,7 +44,9 @@ nunjucks.configure("views", {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/public", express.static(__dirname + "/public"));
-app.use(cookieParser());
+app.use(session({
+  secret: "ABSCDJGDJKG"
+}));
 
 let ssn = null;
 
@@ -54,9 +65,8 @@ let csrf_token = generateCSRFToken(64); //TODO: This has to be replaced with coo
  * TODO: restrict to authenticated users only.
  */
 
-app.get("/home", (req, res) => {
+app.get("/", (req, res) => {
   getCafeList().then((cafeList) => {
-    console.log(req.cookies);
     res.status(200).render("index.njk", {
       // get username from database on login
       username: "admin",

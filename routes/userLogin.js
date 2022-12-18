@@ -2,10 +2,25 @@ const express = require("express");
 const router = express.Router();
 const mongodb = require("mongodb");
 const cookieParser = require("cookie-parser");
+const {User} = require("../models/userModel");
 
 const uri =
   "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/?retryWrites=true&w=majority";
 const client = new mongodb.MongoClient(uri);
+
+router.use((req, res, next) => {
+  req.model = User
+});
+
+function restrict(req, res, next) {
+  if(req.session.user) {
+    next();
+  }
+  else {
+    req.session.error = "Access Denied";
+    //redirect to login page.
+  }
+}
 
 /**
  * GET route for the login page.
@@ -13,39 +28,30 @@ const client = new mongodb.MongoClient(uri);
  * TODO: restrict to authenticated users only.
  */
 
-router.get("/", (req, res) => {
+router.get("/login", (req, res) => {
   res.status(200).render("./loginPage.njk", {});
 });
 
-router.post("/", (req, res) => {
-  email = req.body.email;
-  password = req.body.password; 
-  findUserCredentials(email, password).then((userList) => {
-    if (userList == null) {
-      res.redirect("/");
-    } else {
-      res.cookie('user_level', userList.user_level /*, { maxAge: 900000, httpOnly: true }*/);
-      getCafeList().then((cafeList) => {
-        res.status(200).render("./index.njk", {
-          username: userList.firstName + " " + userList.lastName,
-          userLevel: userList.user_level, // (0 = admin, 1 = staff, 2 = customer)
-          cafeList: cafeList,
+router.post('/authenticate', (req, res) => {
+  req.model.authenticate(req.body.email, req.body.password, function(user) {
+    if(user) {
+      req.session.regenerate(function () {
+        req.session.user = user.email;
+        getCafes().then((cafes) => {
+          res.status(200).render("./index.njk", {
+            username: user.firstName + " " + user.lastName,
+            userLevel: user.accessLevel, // (0 = admin, 1 = staff, 2 = customer)
+            cafeList: cafes,
+          });
         });
+        res.redirect('/');
       });
+    }
+    else {
+      res.redirect('/login');
     }
   });
 });
-
-/**
- * Function to retrieve the entire collection of users from DB.
- * @returns { [Object] } the list of users.
- */
-async function findUserCredentials(email, password) {
-  await client.connect();
-  const userCol = await client.db("cafe's").collection("users");
-  const cursor = userCol.findOne({ email, password });
-  return await cursor;
-}
 
 /**
  * Function to retrieve the entire collection of cafeterias from DB.
@@ -57,5 +63,11 @@ async function getCafeList() {
   const cursor = cafeListCol.find({});
   return await cursor.toArray();
 }
+
+//example restrict use
+router.route("/restricted")
+.get(restrict, (req, res) => {
+  res.send("restricted content for " + req.session.user);
+})
 
 module.exports = router;

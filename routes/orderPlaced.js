@@ -3,23 +3,11 @@ const router = express.Router();
 const mongodb = require("mongodb");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
+const { Order } = require("../models/orderModel");
 
 const uri =
-  "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/?retryWrites=true&w=majority";
+  "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/uwcfos";
 const client = new mongodb.MongoClient(uri);
-
-const ordersSchema = new mongoose.Schema({
-    //menuItems: [String],
-    instruction: String,
-    subtotal: String,
-    tax: String,
-    total: String,
-    orderTime: String,
-    status: String,
-    orderDeliveredTime: String
-})
-
-const orders = new mongoose.model('orders', ordersSchema);
 
 
 router.post("/:cafeId/review/orderPlaced", (req, res) => {

@@ -122,7 +122,7 @@ router.get("/cafe/:id/delete", (req, res) => {
     return cafeListCol.deleteOne({ _id: mongodb.ObjectId(req.params["id"]) });
   }
   deleteCafe();
-  res.redirect("/home");
+  res.redirect("/");
 });
 
 /**
