@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-const uri = "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/uwcfos";
+const { DB } = require("../config/config");
+
 const cafeSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -26,9 +27,6 @@ const cafeSchema = new mongoose.Schema({
 const Cafe = mongoose.model("cafes", cafeSchema);
 
 async function seedCafe() {
-    await mongoose.connect(uri);
-    await mongoose.connection.db.dropCollection("cafes");
-
     let newCafe = new Cafe({
         name: "Pangea's Kitchen",
         location: "Riddel Hall",
@@ -36,7 +34,8 @@ async function seedCafe() {
         description: "This is the main campus cafeteria.",
         isOpen: true
     });
-
+    await mongoose.connect(DB.uri);
+    await mongoose.connection.db.dropCollection("cafes");
     return result = await newCafe.save();
 }
 

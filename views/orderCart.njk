@@ -192,12 +192,13 @@
                 subtotal: subtotal,
                 total: total,
                 tax: tax,
-                itemsList: itemsList
+                instruction: "Sample Instruction",
+                orderItems: itemsList
             }
 
-            //data1= JSON.stringify(data);
+            //data1 = JSON.stringify(data);
 
-            fetch('/' + cafeid + '/review/orderPlaced',{
+            fetch('/order/' + cafeid + '/checkout',{
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

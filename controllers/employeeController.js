@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const session = require("express-session");
-const hash = require("pbkdf2-password");
+const crypto = require("crypto");
 const path = require("path");
 const { Cafe } = require("../models/cafeModel");
 const { User } = require("../models/userModel");
@@ -36,15 +36,11 @@ async function create(req, res) {
 }
 
 async function insert(req, res) {
-    await mongoose.connect(DB.uri);  
-    
-    hash({password: req.body.password}, function(err, password, salt, hash) {
-        if(err) throw err;
-        req.body.hash = hash,
-        req.body.salt = salt
-    });
+    req.body.salt = crypto.randomBytes(16).toString(); 
+    req.body.hash = crypto.pbkdf2Sync("test", req.body.salt, 1000, 64, "sha512").toString(); 
     let newUser = new User(req.body);
 
+    await mongoose.connect(DB.uri);  
     newUser.save(function(err) {
         if(err) throw err;
         else {
@@ -55,7 +51,6 @@ async function insert(req, res) {
 
 async function edit(req, res) {
     await mongoose.connect(DB.uri);
-
     User.findOne({_id: mongoose.Types.ObjectId(req.params.employeeId)})
     .then(function(employee) {
         if(employee) {
@@ -80,7 +75,6 @@ async function edit(req, res) {
 
 async function update(req, res) {
     await mongoose.connect(DB.uri);
-
     User.findOne({_id: mongoose.Types.ObjectId(req.params.employeeId)})
     .then(function(employee) {
         if(employee) {
@@ -102,7 +96,6 @@ async function update(req, res) {
 
 async function deleteEmployee(req, res) {
     await mongoose.connect(DB.uri);
-
     User.deleteOne({_id: mongoose.Types.ObjectId(req.params.employeeId)}, function(err, deletedEmployee) {
         if(err) throw err;
         else {

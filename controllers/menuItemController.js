@@ -22,10 +22,8 @@ async function create(req, res) {
 }
 
 async function insert(req, res) {
-    await mongoose.connect(DB.uri);
-
     let newItem = new MenuItem(req.body);
-    console.log("here");
+    await mongoose.connect(DB.uri);
     newItem.save(function(err) {
         if(err) throw err;
         else {
@@ -36,7 +34,6 @@ async function insert(req, res) {
 
 async function edit(req, res) {
     await mongoose.connect(DB.uri);
-
     MenuItem.findOne({_id: mongoose.Types.ObjectId(req.params.itemId)})
     .then(function(menuItem) {
         if(menuItem) {
@@ -53,7 +50,6 @@ async function edit(req, res) {
 
 async function update(req, res) {
     await mongoose.connect(DB.uri);
-
     MenuItem.findOne({_id: mongoose.Types.ObjectId(req.params.itemId)})
     .then(function(menuItem) {
         console.log(menuItem);
@@ -76,7 +72,6 @@ async function update(req, res) {
 
 async function deleteMenuItem(req, res) {
     await mongoose.connect(DB.uri);
-
     MenuItem.deleteOne({_id: mongoose.Types.ObjectId(req.params.itemId)}, 
         function(err, deletedItem) {
             if(err) throw err;

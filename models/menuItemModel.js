@@ -1,6 +1,5 @@
-
 const mongoose = require("mongoose");
-const uri = "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/uwcfos";
+const { DB } = require("../config/config");
 
 const menuItemSchema = new mongoose.Schema({
     cafeId: {
@@ -28,9 +27,6 @@ const menuItemSchema = new mongoose.Schema({
 const MenuItem = mongoose.model("menu_items", menuItemSchema);
 
 async function seedMenuItem() {
-    await mongoose.connect(uri);
-    await mongoose.connection.db.dropCollection("menu_items");
-
     let newMenuItem = new MenuItem({
         cafeId: mongoose.Types.ObjectId("635add5398b892de63c25794"),
         name: "Pasta",
@@ -39,8 +35,9 @@ async function seedMenuItem() {
         isAvailable: true
     });
 
+    await mongoose.connect(DB.uri);
+    await mongoose.connection.db.dropCollection("menu_items");
     return result = await newMenuItem.save();
-
 }
 
 module.exports = {

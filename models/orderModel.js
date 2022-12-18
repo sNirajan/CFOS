@@ -1,10 +1,7 @@
-
 const mongoose = require("mongoose");
-const { nextTick } = require("process");
-const uri = "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/uwcfos";
+const { DB } = require("../config/config");
 
 const orderSchema = new mongoose.Schema({
-    // NOTE: No error should occur if the user sends request normally through the html form.
     userId: {
         type: String,
         required: true
@@ -47,9 +44,6 @@ const orderSchema = new mongoose.Schema({
 const Order = mongoose.model("orders", orderSchema);
 
 async function seedOrder() {
-    await mongoose.connect(uri);
-    await mongoose.connection.db.dropCollection("orders");
-
     let newOrder = new Order({
         userId: "6360078867776f417965a0a8",
         cafeId: "635add5398b892de63c25794",
@@ -65,6 +59,8 @@ async function seedOrder() {
         deliveryTime: Date.now()
     });
 
+    await mongoose.connect(Db.uri);
+    await mongoose.connection.db.dropCollection("orders");
     return result = await newOrder.save();
 }
 
