@@ -57,6 +57,7 @@ async function edit(req, res) {
     .then(function(cafe) {
         if(Cafe) {
             res.render("../views/editCafe.njk", {
+                _csrf: "TBI",
                 cafe: cafe
             });
         }
