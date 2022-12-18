@@ -23,36 +23,41 @@
     <div id="container">
         <div class="order_container">
             <h3>New Order</h3>
-            {% for item in menu %}
-                <div class="menu_item">
+            {% for item in orders %}
+                {% if item.status === "Pending"%}
+                    <div class="menu_item">
                     <div>
-                        <p>{{item.name + ' ($' + item.price + ')' }}</p>
-                        {% if item.description.length > 0 %}
-                            <p class="item_description">{{ item.description }}</p>
+                        <p>Order no: {{item._id}}</p>
+                        {% if item.menuItems.length > 0 %}
+                            <p class="item_description">{{ item.menuItems }}</p>
                         {% endif %}
                     </div>
                     <div>
-                        <a href="#" class="order_Accept_btn" onclick="addItem('{{item._id}}', '{{item.name}}', '{{item.price}}')">Accept</a>
+                        <a href="#" class="order_Accept_btn" onclick="addItem('{{item._id}}')">Accept</a>
                         <button id="order_Decline_btn" onclick="onDeleteEmployeeBtnClick('{{ employee._id }}')">Decline</button>
                     </div>
                 </div>
+                {% endif %}
             {% endfor %}
         </div>
         <div class="order_container">
             <h3>Order In-progress</h3>
-            {% for item in menu %}
-                <div class="menu_item">
-                    <div>
-                        <p>{{item.name + ' ($' + item.price + ')' }}</p>
-                        {% if item.description.length > 0 %}
-                            <p class="item_description">{{ item.description }}</p>
-                        {% endif %}
-                    </div>
-                    <div>
+                {% for item in orders %}
+                    {% if item.status === "Approve" %}
+                        <div class="menu_item">
+                            <div>
+                                <p>Order no: {{item._id}}</p>
+                                {% if item.menuItems.length > 0 %}
+                                    <p class="item_description">{{ item.menuItems }}</p>
+                                {% endif %}
+                            </div>
+                        <div>
                         <a href="#" class="order_ready" onclick="addItem('{{item._id}}', '{{item.name}}', '{{item.price}}')">Order Ready</a>
                     </div>
                 </div>
-            {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            
         </div>
     </div>
 {% endblock %}
@@ -90,12 +95,15 @@
         color: forestgreen;
         padding: 5px;
         margin-left: 10px;
-        display: inline-block;
+        margin-bottom: 5px;
+        margin-top: 5px;
+        display: flex;
         background-color: white;
         border: 1px solid forestgreen;
         text-decoration: none;
         border-radius: 2px;
         text-align: center;
+        justify-content: space-between;
     }
     .item_description {
         font-size: 12px;
@@ -111,7 +119,7 @@
         font-size: 16px;
         padding: 5px;
         border-radius: 2px;
-        margin-right: 10px;
+        
     }
 
     #order_Decline_btn:hover {

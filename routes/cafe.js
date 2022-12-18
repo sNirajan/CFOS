@@ -17,18 +17,21 @@ router.get("/cafe/:id", (req, res) => {
       res.status(404).sendFile("/public/404.html");
     } else {
       getCafeMenu(req.params["id"]).then((menu) => {
-        let cafeTemplate = "./cafe.njk";
-        console.log(req.cookies);
-        if(req.cookies.user_level == 2) {
-          cafeTemplate = "./cafeCustomer.njk";
-        }
-        else if(req.cookies.user_level == 1) {
-          cafeTemplate = "./cafeEmployee.njk";
-        }
-        res.status(200).render(cafeTemplate, {
-          userLevel: 0, //This value should be dynamically assigned when authentication is implemented (0 = admin, 1 = staff, 2 = customer)
-          cafe: cafe,
-          menu: menu,
+        getCafeOrders(req.params["id"]).then((orders)=>{
+          let cafeTemplate = "./cafe.njk";
+          console.log(req.cookies);
+          if(req.cookies.user_level == 2) {
+            cafeTemplate = "./cafeCustomer.njk";
+          }
+          else if(req.cookies.user_level == 1) {
+            cafeTemplate = "./cafeEmployee.njk";
+          }
+          res.status(200).render(cafeTemplate, {
+            userLevel: 0, //This value should be dynamically assigned when authentication is implemented (0 = admin, 1 = staff, 2 = customer)
+            cafe: cafe,
+            menu: menu,
+            orders: orders,
+          });
         });
       });
     }
@@ -143,6 +146,18 @@ async function getCafeMenu(cafeId) {
   await client.connect();
   const menuItemCol = await client.db("cafe's").collection("menu_items");
   const cursor = menuItemCol.find({ cafe_id: cafeId });
+  return await cursor.toArray();
+}
+
+/**
+ * Function to retrieve the orders of a particular cafeteria.
+ * @param { string } cafeId Id of the cafe to retrieve its menu.
+ * @returns { [Object] } The list of menu items for the given cafe.
+ */
+async function getCafeOrders(cafeId) {
+  await client.connect();
+  const orderCol = await client.db("cafe's").collection("orders");
+  const cursor = orderCol.find({ cafe_id: cafeId });
   return await cursor.toArray();
 }
 
