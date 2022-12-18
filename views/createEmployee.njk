@@ -8,7 +8,9 @@
 
 {% block main_body %}
 	<h3>Create New Employee</h3>
-  	<form method = "POST" action="/createEmployee" id="employee_create_form">
+  	<form method = "POST" action="/employee/insert" id="employee_create_form">
+		<input type="hidden" name="_csrf" value="{{ _csrf }}">
+
 		<label for="firstName">First Name</label>     
 		<input type="text" name="firstName" required>
 
@@ -30,16 +32,16 @@
         <label for="Wage">Wage</label>     
 		<input type="text" name="wage">
 
-        <label for="cafe_id">Work Station</label>     
-		<select name="cafe_id" required>
-			<option value="AAA">No Specific Work Station</option>
-            {% for cafe in cafeList %}
+        <label for="workStation">Work Station</label>     
+		<select name="workStation" required>
+			<option value="ALL_STATIONS">No Specific Work Station</option>
+            {% for cafe in cafes %}
                 <option value="{{ cafe._id }}">{{ cafe.name }}</option>
             {% endfor %}
         </select>
 
-		<label for="user_level">Choose Employee Access Level</label>     
-		<select name="user_level" required>
+		<label for="accessLevel">Choose Employee Access Level</label>     
+		<select name="accessLevel" required>
             <option value="0">Admin (Can access all features)</option>
 			<option value="1">Kitchen Staff (Can only access order page)</option>
         </select>

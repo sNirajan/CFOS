@@ -92,11 +92,11 @@ async function seedUser() {
         position: "Manager",
         wage: "10000",
         workStation: "ALL_STATIONS",
-        accessLevel: 1, 
+        accessLevel: 0, 
         note: "This is a test admin user."
     });
 
-    hash({password: "123"}, (err, pass, salt, hashed) => {
+    hash({password: "123"}, (err, password, salt, hashed) => {
         if(err) throw err;
         newUser.hash = hashed;
         newUser.salt = salt;

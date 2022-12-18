@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const session = require("express-session");
+const path = require("path");
 const { Cafe } = require("../models/cafeModel");
 const { MenuItem } = require("../models/menuItemModel");
 const { DB } = require("../config/config");
@@ -22,7 +23,7 @@ async function index(req, res, next) {
             });
         }
         else {
-            res.status(404).render("../public/404.html");
+            res.status(404).sendFile(path.join(__dirname, '../public', '404.html'));
         }
     });
 }
@@ -62,7 +63,7 @@ async function edit(req, res) {
             });
         }
         else {
-            res.status(404).send("../public/404.html");
+            res.status(404).sendFile(path.join(__dirname, '../public', '404.html'));
         }
     });
 }
@@ -84,7 +85,7 @@ async function update(req, res) {
             });
         }
         else {
-            res.status(404).send("../public/404.html");
+            res.status(404).sendFile(path.join(__dirname, '../public', '404.html'));
         }
     });
 }
