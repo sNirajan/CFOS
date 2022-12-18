@@ -8,7 +8,7 @@
     {% endblock %}
 
     <style>
-        #login {
+        #login_form {
 		    margin: 20px 0 50px 0;
 		    width: 30%;
 		    padding: 15px;
@@ -89,20 +89,23 @@
 
 <body>
     <div id="bg_img">
-            
-            <form method="POST" id="login" action="/">
-                <h3>LOGIN</h3>
-                <label for="email">Email</label>     
-		        <input type="text" name="email" required>
+        <form id="login_form" action="/authenticate" method="POST">
+            <h3>LOGIN</h3>
+            <input type="hidden" name="_csrf" value="{{ _csrf }}">
 
-                <label for="password">Password</label>     
-		        <input type="password" name="password" required>
+            <label for="email">Email</label>     
+            <input type="text" name="email" required>
 
-                <button type="submit" id="login_btn" >LOGIN</button>
-                <p><a href="#">Forgot Password?</a></p>
-                <hr>
-                <h4>Need an account?<a href="{{ '/signup' }}"> SIGN UP</a></h4>
-            </form>
-        </div>
+            <label for="password">Password</label>     
+            <input type="password" name="password" required>
+
+            <button type="submit" id="login_btn" >LOGIN</button>
+            <p><a href="#">Forgot Password?</a></p>
+            <hr>
+            <h4>Need an account?<a href="{{ '/signup' }}"> SIGN UP</a></h4>
+        </form>
+    </div>
 </body>
 </html>
+
+

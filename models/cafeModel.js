@@ -32,7 +32,7 @@ async function seedCafe() {
     let newCafe = new Cafe({
         name: "Pangea's Kitchen",
         location: "Riddel Hall",
-        Phone: "123-456-789-0",
+        phone: "1234567890",
         description: "This is the main campus cafeteria.",
         isOpen: true
     });

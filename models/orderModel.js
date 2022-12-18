@@ -61,7 +61,8 @@ async function seedOrder() {
             { itemId: "635dbd9da603da98106fc350" },
             { itemId: "635dbd9da603da98106fc350" }
         ],
-        instruction: "No pickle!"
+        instruction: "No pickle!",
+        deliveryTime: Date.now()
     });
 
     return result = await newOrder.save();

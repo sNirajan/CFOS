@@ -1,4 +1,4 @@
-function csrfToken(length) {
+function randomToken(length) {
     let token = "";
     let charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     for (let i = 0; i < length; i++) {
@@ -8,5 +8,5 @@ function csrfToken(length) {
 }
 
 module.exports = {
-    csrfToken
+    randomToken: randomToken
 }

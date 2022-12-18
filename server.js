@@ -26,8 +26,7 @@ const employeeRoutes = require("./routes/employee");
 const cafeRoutes = require("./routes/cafe");
 const menuRoutes = require("./routes/menuItem");
 const serveDirectoryRoutes = require("./routes/serveDirectory");
-const userAccessRoutes = require("./routes/userLogin");
-const userSignup = require("./routes/userSignup");
+const userRoutes = require("./routes/user");
 const orderReview = require("./routes/orderReview");
 const orderPlaced = require("./routes/orderPlaced");
 
@@ -54,8 +53,7 @@ app.use("/", employeeRoutes);
 app.use("/", cafeRoutes);
 app.use("/", menuRoutes);
 app.use("/", serveDirectoryRoutes);
-app.use("/", userAccessRoutes);
-app.use("/", userSignup);
+app.use("/", userRoutes);
 app.use("/", orderReview);
 app.use("/", orderPlaced);
 let csrf_token = generateCSRFToken(64); //TODO: This has to be replaced with cookie/session.

@@ -2,10 +2,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    {% block title %}
-        <title>Sign Up</title>
-    {% endblock %}
+    <title>Sign Up</title>
 
     <style>
         #signup_form {
@@ -18,7 +15,6 @@
             opacity: 0.9;
             border-radius: 10px;
 	    }
-
         input[type=text], input[type=password] {
 		    width: 92%;
 		    padding: 15px;
@@ -27,12 +23,10 @@
  		    background: #f1f1f1;
             border-radius: 5px;
 	    }
-
 	    input[type=text]:focus, input[type=password]:focus {
 		    background-color: #ddd;
 		    outline: none;
 	    }
-
         #login_btn {
             background-color: darkmagenta;
             color: white;
@@ -42,11 +36,9 @@
 		    padding: 15px; 
             opacity: 0.9;
         }
-
         #login_btn:hover{
             opacity: 1;
         }
-
         h3{
             margin-top: 5px;
         }
@@ -64,58 +56,49 @@
             background-repeat: no-repeat;
             background-size: cover;
         }
-
         p{
             margin-top: auto;
             text-align: right; 
         }
-
         a{
             text-decoration: none;
             color: black;
         }
-
         a:hover{
             color: red;
         }
-        
-        {% block style %} {% endblock %}
     </style>
 </head>
 
 <body>
-    <div id="bg_img">
-            
-            <form id="signup_form">
-                <h3>SIGN UP</h3>
-                <label for="firstName">First Name</label>     
-		        <input type="text" name="firstName" id="firstName" required>
+    <div id="bg_img">      
+        <form id="signup_form" action="/signup" method="POST">
+            <h3>SIGN UP</h3>
+            <label for="firstName">First Name</label>     
+            <input type="text" name="firstName" id="firstName" required>
 
-                <label for="lastName">Last Name</label>     
-		        <input type="text" name="lastName" id="lastName" required>
+            <label for="lastName">Last Name</label>     
+            <input type="text" name="lastName" id="lastName" required>
 
-                <label for="email">Email</label>     
-		        <input type="text" name="email" id="email" required>
+            <label for="email">Email</label>     
+            <input type="text" name="email" id="email" required>
 
-                <label for="password">Password</label>     
-		        <input type="password" name="password" id="password" required>
+            <label for="password">Password</label>     
+            <input type="password" name="password" id="password" required>
 
-                <label for="confirmPassword">Confirm Password</label>     
-		        <input type="password" name="confirmPassword" id="confirmPassword" required>
+            <label for="confirmPassword">Confirm Password</label>     
+            <input type="password" name="confirmPassword" id="confirmPassword" required>
 
-                <button type="submit" id="login_btn">SIGN UP</button>
-                
-            </form>
-        </div>
+            <button type="submit" id="login_btn">SIGN UP</button>      
+        </form>
+    </div>
 </body>
 </html>
 
 <script>
-    console.log(signup_form);
-    signup_form = document.getElementById("signup_form");
-    signup_form.addEventListener('submit', signupRequest);
+    {# signup_form.addEventListener('submit', signup);
 
-    function signupRequest(e) {
+    function signup(e) {
         e.preventDefault();
         const formData = new FormData(e.target);
         const plainFormData = Object.fromEntries(formData.entries());
@@ -135,14 +118,14 @@
                     window.location.href = '/';
                 }
                 else {
-                    console.log('NOT OK');
+                    alert("Please enter a valid email!");
                 }
             });
         }
         else {
             console.log('NO');
-            alert("Password not matched");
+            alert("Password does not match!");
         }
-    }
+    } #}
     
 </script>

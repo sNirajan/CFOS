@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const hash = require("pbkdf2-password")();
-const uri = "mongodb+srv://Student:ACS-3909@cluster0.r974llp.mongodb.net/uwcfos";
+const crypto = require("crypto");
+const { DB } = require("../config/config");
 
 const userSchema = new mongoose.Schema({
     firstName: {
@@ -56,17 +56,17 @@ const userSchema = new mongoose.Schema({
 }, { 
     statics: {
         authenticate(email, password, cb) {
-            this.findOne({ email: email }, function (err, doc) {
-                if(doc) {
-                    hash({ password: password, salt: doc.salt }, function (err, pass, salt, hashed) {
-                        if(err) throw err;
-                        if(doc.hash === hashed) {
-                            return cb(user);
-                        }
-                        else {
-                            return cb(null);
-                        }
-                    });
+            mongoose.connect(DB.uri);
+            this.findOne({ email: email }, function (err, user) {
+                if(user) {
+                    const hash = crypto.pbkdf2Sync(password, user.salt, 1000, 64, "sha512").toString(); 
+                    
+                    if(hash === user.hash) {
+                        return cb(user);
+                    }
+                    else {
+                        return cb(null);
+                    }
                 }
                 else {
                     return cb(null);
@@ -79,16 +79,14 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model("user", userSchema);
 
 async function seedUser() {
-    mongoose.connection.close();
-    await mongoose.connect(uri);
-    await mongoose.connection.db.dropCollection("users");
-
+    const salt = crypto.randomBytes(16).toString(); 
+    const hash = crypto.pbkdf2Sync("test", salt, 1000, 64, "sha512").toString(); 
     let newUser = new User({
         firstName: "Test",
         lastName: "User",
         email: "admin@test.com",
-        hash: "sample",
-        salt: "sample",
+        hash: hash,
+        salt: salt,
         position: "Manager",
         wage: "10000",
         workStation: "ALL_STATIONS",
@@ -96,14 +94,9 @@ async function seedUser() {
         note: "This is a test admin user."
     });
 
-    hash({password: "123"}, (err, password, salt, hashed) => {
-        if(err) throw err;
-        newUser.hash = hashed;
-        newUser.salt = salt;
-    });
-
+    await mongoose.connect(DB.uri);
+    await mongoose.connection.db.dropCollection("users");
     return result = await newUser.save();
-
 }
 
 module.exports = {

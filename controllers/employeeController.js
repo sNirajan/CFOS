@@ -36,16 +36,14 @@ async function create(req, res) {
 }
 
 async function insert(req, res) {
-    await mongoose.connect(DB.uri);
-
-    req.body.hash = req.body.salt = req.body.password;
-    let newUser = new User(req.body);
+    await mongoose.connect(DB.uri);  
     
     hash({password: req.body.password}, function(err, password, salt, hash) {
         if(err) throw err;
-        newUser.hash = hash,
-        newUser.salt = salt
+        req.body.hash = hash,
+        req.body.salt = salt
     });
+    let newUser = new User(req.body);
 
     newUser.save(function(err) {
         if(err) throw err;
