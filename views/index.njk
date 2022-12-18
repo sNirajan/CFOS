@@ -11,7 +11,7 @@
     <p>List of All Campus Cafeterias</p>
 
     <div id="container">
-        {% for cafe in cafeList %}
+        {% for cafe in cafes %}
             <a class="cafe_box" href="#" onclick="openCafePage('{{cafe._id}}')">
                 <span class="cafe_name">{{ cafe.name }}</span>
                 <span class="cafe_hours">{{ 'Open ' + cafe.daysOpened + ' ' + cafe.startTime + ' to ' + cafe.closeTime }}</span>

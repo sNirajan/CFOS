@@ -14,9 +14,8 @@ async function index(req, res) {
 
 async function authenticate(req, res) {
     User.authenticate(req.body.email, req.body.password, function(user) {
-        console.log(user);
         if(user) {
-            user.temporaryAuthToken = randomToken(64);
+            user.temporaryAuthToken = crypto.randomBytes(16).toString("hex");
             user.save(function(err) {
                 if(err) throw err;
                 else {
@@ -29,7 +28,7 @@ async function authenticate(req, res) {
           });
         }
         else {
-          res.redirect("/login");
+          res.redirect("/user/login");
         }
       });
 }
@@ -41,8 +40,8 @@ async function create(req, res) {
 }
 
 async function insert(req, res) {
-    const salt = crypto.randomBytes(16).toString(); 
-    const hash = crypto.pbkdf2Sync("test", salt, 1000, 64, "sha512").toString(); 
+    const salt = crypto.randomBytes(16).toString("hex"); 
+    const hash = crypto.pbkdf2Sync(req.body.password, salt, 1000, 64, "sha512").toString("hex"); 
     let newUser = new User({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -52,13 +51,16 @@ async function insert(req, res) {
         workStation: "NONE",
         accessLevel: 2,
         hash: hash,
-        salt: salt
-    })
+        salt: salt,
+        temporaryAuthToken: crypto.randomBytes(16).toString("hex")
+    });
 
     await mongoose.connect(DB.uri);
     await newUser.save(function(err) {
         if(err) throw err;
         else {
+            req.session.userAuthToken = newUser.temporaryAuthToken;
+            req.session.userId = newUser._id;
             res.redirect("/")
         }
     });

@@ -6,7 +6,7 @@ const fs = require("fs");
 /**
  * GET route to show the Instafood page.
  */
-router.get("/instafood", (req, res) => {
+router.get("/", (req, res) => {
   let foodImgList = [];
   fs.readdirSync("./public/instafood/").forEach((file) => {
     foodImgList.push(file);
@@ -20,7 +20,7 @@ router.get("/instafood", (req, res) => {
  * POST route to save uploaded image to the local disk.
  * TODO: Resctrict to authenticated users only.
  */
-router.post("/instafood/uploadImage", (req, res) => {
+router.post("/uploadImage", (req, res) => {
   let form = new multiparty.Form({ uploadDir: "./public/instafood" });
   form.parse(req, (err, fields, files) => {
     res.redirect("/instafood");

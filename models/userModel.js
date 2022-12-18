@@ -59,9 +59,9 @@ const userSchema = new mongoose.Schema({
             mongoose.connect(DB.uri);
             this.findOne({ email: email }, function (err, user) {
                 if(user) {
-                    const hash = crypto.pbkdf2Sync(password, user.salt, 1000, 64, "sha512").toString(); 
-                    
-                    if(hash === user.hash) {
+                    const hash = crypto.pbkdf2Sync(password, user.salt, 1000, 64, "sha512").toString("hex"); 
+                    console.log("h1:" + hash + "\nh2:" +  user.hash);
+                    if(hash == user.hash) {
                         return cb(user);
                     }
                     else {
@@ -79,8 +79,8 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model("user", userSchema);
 
 async function seedUser() {
-    const salt = crypto.randomBytes(16).toString(); 
-    const hash = crypto.pbkdf2Sync("test", salt, 1000, 64, "sha512").toString(); 
+    const salt = crypto.randomBytes(16).toString("hex"); 
+    const hash = crypto.pbkdf2Sync("test", salt, 1000, 64, "sha512").toString("hex"); 
     let newUser = new User({
         firstName: "Test",
         lastName: "User",

@@ -89,7 +89,7 @@
 
 <body>
     <div id="bg_img">
-        <form id="login_form" action="/authenticate" method="POST">
+        <form id="login_form" action="/user/authenticate" method="POST">
             <h3>LOGIN</h3>
             <input type="hidden" name="_csrf" value="{{ _csrf }}">
 
@@ -102,7 +102,7 @@
             <button type="submit" id="login_btn" >LOGIN</button>
             <p><a href="#">Forgot Password?</a></p>
             <hr>
-            <h4>Need an account?<a href="{{ '/signup' }}"> SIGN UP</a></h4>
+            <h4>Need an account?<a href="{{ '/user/signup' }}"> SIGN UP</a></h4>
         </form>
     </div>
 </body>
