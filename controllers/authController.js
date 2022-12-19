@@ -1,14 +1,13 @@
 const mongoose = require("mongoose");
 const session = require("express-session");
-const path = require("path");
 const crypto = require("crypto");
 const { User } = require("../models/userModel");
 const { DB } = require("../config/config");
-const { randomToken } = require("../utils/helper");
 
 async function index(req, res) {
+    req.session.csrf = crypto.randomBytes(100).toString('base64');
     res.render("../views/login.njk", {
-        _csrf: "TBI",
+        csrf: req.session.csrf,
         validationFailed: req.query.q !== undefined
     });
 }
@@ -53,7 +52,7 @@ async function insert(req, res) {
         accessLevel: 2,
         hash: hash,
         salt: salt,
-        temporaryAuthToken: crypto.randomBytes(16).toString("hex")
+        temporaryAuthToken: crypto.randomBytes(100).toString('base64')
     });
 
     await mongoose.connect(DB.uri);
