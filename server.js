@@ -37,36 +37,9 @@ app.use("/instafood", instafoodRoutes);
 app.use("/user", userRoutes);
 app.use("/order", orderRoutes);
 
-app.get("/order/tracker/:orderId", async (req, res) => {
-  res.set({
-    "Connection": "keep-alive",
-    "Content-type": "text/event-stream"
-  });
-  await mongoose.connect(DB.uri);
-  Order.watch().on("change", change => {
-    if(change.operationType == "update" && change.documentKey._id == req.params.orderId) {
-      res.write("event: " + req.params.orderId + "\ndata: " + change.updateDescription.updatedFields.status + "\n\n");
-    }
-  });
-});
-
-app.get("/cafe/orderRetriever/:cafeId", async (req, res) => {
-  res.set({
-    "Connection": "keep-alive",
-    "Content-type": "text/event-stream"
-  });
-  await mongoose.connect(DB.uri);
-  Order.watch().on("change", change => {
-    if(change.operationType == "insert" && change.fullDocument.cafeId == req.params.cafeId) {
-      res.write("event: " + req.params.cafeId + "\ndata: NEW_ORDER_FOUND\n\n");
-    }
-  });
-});
-
 app.use((req, res) => {
   res.status(404).sendFile(__dirname + "/public/404.html");
 });
-
 
 app.use((err, req, res, next) => {
   console.log(err);

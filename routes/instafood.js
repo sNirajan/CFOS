@@ -16,7 +16,7 @@ router.get("/", auth, (req, res) => {
   });
 });
 
-router.post("/uploadImage", auth, csrf, (req, res) => {
+router.post("/uploadImage", auth, (req, res) => {
   let form = new multiparty.Form({ uploadDir: "./public/instafood" });
   form.parse(req, (err, fields, files) => {
     res.redirect("/instafood");

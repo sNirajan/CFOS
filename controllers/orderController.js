@@ -84,6 +84,19 @@ async function track(req, res) {
     }) 
 }
 
+async function tracker(req, res) {
+    res.set({
+        "Connection": "keep-alive",
+        "Content-type": "text/event-stream"
+      });
+      await mongoose.connect(DB.uri);
+      Order.watch().on("change", change => {
+        if(change.operationType == "update" && change.documentKey._id == req.params.orderId) {
+          res.write("event: " + req.params.orderId + "\ndata: " + change.updateDescription.updatedFields.status + "\n\n");
+        }
+      });
+}
+
 module.exports = {
-    review, checkout, update, track
+    review, checkout, update, track, tracker
 }

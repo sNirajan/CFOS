@@ -31,14 +31,15 @@ function guestValidation(req, res, next) {
 }
 
 function adminValidation(req, res, next) {
+    console.log(req.session);
     if(req.session.userAuthToken 
         && req.session.userId 
-        && req.session.userLevel
+        && req.session.userLevel != undefined 
         && req.session.userLevel == 0) {
             next();
     }
     else {
-        handleError(res, 500);
+        handleError(res, 404);
     }
         
 }

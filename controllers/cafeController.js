@@ -125,6 +125,19 @@ async function deleteCafe(req, res) {
     });
 }
 
+async function orderRetriever(req, res) {
+    res.set({
+        "Connection": "keep-alive",
+        "Content-type": "text/event-stream"
+      });
+      await mongoose.connect(DB.uri);
+      Order.watch().on("change", change => {
+        if(change.operationType == "insert" && change.fullDocument.cafeId == req.params.cafeId) {
+          res.write("event: " + req.params.cafeId + "\ndata: NEW_ORDER_FOUND\n\n");
+        }
+      });
+}
+
 module.exports = {
-    index, create, insert, edit, update, deleteCafe
+    index, create, insert, edit, update, deleteCafe, orderRetriever
 }

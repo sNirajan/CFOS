@@ -8,5 +8,6 @@ router.get("/:cafeId/review", auth, customer, orderController.review);
 router.post("/:cafeId/checkout", auth, customer, csrf, orderController.checkout);
 router.post("/:orderId/update", auth, employee, csrf, orderController.update);
 router.get("/:orderId/track", auth, customer, orderController.track);
+router.get("/tracker/:orderId", auth, customer, orderController.tracker);
 
 module.exports = router;

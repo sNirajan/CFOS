@@ -17,7 +17,7 @@ async function index(req, res) {
 async function authenticate(req, res) {
     User.authenticate(req.body.email, req.body.password, function(user) {
         if(user) {
-            user.temporaryAuthToken = crypto.randomBytes(16).toString("hex");
+            user.temporaryAuthToken = crypto.randomBytes(64).toString("hex");
             user.save(function(err) {
                 if(err) handleError(res, 500);
                 else {
@@ -56,7 +56,7 @@ async function insert(req, res) {
         accessLevel: 2,
         hash: hash,
         salt: salt,
-        temporaryAuthToken: crypto.randomBytes(100).toString('base64')
+        temporaryAuthToken: crypto.randomBytes(64).toString('base64')
     });
 
     await mongoose.connect(DB.uri);
@@ -74,9 +74,13 @@ async function insert(req, res) {
             } 
         }  
         else {
-            req.session.userAuthToken = newUser.temporaryAuthToken;
-            req.session.userId = newUser._id;
-            res.redirect("/")
+            req.session.regenerate(function () {
+                req.session.csrf = crypto.randomBytes(64).toString('base64');
+                req.session.userAuthToken = newUser.temporaryAuthToken;
+                req.session.userId = newUser._id;
+                req.session.userLevel = newUser.accessLevel;
+                res.redirect("/");
+            });
         }
     });
 }

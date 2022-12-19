@@ -12,7 +12,8 @@ async function index(req, res) {
     User.find({$or: [{accessLevel: 0}, {accessLevel: 1}]}).then(function(employees) {
         if(employees) {
             res.render("../views/employee.njk", {
-                employees: employees
+                employees: employees,
+                csrf: req.session.csrf
             });
         }
         else {
@@ -39,25 +40,30 @@ async function create(req, res) {
 }
 
 async function insert(req, res) {
-    req.body.salt = crypto.randomBytes(16).toString("hex"); 
-    req.body.hash = crypto.pbkdf2Sync(req.body.password ,req.body.salt, 1000, 64, "sha512").toString("hex"); 
-    let newUser = new User(req.body);
+    if(req.body.password != req.body.confirmPassword) {
+        res.redirect("/employee/create/?invalid=password");
+    }
+    else {
+        req.body.salt = crypto.randomBytes(16).toString("hex"); 
+        req.body.hash = crypto.pbkdf2Sync(req.body.password ,req.body.salt, 1000, 64, "sha512").toString("hex"); 
+        let newUser = new User(req.body);
 
-    await mongoose.connect(DB.uri);  
-    newUser.save(function(err) {
-        if(err) {
-            let invalidFields = errorNameStr(err);    
-            if(invalidFields.length > 0) {
-                res.redirect("/employee/create/?invalid=" + invalidFields);
+        await mongoose.connect(DB.uri);  
+        newUser.save(function(err) {
+            if(err) {
+                let invalidFields = errorNameStr(err);    
+                if(invalidFields.length > 0) {
+                    res.redirect("/employee/create/?invalid=" + invalidFields);
+                }
+                else {
+                    handleError(res, 500);
+                }
             }
             else {
-                handleError(res, 500);
+                res.redirect("/employee");
             }
-        }
-        else {
-            res.redirect("/employee");
-        }
-    });
+        });
+    }
 }
 
 async function edit(req, res) {

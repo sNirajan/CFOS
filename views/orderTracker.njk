@@ -17,7 +17,7 @@
             </div>
             <div class="order_status">
                 <h3>Status</h3>
-                <p id="{{order._id}}_status" class="status_p">The cafe is reviewing your order!</p>
+                <p id="{{order._id}}_status" class="status_p"></p>
                 <img id="{{order._id}}_img" src="/public/review.png">
             </div>
         </div>
@@ -66,20 +66,28 @@ p {
 
 {% block script %}
 
+document.addEventListener("DOMContentLoaded", function() {
+    setStatus("{{order.status}}");
+});
+
 const evtSource = new EventSource("/order/tracker/{{order._id}}");
 evtSource.addEventListener("{{order._id}}", (e) => {
-    if(e.data == "Approved") {
+    setStatus(e.data);
+});
+
+function setStatus(status) {
+    if(status == "Approved") {
         document.getElementById("{{order._id}}_status").textContent = "The cafe is preparing your order!";
         document.getElementById("{{order._id}}_img").src = "/public/cooking.png";
     }
-    else if(e.data == "Ready") {
+    else if(status == "Ready") {
         document.getElementById("{{order._id}}_status").textContent = "Your order is ready for pickup!";
         document.getElementById("{{order._id}}_img").src = "/public/ready.png";
     }
-    else if(e.data == "Declined") {
+    else if(status == "Declined") {
         document.getElementById("{{order._id}}_status").textContent = "Sorry, the cafe could not accept your order!";
         document.getElementById("{{order._id}}_img").src = "/public/declined.png";
     }
-});
+}
 
 {% endblock %}

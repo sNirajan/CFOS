@@ -21,10 +21,13 @@ function employeeErrorMsg(param) {
         let invalidFields = param.split(" ");
         for(field of invalidFields) {
             if(field == "email") {
-                errorMsg += "Email must be a valid email.\n";
+                errorMsg += "Email must be a valid email. ";
             }
             else if(field == "wage") {
-                errorMsg += "Wage must be a valid number.\n";
+                errorMsg += "Wage must be a valid number. ";
+            }
+            else if(field == "password") {
+                errorMsg += "Password doesn't match. ";
             }
         }
     }
