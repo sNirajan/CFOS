@@ -24,9 +24,11 @@
             justify-content: space-between;
             flex-wrap: wrap;
         }
-        #sitename p {
+        #sitename a {
             font-size: 24px; 
             margin: 0;
+            color: white;
+            text-decoration: none;
         }
         #menu_btns a {
             display: inline-block;
@@ -34,6 +36,9 @@
             text-decoration: none;
             margin-left: 15px;
             margin-top: 5px;
+        }
+        #menu_btns a:hover {
+            font-weight: bold;
         }
         #footer {
             background-color: dimgray;
@@ -53,7 +58,7 @@
             text-decoration: underline;
         }
         #footer a:hover {
-            color: blue;
+            color: royalblue;
         }
         {% block style %} {% endblock %}
     </style>
@@ -63,7 +68,7 @@
     {% block header %}
         <div id="header">
             <div id="sitename">
-                <p id="menu_btns"><a href="/">UWCFOS</a></p>
+                <a href="/">UWCFOS</a>
             </div>
             <div id="menu_btns">
                 <a href="/instafood">InstaFood</a>
@@ -101,6 +106,7 @@
             const a = document.createElement("a");
             a.href = "/order/" + localStorage.getItem("orderId") + "/track";
             a.textContent = "Track Order";
+            a.style.fontSize = "16px";
             document.getElementById("menu_btns").appendChild(a);
         }
     })
