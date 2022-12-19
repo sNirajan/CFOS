@@ -3,6 +3,7 @@ const router = express.Router();
 const multiparty = require("multiparty");
 const fs = require("fs");
 const { auth } = require("../middlewares/auth");
+const { csrf } = require("../middlewares/guard");
 
 router.get("/", auth, (req, res) => {
   let foodImgList = [];

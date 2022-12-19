@@ -25,6 +25,7 @@ async function authenticate(req, res) {
                         req.session.csrf = crypto.randomBytes(64).toString('base64');
                         req.session.userAuthToken = user.temporaryAuthToken;
                         req.session.userId = user._id;
+                        req.session.userLevel = user.accessLevel;
                         res.redirect("/");
                     });
                 }
@@ -61,8 +62,17 @@ async function insert(req, res) {
     await mongoose.connect(DB.uri);
     await newUser.save(function(err) {
         if(err) {
-            handleError(res, 500);
-        }
+            for(error in err.errors) {
+                if(error == "email") {
+                    res.status(400).send({message: "Email is not valid." });
+                    break;
+                }
+                else {
+                    handleError(res, 500);
+                    break;
+                }
+            } 
+        }  
         else {
             req.session.userAuthToken = newUser.temporaryAuthToken;
             req.session.userId = newUser._id;

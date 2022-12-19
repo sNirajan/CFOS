@@ -2,6 +2,7 @@ const express = require("express");
 const session = require("express-session");
 const mongoose = require("mongoose");
 const { User } = require("../models/userModel");
+const { handleError } = require("../middlewares/errorHandler");
 
 function authValidation(req, res, next) {
     if(req.session.userAuthToken && req.session.userId) {
@@ -29,9 +30,51 @@ function guestValidation(req, res, next) {
     }
 }
 
+function adminValidation(req, res, next) {
+    if(req.session.userAuthToken 
+        && req.session.userId 
+        && req.session.userLevel
+        && req.session.userLevel == 0) {
+            next();
+    }
+    else {
+        handleError(res, 500);
+    }
+        
+}
+
+function employeeValidation(req, res, next) {
+    if(req.session.userAuthToken 
+        && req.session.userId 
+        && req.session.userLevel
+        && req.session.userLevel == 1) {
+            next();
+    }
+    else {
+        handleError(res, 500);
+    }
+        
+}
+
+function customerValidation(req, res, next) {
+    if(req.session.userAuthToken 
+        && req.session.userId 
+        && req.session.userLevel
+        && req.session.userLevel == 2) {
+            next();
+    }
+    else {
+        handleError(res, 500);
+    }
+        
+}
+
 module.exports = {
     auth: authValidation,
-    guest: guestValidation
+    guest: guestValidation,
+    admin: adminValidation,
+    customer: customerValidation,
+    employee: employeeValidation
 }
 
 
