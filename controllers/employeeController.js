@@ -7,6 +7,9 @@ const { DB } = require("../config/config");
 const { handleError } = require("../middlewares/errorHandler");
 const { employeeErrorMsg, errorNameStr } = require("../utils/helper");
 
+/**
+ * Shows the employee list page 
+ */
 async function index(req, res) {
     await mongoose.connect(DB.uri);
     User.find({$or: [{accessLevel: 0}, {accessLevel: 1}]}).then(function(employees) {
@@ -22,6 +25,9 @@ async function index(req, res) {
     });
 }
 
+/**
+ * Shows the create employee page
+ */
 async function create(req, res) {
     let errorMsg = employeeErrorMsg(req.query.invalid);
     await mongoose.connect(DB.uri);
@@ -39,6 +45,9 @@ async function create(req, res) {
     });
 }
 
+/**
+ * Inserts a single document into the user collection
+ */
 async function insert(req, res) {
     if(req.body.password != req.body.confirmPassword) {
         res.redirect("/employee/create/?invalid=password");
@@ -66,6 +75,9 @@ async function insert(req, res) {
     }
 }
 
+/**
+ * Shows the employee edit page
+ */
 async function edit(req, res) {
     let errorMsg = employeeErrorMsg(req.query.invalid);
     await mongoose.connect(DB.uri);
@@ -92,6 +104,9 @@ async function edit(req, res) {
     });
 }
 
+/**
+ * Updates a single user document by id (user is employee)
+ */
 async function update(req, res) {
     await mongoose.connect(DB.uri);
     User.findOne({_id: mongoose.Types.ObjectId(req.params.employeeId)})
@@ -121,6 +136,9 @@ async function update(req, res) {
     });
 }
 
+/**
+ * Permanently removes a single user (employee) document from user collection
+ */
 async function deleteEmployee(req, res) {
     await mongoose.connect(DB.uri);
     User.deleteOne({_id: mongoose.Types.ObjectId(req.params.employeeId)}, function(err, deletedEmployee) {

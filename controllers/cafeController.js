@@ -7,13 +7,16 @@ const { Order } = require("../models/orderModel");
 const { DB } = require("../config/config");
 const { handleError } = require("../middlewares/errorHandler"); 
 
+/**
+ * Shows individual cafe page
+ */
 async function index(req, res) {
     await mongoose.connect(DB.uri);
     Cafe.findOne({_id: mongoose.Types.ObjectId(req.params.cafeId)})
     .then(function(cafe) {
         if(cafe) {
             User.findOne({_id: req.session.userId}).then(function(user){
-                if(user.accessLevel === 0){
+                if(user.accessLevel === 0) {
                     MenuItem.find({cafeId: cafe._id.toString()})
                     .then(function(menuItems) {
                         res.render("../views/cafeAdmin.njk", {
@@ -23,7 +26,7 @@ async function index(req, res) {
                         });
                     });
                 }
-                if(user.accessLevel === 1){
+                if(user.accessLevel === 1) {
                     Order.find({cafeId: req.params.cafeId}).then(function(orders){
                         res.render("../views/cafeEmployee.njk", {
                             csrf: req.session.csrf,
@@ -32,7 +35,7 @@ async function index(req, res) {
                         });
                     });
                 }
-                if(user.accessLevel===2){
+                if(user.accessLevel===2) {
                     MenuItem.find({cafeId: cafe._id.toString()})
                     .then(function(menu) {
                         res.render("../views/cafeCustomer.njk", {
@@ -49,12 +52,18 @@ async function index(req, res) {
     });
 }
 
+/**
+ * Shows cafe create page
+ */
 async function create(req, res) {
     res.render("../views/createCafe.njk", {
         csrf: req.session.csrf
     });
 }
 
+/**
+ * Inserts new cafe document into DB
+ */
 async function insert(req, res) {
     let newCafe = new Cafe({
         name: req.body.name,
@@ -63,7 +72,6 @@ async function insert(req, res) {
         description: req.body.description,
         isOpen: (req.body.isOpen == "1")
     });
-
     await mongoose.connect(DB.uri);
     await newCafe.save(function(err) {
         if(err) {
@@ -75,6 +83,9 @@ async function insert(req, res) {
     });
 }
 
+/**
+ * Shows cafe edit page
+ */
 async function edit(req, res) {
     await mongoose.connect(DB.uri);
     Cafe.findOne({_id: mongoose.Types.ObjectId(req.params.cafeId)})
@@ -91,6 +102,9 @@ async function edit(req, res) {
     });
 }
 
+/**
+ * Updates a single existing cafe document by it id
+ */
 async function update(req, res) {
     await mongoose.connect(DB.uri);
     Cafe.findOne({_id: mongoose.Types.ObjectId(req.params.cafeId)})
@@ -114,6 +128,9 @@ async function update(req, res) {
     });
 }
 
+/**
+ * Permanently deletes a single existing cafe document from DB
+ */
 async function deleteCafe(req, res) {
     Cafe.deleteOne({_id: mongoose.Types.ObjectId(req.params.cafeId)}, function(err, deletedCafe) {
         if(err) {
@@ -125,6 +142,10 @@ async function deleteCafe(req, res) {
     });
 }
 
+/**
+ * Server-side event - hooked to the cafeEmployee.njk file
+ * Watches for insert operation in order collection and relays to cafe page for employees
+ */
 async function orderRetriever(req, res) {
     res.set({
         "Connection": "keep-alive",
@@ -138,6 +159,9 @@ async function orderRetriever(req, res) {
       });
 }
 
+/**
+ * Updates the open/close status of a cafe by updating isOPen field in the selected cafe document
+ */
 async function startOrders(req, res) {
     await mongoose.connect(DB.uri);
     await Cafe.findOne({_id: mongoose.Types.ObjectId(req.params.cafeId)})

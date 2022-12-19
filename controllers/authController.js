@@ -5,6 +5,9 @@ const { User } = require("../models/userModel");
 const { DB } = require("../config/config");
 const { handleError } = require("../middlewares/errorHandler")
 
+/**
+ * Shows login page
+ */
 async function index(req, res) {
     req.session.csrf = crypto.randomBytes(64).toString('base64');
     console.log(req.session);
@@ -14,6 +17,9 @@ async function index(req, res) {
     });
 }
 
+/**
+ * Verifies user credentials
+ */
 async function authenticate(req, res) {
     User.authenticate(req.body.email, req.body.password, function(user) {
         if(user) {
@@ -37,12 +43,18 @@ async function authenticate(req, res) {
       });
 }
 
+/**
+ * Shows signup page
+ */
 async function create(req, res) {
     res.render("../views/signup.njk", {
         csrf: req.session.csrf
     });
 }
 
+/**
+ * Inserts new user into DB
+ */
 async function insert(req, res) {
     const salt = crypto.randomBytes(16).toString("hex"); 
     const hash = crypto.pbkdf2Sync(req.body.password, salt, 1000, 64, "sha512").toString("hex"); 
@@ -58,7 +70,6 @@ async function insert(req, res) {
         salt: salt,
         temporaryAuthToken: crypto.randomBytes(64).toString('base64')
     });
-
     await mongoose.connect(DB.uri);
     await newUser.save(function(err) {
         if(err) {
@@ -85,6 +96,9 @@ async function insert(req, res) {
     });
 }
 
+/**
+ * Logs out user
+ */
 async function logout(req, res) {
     req.session.destroy();
     res.redirect("/user/login");
