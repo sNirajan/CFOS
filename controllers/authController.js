@@ -69,6 +69,11 @@ async function insert(req, res) {
     });
 }
 
+async function logout(req, res) {
+    req.session.destroy();
+    res.redirect("/user/login");
+}
+
 module.exports = {
-    index, create, insert, authenticate
+    index, create, insert, authenticate, logout
 }

@@ -73,7 +73,7 @@
             <div id="menu_btns">
                 <a href="/instafood">InstaFood</a>
                 <a href="#">Account</a>
-                <a href="/user/login">Log out</a>
+                <a href="#" onclick="logout()">Log out</a>
             </div>
         </div>
     {% endblock %}
@@ -110,6 +110,10 @@
             document.getElementById("menu_btns").appendChild(a);
         }
     })
+    function logout() {
+        localStorage.clear();
+        window.location.replace("/user/logout");
+    }
     {% block script %}  {% endblock %}
 </script>
 
