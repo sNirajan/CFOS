@@ -61,7 +61,7 @@
                 </div>
                     {% endif %}
                 {% endfor %}
-            
+
         </div>
     </div>
 {% endblock %}
@@ -153,7 +153,7 @@
 
     function order_Decline_btn(orderId) {
             data = {
-                status: "Decline"
+                status: "Declined"
             };
             fetch('/order/' + orderId + '/decline',{
                 method: "POST",
@@ -193,5 +193,6 @@
                 }
             });
     }
+
 {% endblock %}
    

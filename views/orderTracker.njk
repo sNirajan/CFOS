@@ -1,0 +1,92 @@
+{% extends 'layouts/main_layout.njk' %}
+
+{% block main_body %}
+    <div id="container">
+        <h1>Order </h1>
+        <div class="order">
+            <div class="order_details">
+                <h3>Order Details</h3>
+                <p>Order placed at: {{order.orderTime}}</p><br>
+                {% for item in order.orderItems %}
+                    <p>{{item.name}} (${{item.price}})</p>
+                {% endfor %}
+                <p>Instruction: {{order.instruction}}</p><br>
+                <p>Subtotal: ${{order.subtotal}}</p>
+                <p>Tax: %{{order.tax}}</p>
+                <p>Total: %{{order.total}}</p>
+            </div>
+            <div class="order_status">
+                <h3>Status</h3>
+                <p id="{{order._id}}_status" class="status_p">The cafe is reviewing your order!</p>
+                <img id="{{order._id}}_img" src="/public/review.png">
+            </div>
+        </div>
+    </div> 
+{% endblock %}
+
+{% block style %}
+
+#container {
+    margin-left: 10%;
+    width: 80%;
+    margin-top: 20px;
+}
+
+h1 {
+    border-bottom: 2px solid dimgray;
+}
+
+h3 {
+    border-bottom: 1px solid dimgray;
+    margin-bottom: 5px;
+}
+
+.order {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.order_details, .order_status {
+    margin-top: 10px;
+    width: 45%;
+}
+
+p {
+    font-size: 18px;
+}
+
+.status_p {
+    font-size: 24px;
+}
+
+.order_status img {
+    width: 80%;
+    height: auto;
+    margin-top: 20px;
+}
+
+
+{% endblock %}
+
+{% block script %}
+
+const evtSource = new EventSource("/order/tracker/{{order._id}}");
+evtSource.addEventListener("{{order._id}}", (e) => {
+    if(e.data == "Approved") {
+        document.getElementById("{{order._id}}_status").textContent = "The cafe is preparing your order!";
+        document.getElementById("{{order._id}}_img").src = "/public/cooking.png";
+    }
+    else if(e.data == "Ready") {
+        document.getElementById("{{order._id}}_status").textContent = "Your order is ready for pickup!";
+        document.getElementById("{{order._id}}_img").src = "/public/ready.png";
+    }
+    else if(e.data == "Declined") {
+        document.getElementById("{{order._id}}_status").textContent = "Sorry, the cafe could not accept your order!";
+        document.getElementById("{{order._id}}_img").src = "/public/declined.png";
+    }
+});
+
+{% endblock %}

@@ -8,5 +8,6 @@ router.post("/:cafeId/checkout", RestrictRoute, orderController.checkout);
 router.post("/:orderId/approve", RestrictRoute, orderController.approve);
 router.post("/:orderId/decline", RestrictRoute, orderController.decline);
 router.post("/:orderId/ready", RestrictRoute, orderController.ready);
+router.get("/:orderId/track", RestrictRoute, orderController.track);
 
 module.exports = router;

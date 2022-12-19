@@ -23,6 +23,33 @@ async function review(req, res) {
     });
 }
 
+async function checkout(req, res) {
+    await mongoose.connect(DB.uri);
+    await User.findOne({_id: mongoose.Types.ObjectId(req.session.userId)})
+    .then(function(user) {
+        let newOrder = new Order({
+            customerId: user._id,
+            cafeId: req.params.cafeId,
+            customerName: user.firstName + " " + user.lastName,
+            status: "Pending",
+            deliveryTime: Date.now(),
+            orderItems: req.body.orderItems,
+            subtotal: req.body.subtotal,
+            tax: req.body.tax,
+            total: req.body.total,
+            instruction: req.body.instruction
+        });
+        newOrder.save(function(err, order) {
+            if(err) throw err;
+            else {
+                res.send({
+                    id: order._id
+                });
+            }
+        });
+    });
+}
+
 async function approve(req, res) {
     await mongoose.connect(DB.uri);
     Order.findOne({ _id: mongoose.Types.ObjectId(req.params.orderId) })
@@ -83,35 +110,20 @@ async function ready(req, res) {
     });
 }
 
-async function checkout(req, res) {
-    await mongoose.connect(DB.uri);
-    await User.findOne({_id: mongoose.Types.ObjectId(req.session.userId)})
-    .then(function(user) {
-        let newOrder = new Order({
-            customerId: user._id,
-            cafeId: req.params.cafeId,
-            customerName: user.firstName + " " + user.lastName,
-            status: "Pending",
-            deliveryTime: Date.now(),
-            orderItems: req.body.orderItems,
-            subtotal: req.body.subtotal,
-            tax: req.body.tax,
-            total: req.body.total,
-            instruction: req.body.instruction
-        });
-        newOrder.save(function(err) {
-            if(err) throw err;
-            else {
-                res.redirect("/");
-            }
-        });
-    })
+async function track(req, res) {
+    Order.findOne({_id: mongoose.Types.ObjectId(req.params.orderId)})
+    .then(function(order) {
+        if(order) {
+            res.render("../views/orderTracker.njk", {
+                order: order
+            });
+        }
+        else {
+            res.status(404).sendFile(path.join(__dirname, '../public', '404.html'));
+        }
+    }) 
 }
 
 module.exports = {
-    review,
-    checkout,
-    approve,
-    decline,
-    ready
+    review, checkout, approve, decline, ready, track
 }

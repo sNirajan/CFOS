@@ -217,15 +217,17 @@
                 },
                 body: JSON.stringify(data),
 
-            }).
-                then(response => {
-                    if(response.status == 200) {
-                        window.location.href = '/';
-                    } 
-                    else {
-                        alert('Sorry, couldn\'t place and order. Please try again!');
-                    }
-                });
+            }).then(response => {
+                if(response.status === 200) {
+                    response.json().then(order => {
+                        localStorage.clear();
+                        window.location.href = "/order/" + order.id + "/track";
+                    });
+                } 
+                else {
+                    alert("Sorry, couldn't place the order. Please try again!");
+                }
+            });
         }
     }
 {% endblock %}

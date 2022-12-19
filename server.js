@@ -1,14 +1,12 @@
 const express = require("express");
 const nunjucks = require("nunjucks");
 const session = require("express-session");
-const expressWs = require("express-ws");
-const { SESSION } = require("./config/config.js");
+const { SESSION, DB } = require("./config/config.js");
 const { Order, seedOrder } = require("./models/orderModel");
 const { RestrictRoute } = require("./middlewares/auth");
 
 const port = 3000;
 const app = express();
-const ws = expressWs(app);
 
 const indexRoute = require("./routes/index");
 const employeeRoutes = require("./routes/employee");
@@ -17,6 +15,7 @@ const menuItemRoutes = require("./routes/menuItem");
 const instafoodRoutes = require("./routes/instafood");
 const userRoutes = require("./routes/user");
 const orderRoutes = require("./routes/order");
+const { default: mongoose } = require("mongoose");
 
 nunjucks.configure("views", {
   autoescape: true,
@@ -37,15 +36,23 @@ app.use("/instafood", instafoodRoutes);
 app.use("/user", userRoutes);
 app.use("/order", orderRoutes);
 
-const orderUpdateWatch = Order.watch()
-orderUpdateWatch.on('change', change => {
-  console.log(change);
-
+app.get("/order/tracker/:orderId", async (req, res) => {
+  res.set({
+    "Connection": "keep-alive",
+    "Content-type": "text/event-stream"
+  });
+  await mongoose.connect(DB.uri);
+  Order.watch().on("change", change => {
+    if(change.operationType == "update" && change.documentKey._id == req.params.orderId) {
+      res.write("event: " + req.params.orderId + "\ndata: " + change.updateDescription.updatedFields.status + "\n\n");
+    }
+  });
 });
 
 app.use((req, res) => {
   res.status(404).sendFile(__dirname + "/public/404.html");
 });
+
 
 app.use((err, req, res, next) => {
   console.log(err);
