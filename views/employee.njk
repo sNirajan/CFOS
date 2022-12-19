@@ -9,8 +9,8 @@
                     <p id = "name">Name: {{ employee.firstName + ' ' + employee.lastName }}</p>
                     <p>Position: {{ employee.position }}</p>
                     <p>Wage: {{ '$' + employee.wage }}</p>
-                    {% if employee.user_level == 0 %}
-                        <p>Employee Access Level: Admin (can access all features in the app)</p>
+                    {% if employee.accessLevel == 0 %}
+                        <p>Admin Access Level: Admin (can access all features in the app)</p>
                     {% else %}
                         <p>Employee Access level: Employee (can only access order page for their work station)</p>
                     {% endif %}
