@@ -18,7 +18,7 @@
             <div class="order_status">
                 <h3>Status</h3>
                 <p id="{{order._id}}_status" class="status_p"></p>
-                <img id="{{order._id}}_img" src="/public/review.png">
+                <img id="{{order._id}}_img" src="">
             </div>
         </div>
     </div> 
@@ -76,7 +76,11 @@ evtSource.addEventListener("{{order._id}}", (e) => {
 });
 
 function setStatus(status) {
-    if(status == "Approved") {
+    if(status == "Pending") {
+        document.getElementById("{{order._id}}_status").textContent = "The cafe is preparing your order!";
+        document.getElementById("{{order._id}}_img").src = "/public/review.png";
+    }
+    else if(status == "Approved") {
         document.getElementById("{{order._id}}_status").textContent = "The cafe is preparing your order!";
         document.getElementById("{{order._id}}_img").src = "/public/cooking.png";
     }

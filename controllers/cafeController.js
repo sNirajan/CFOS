@@ -139,8 +139,6 @@ async function orderRetriever(req, res) {
 }
 
 async function startOrders(req, res) {
-    console.log(req.body.startOrders);
-    console.log(req.body.csrf);
     await mongoose.connect(DB.uri);
     await Cafe.findOne({_id: mongoose.Types.ObjectId(req.params.cafeId)})
     .then(function(cafe) {
