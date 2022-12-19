@@ -36,8 +36,8 @@ async function create(req, res) {
 }
 
 async function insert(req, res) {
-    req.body.salt = crypto.randomBytes(16).toString(); 
-    req.body.hash = crypto.pbkdf2Sync("test", req.body.salt, 1000, 64, "sha512").toString(); 
+    req.body.salt = crypto.randomBytes(16).toString("hex"); 
+    req.body.hash = crypto.pbkdf2Sync(req.body.password ,req.body.salt, 1000, 64, "sha512").toString("hex"); 
     let newUser = new User(req.body);
 
     await mongoose.connect(DB.uri);  
