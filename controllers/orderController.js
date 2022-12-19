@@ -3,6 +3,7 @@ const session = require("express-session");
 const path = require("path");
 const { Order } = require("../models/orderModel");
 const { Cafe } = require("../models/cafeModel");
+const { User } = require("../models/userModel");
 const { DB } = require("../config/config");
 
 async function review(req, res) {
@@ -83,21 +84,28 @@ async function ready(req, res) {
 }
 
 async function checkout(req, res) {
-    let data = req.body;
-    data.userId = req.session.userId;
-    data.cafeId = req.params.cafeId;
-    data.orderTime = Date.now();
-    data.status = "Pending",
-    deliveryTIme = Date.now(); 
-    let newOrder = new Order(data);
-
     await mongoose.connect(DB.uri);
-    await newOrder.save(function(err) {
-        if(err) throw err;
-        else {
-            res.redirect("/");
-        }
-    });
+    await User.findOne({_id: mongoose.Types.ObjectId(req.session.userId)})
+    .then(function(user) {
+        let newOrder = new Order({
+            customerId: user._id,
+            cafeId: req.params.cafeId,
+            customerName: user.firstName + " " + user.lastName,
+            status: "Pending",
+            deliveryTime: Date.now(),
+            orderItems: req.body.orderItems,
+            subtotal: req.body.subtotal,
+            tax: req.body.tax,
+            total: req.body.total,
+            instruction: req.body.instruction
+        });
+        newOrder.save(function(err) {
+            if(err) throw err;
+            else {
+                res.redirect("/");
+            }
+        });
+    })
 }
 
 module.exports = {

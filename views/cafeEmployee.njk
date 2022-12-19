@@ -23,36 +23,40 @@
     <div id="container">
         <div class="order_container">
             <h3>New Order</h3>
-            {% for item in orders %}
-                {% if item.status === "Pending" %}
+            {% for order in orders %}
+                {% if order.status === "Pending" %}
                     <div class="menu_item">
-                    <div>
-                        <p>Order no: {{item._id}}</p>
-                        {% if item.orderItems.length > 0 %}
-                            <p class="item_List">{{ item.orderItems }}</p>
-                        {% endif %}
-                    </div>
-                    <div>
-                        <a class="order_Accept_btn" onclick="order_Accept_btn('{{item._id}}')">Accept</a>
-                        <button id="order_Decline_btn" onclick="order_Decline_btn('{{ item._id}}')">Decline</button>
-                    </div>
+                        <div>
+                            <p>Customer name: {{order.customerName}}</p>
+                            <p>Order items: </p>
+                            {% for item in order.orderItems %}
+                                <p>{{ item.name }}</p>
+                            {% endfor %}
+                            <p>Special Instruction: {{order.instruction}}</p>
+                        </div>
+                        <div>
+                            <a class="order_Accept_btn" onclick="order_Accept_btn('{{ order._id }}')">Accept</a>
+                            <button id="order_Decline_btn" onclick="order_Decline_btn('{{ order._id }}')">Decline</button>
+                        </div>
                     </div>
                 {% endif %}
             {% endfor %}    
         </div>
         <div class="order_container">
             <h3>Order In-progress</h3>
-                {% for item in orders %}
-                    {% if item.status === "Approved" %}
+                {% for order in orders %}
+                    {% if order.status === "Approved" %}
                         <div class="menu_item">
                             <div>
-                                <p>Order no: {{item._id}}</p>
-                                {% if item.orderItems.length > 0 %}
-                                    <p class="item_List">{{ item.orderItems }}</p>
-                                {% endif %}
+                                <p>Customer name: {{order.customerName}}</p>
+                                <p>Order items:
+                                {% for item in order.orderItems %}
+                                    <p>{{ item.name }}</p>
+                                {% endfor %}
+                                <p>Instruction: {{order.instruction}}</p>
                             </div>
                         <div>
-                        <a href="#" class="order_ready" onclick="order_ready_btn('{{item._id}}')">Order Ready</a>
+                        <a href="#" class="order_ready" onclick="order_ready_btn('{{order._id}}')">Order Ready</a>
                     </div>
                 </div>
                     {% endif %}
@@ -104,9 +108,6 @@
         border-radius: 2px;
         text-align: center;
         justify-content: space-between;
-    }
-    .item_List {
-        font-size: 12px;
     }
     .menu_item a:hover {
         background-color: forestgreen;
@@ -183,15 +184,14 @@
                 },
                 body: JSON.stringify(data),
 
-            }).
-                then(response => {
-                    if(response.status == 200) {
-                        window.location.reload();
-                    } 
-                    else {
-                        alert('Error in Changing status of order to ready!!!');
-                    }
-                });
+            }).then(response => {
+                if(response.status == 200) {
+                    window.location.reload();
+                } 
+                else {
+                    alert('Error in Changing status of order to ready!!!');
+                }
+            });
     }
 {% endblock %}
    

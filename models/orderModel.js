@@ -2,13 +2,17 @@ const mongoose = require("mongoose");
 const { DB } = require("../config/config");
 
 const orderSchema = new mongoose.Schema({
-    userId: {
+    customerId: {
         type: String,
         required: true
     },
     cafeId: {
         type: String,
         required: true
+    },
+    customerName: {
+        type: String,
+        require: true
     },
     orderTime: {
         type: Date,
@@ -49,8 +53,9 @@ const Order = mongoose.model("orders", orderSchema);
 
 async function seedOrder() {
     let newOrder = new Order({
-        userId: "6360078867776f417965a0a8",
+        customerId: "6360078867776f417965a0a8",
         cafeId: "635add5398b892de63c25794",
+        customerName: "Test customer",
         status:"Pending",
         subtotal: 100.00,
         tax: 13.00,
@@ -64,7 +69,7 @@ async function seedOrder() {
         deliveryTime: Date.now()
     });
 
-    await mongoose.connect(Db.uri);
+    await mongoose.connect(DB.uri);
     await mongoose.connection.db.dropCollection("orders");
     return result = await newOrder.save();
 }

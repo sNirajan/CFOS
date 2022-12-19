@@ -3,7 +3,7 @@ const nunjucks = require("nunjucks");
 const session = require("express-session");
 const expressWs = require("express-ws");
 const { SESSION } = require("./config/config.js");
-const { Order } = require("./models/orderModel");
+const { Order, seedOrder } = require("./models/orderModel");
 const { RestrictRoute } = require("./middlewares/auth");
 
 const port = 3000;
@@ -40,6 +40,7 @@ app.use("/order", orderRoutes);
 const orderUpdateWatch = Order.watch()
 orderUpdateWatch.on('change', change => {
   console.log(change);
+
 });
 
 app.use((req, res) => {

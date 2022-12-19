@@ -8,21 +8,25 @@ const { RestrictRoute } = require("../middlewares/auth");
 
 router.get("/", RestrictRoute, function (req, res) {
     mongoose.connect(DB.uri);
-    Cafe.find({}).then(function(cafes) {
-        if(cafes) {
-            User.findOne({_id: mongoose.Types.ObjectId(req.session.userId)})
-            .then(function(user) {
-                if(user) {
+    User.findOne({_id: mongoose.Types.ObjectId(req.session.userId)})
+    .then(function(user) {
+        if(user) {
+            let query = {};
+            if(user.accessLevel == 1 && user.workStation != "ALL_STATIONS") {
+                query = { _id: mongoose.Types.ObjectId(user.workStation) };
+            }
+            Cafe.find(query).then(function(cafes) {
+                if(cafes) {
                     res.render("../views/index.njk", {
                         username: user.firstName + " " + user.lastName,
                         userLevel: user.accessLevel,
                         cafes: cafes
                     });
                 }
-                else {
-                    res.redirect("/user/login");
-                }
             });
+        }
+        else {
+            res.redirect("/user/login");
         }
     });
 });
