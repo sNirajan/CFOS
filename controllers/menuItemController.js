@@ -9,7 +9,7 @@ const { menuItemErrorMsg, errorNameStr } = require("../utils/helper");
 async function create(req, res) {
     let errorMsg = menuItemErrorMsg(req.query.invalid);
     await mongoose.connect(DB.uri);
-    Cafe.find({_id: mongoose.Types.ObjectId(req.query.cid)})
+    Cafe.find({_id: mongoose.Types.ObjectId(req.params.cafeId)})
     .then(function(cafe) {
         if(cafe) {
             res.render("../views/createMenuItem.njk", {

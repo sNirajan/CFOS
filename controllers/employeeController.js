@@ -4,7 +4,8 @@ const crypto = require("crypto");
 const { Cafe } = require("../models/cafeModel");
 const { User } = require("../models/userModel");
 const { DB } = require("../config/config");
-const { handleError } = require("../middlewares/errorHandler")
+const { handleError } = require("../middlewares/errorHandler");
+const { employeeErrorMsg, errorNameStr } = require("../utils/helper");
 
 async function index(req, res) {
     await mongoose.connect(DB.uri);
@@ -21,12 +22,14 @@ async function index(req, res) {
 }
 
 async function create(req, res) {
+    let errorMsg = employeeErrorMsg(req.query.invalid);
     await mongoose.connect(DB.uri);
     Cafe.find({}).then(function(cafes) {
         if(cafes) {
             res.render("../views/createEmployee.njk", {
                 csrf: req.session.csrf,
-                cafes: cafes
+                cafes: cafes,
+                errorMessage: errorMsg
             });
         }
         else {
@@ -43,7 +46,13 @@ async function insert(req, res) {
     await mongoose.connect(DB.uri);  
     newUser.save(function(err) {
         if(err) {
-            handleError(res, 500);
+            let invalidFields = errorNameStr(err);    
+            if(invalidFields.length > 0) {
+                res.redirect("/employee/create/?invalid=" + invalidFields);
+            }
+            else {
+                handleError(res, 500);
+            }
         }
         else {
             res.redirect("/employee");
@@ -52,6 +61,7 @@ async function insert(req, res) {
 }
 
 async function edit(req, res) {
+    let errorMsg = employeeErrorMsg(req.query.invalid);
     await mongoose.connect(DB.uri);
     User.findOne({_id: mongoose.Types.ObjectId(req.params.employeeId)})
     .then(function(employee) {
@@ -61,7 +71,8 @@ async function edit(req, res) {
                     res.render("../views/editEmployee.njk", {
                         csrf: req.session.csrf,
                         employee: employee,
-                        cafes: cafes
+                        cafes: cafes,
+                        errorMessage: errorMsg
                     });
                 }
                 else {
@@ -85,7 +96,13 @@ async function update(req, res) {
             }
             employee.save(function(err) {
                 if(err) {
-                    handleError(res, 500);
+                    let invalidFields = errorNameStr(err);    
+                    if(invalidFields.length > 0) {
+                        res.redirect("/employee/" + req.params.employeeId + "/edit/?invalid=" + invalidFields);
+                    }
+                    else {
+                        handleError(res, 500);
+                    }
                 }
                 else {
                     res.redirect("/employee");
