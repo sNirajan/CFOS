@@ -32,7 +32,9 @@
                         {% endif %}
                     </div>
                     <div>
-                        <a href="#" class="add_to_order_btn" onclick="addItem('{{item._id}}', '{{item.name}}', '{{item.price}}')">Add to Order</a>
+                        <a href="#" class="add_to_order_btn" onclick="addItem('{{item._id}}', '{{item.name}}', '{{item.price}}')">
+                            Add to Order
+                        </a>
                     </div>
                 </div>
             {% endfor %}
@@ -137,17 +139,16 @@
 
 {% block script %}
     document.addEventListener('DOMContentLoaded', () => {
-        //localStorage.clear()
         if(localStorage.getItem('cart') != null) {
+            //localStorage.clear();
             let cart = JSON.parse(localStorage.getItem('cart'));
-            console.log(cart);
             for(const item of cart) {
                 addItemToView(item.name, item.price);
             }
         }
     });
     
-    function addItem(id, name, price) {
+    function addItem(menuItemId, name, price) {
         addItemToView(name, price);
 
         let cart = [];
@@ -155,15 +156,12 @@
             cart = JSON.parse(localStorage.getItem('cart'));
         }
         cart.push({
-            id: id,
+            itemNumber: order_list.children.length + 1,
+            menuItemId: menuItemId,
             name: name,
             price: price
         });
         localStorage.setItem('cart', JSON.stringify(cart));
-
-        if(localStorage.getItem('draftOrderCafeId') == null) {
-            localStorage.setItem('draftOrderCafeId', '{{ cafe._id }}');
-        }
     }
 
     function addItemToView(name, price) {

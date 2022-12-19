@@ -116,11 +116,12 @@
 
 {% block script %}
     document.addEventListener('DOMContentLoaded', () => {
-        //localStorage.clear()
         if(localStorage.getItem('cart') != null) {
             let cart = JSON.parse(localStorage.getItem('cart'));
-            console.log(cart);
             let subtotal = 0.0;
+
+            console.log(cart);
+
             for(let item of cart) {     
                 const menu_item_div = document.createElement("div");
                 const item_info_div = document.createElement("div");
@@ -132,7 +133,7 @@
                 item_remove_a.href = "#";
                 item_remove_a.textContent = "Remove from Order";
                 item_remove_a.addEventListener("click", function () {
-                    removeItem(menu_item_div, item.id, item.price);
+                    removeItem(menu_item_div, item.itemNumber);
                 });
                 item_remove_div.appendChild(item_remove_a);
                 menu_item_div.appendChild(item_info_div);
@@ -150,44 +151,59 @@
         }
     });
     
-    function removeItem(div, id, price) {
+    function removeItem(div, itemNumber) {
         div.style.display = "none";
 
-        price = parseFloat(price);
-        let subtotal = parseFloat(document.getElementById('subtotal').textContent) - price;
-        let tax = (subtotal / 100) * 13;
-        let total = tax + subtotal;
-        document.getElementById('subtotal').textContent = subtotal.toFixed(2);
-        document.getElementById('tax').textContent = tax.toFixed(2);
-        document.getElementById('total').textContent = total.toFixed(2);
-
+        let removedItem = {};
         let newCart = [];
         let cart = JSON.parse(localStorage.getItem("cart"));
         
         for(const item of cart ) {
-            if(item.id != id) {
+            console.log(itemNumber, item.itemNumber);
+            if(item.itemNumber != itemNumber) {
                 newCart.push({
                     id: item.id,
                     name: item.name,
                     price: item.price
                 });
             }
+            else {
+                removedItem = item;
+            }
         }
-        localStorage.setItem("cart", JSON.stringify(newCart)); 
+
+        if(newCart.length > 0) {
+            localStorage.setItem("cart", JSON.stringify(newCart)); 
+        }
+        else {
+            //localStorage.clear();
+            //window.location.href = "/cafe/{{cafe._id}}";
+        }
+
+        price = parseFloat(removedItem.price);
+        let subtotal = parseFloat(document.getElementById('subtotal').textContent) - price;
+        let tax = (subtotal / 100) * 13;
+        let total = tax + subtotal;
+        document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+        document.getElementById('tax').textContent = tax.toFixed(2);
+        document.getElementById('total').textContent = total.toFixed(2);
     }
 
     function onOrderPlacedBtnClicked(cafeid) {
-        let itemsList =[];
         const subtotal = document.getElementById('subtotal').textContent;
         const total = document.getElementById('total').textContent;
         const tax = document.getElementById('tax').textContent;
-        //console.log(total +  " " + tax + " " + subtotal);
 
         if(localStorage.getItem('cart') != null) {
+            let itemsList =[];
             let cart = JSON.parse(localStorage.getItem("cart"));
-            cart.forEach(element => {
-                itemsList.push(element.name);
-            })
+            cart.forEach(item => {
+                itemsList.push({
+                    id: item.id,
+                    name: item.name, 
+                    price: item.price
+                });
+            });
             data = {
                 subtotal: subtotal,
                 total: total,
@@ -195,8 +211,6 @@
                 instruction: "Sample Instruction",
                 orderItems: itemsList
             }
-
-            //data1 = JSON.stringify(data);
 
             fetch('/order/' + cafeid + '/checkout',{
                 method: "POST",

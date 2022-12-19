@@ -4,6 +4,7 @@
     "controller": "^1.0.0",
     "cookie-parser": "^1.4.6",
     "crypto": "^1.0.1",
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
     "express-ws": "^5.0.2",
