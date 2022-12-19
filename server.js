@@ -1,10 +1,13 @@
 const express = require("express");
 const nunjucks = require("nunjucks");
 const session = require("express-session");
+const expressWs = require("express-ws");
 const { SESSION } = require("./config/config.js");
+const { Order } = require("./models/orderModel");
 
-const app = express();
 const port = 3000;
+const app = express();
+const ws = expressWs(app);
 
 const indexRoute = require("./routes/index");
 const employeeRoutes = require("./routes/employee");
@@ -32,6 +35,11 @@ app.use("/menuItem", menuItemRoutes);
 app.use("/instafood", instafoodRoutes);
 app.use("/user", userRoutes);
 app.use("/order", orderRoutes);
+
+const orderUpdateWatch = Order.watch()
+orderUpdateWatch.on('change', change => {
+  console.log(change);
+})
 
 app.use((req, res) => {
   res.status(404).sendFile(__dirname + "/public/404.html");
