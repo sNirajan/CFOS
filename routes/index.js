@@ -4,9 +4,9 @@ const mongoose = require("mongoose");
 const { Cafe } = require("../models/cafeModel");
 const { User } = require("../models/userModel");
 const { DB } = require("../config/config");
-const { RESTRICT } = require("../middlewares/auth");
+const { RestrictRoute } = require("../middlewares/auth");
 
-router.get("/", RESTRICT, function (req, res) {
+router.get("/", RestrictRoute, function (req, res) {
     mongoose.connect(DB.uri);
     Cafe.find({}).then(function(cafes) {
         if(cafes) {

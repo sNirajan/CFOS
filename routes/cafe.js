@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const cafeController = require("../controllers/cafeController");
-const { RESTRICT } = require("../middlewares/auth");
+const { RestrictRoute } = require("../middlewares/auth");
 
-router.get("/create", RESTRICT, cafeController.create);
-router.post("/insert", cafeController.insert);
-router.get("/:cafeId", cafeController.index);
-router.get("/:cafeId/edit", cafeController.edit);
-router.post("/:cafeId/update", cafeController.update);
-router.get("/:id/delete", cafeController.deleteCafe);
+router.get("/create", RestrictRoute, cafeController.create);
+router.post("/insert", RestrictRoute, cafeController.insert);
+router.get("/:cafeId", RestrictRoute, cafeController.index);
+router.get("/:cafeId/edit", RestrictRoute, cafeController.edit);
+router.post("/:cafeId/update", RestrictRoute, cafeController.update);
+router.get("/:id/delete", RestrictRoute, cafeController.deleteCafe);
 
 module.exports = router;

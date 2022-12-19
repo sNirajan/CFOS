@@ -4,6 +4,7 @@ const session = require("express-session");
 const expressWs = require("express-ws");
 const { SESSION } = require("./config/config.js");
 const { Order } = require("./models/orderModel");
+const { RestrictRoute } = require("./middlewares/auth");
 
 const port = 3000;
 const app = express();

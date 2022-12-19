@@ -3,7 +3,7 @@ const session = require("express-session");
 const { User } = require("../models/userModel");
 const authController = require("../controllers/authController");
 
-function restricted(req, res, next) {
+function restrictRoute(req, res, next) {
     if(req.session.userAuthToken && req.session.userId) {
         next();
     }
@@ -13,7 +13,7 @@ function restricted(req, res, next) {
 }
 
 module.exports = {
-    RESTRICT: restricted
+    RestrictRoute: restrictRoute
 }
 
 
