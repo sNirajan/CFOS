@@ -9,9 +9,9 @@
             <a class="cafe_box" href="#" onclick="openCafePage('{{cafe._id}}', '{{cafe.isOPen}}')">
                 <span class="cafe_name">{{ cafe.name }}</span>
                 {% if cafe.isOpen %}
-                    <span class="cafe_hours">Open for Order</span>
+                    <span class="cafe_hours">Open</span>
                 {% else %}
-                    <span class="cafe_hours">Closed</span>
+                    <span class="cafe_hours closed">Closed</span>
                 {% endif %}
             </a>
         {% endfor %}
@@ -72,6 +72,7 @@
     .create-cafe {
         text-align: center;
     }
+    .closed { color: red }
 {% endblock %}
 
 {% block script %}

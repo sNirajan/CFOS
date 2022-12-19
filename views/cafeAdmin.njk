@@ -4,7 +4,11 @@
     <div id="cafe_info">
         <h3>{{ cafe.name }}</h3>
         <p>Location: {{ cafe.location }}</p>
-        <p>Hours of Operation: {{ cafe.isOpen }}</p>
+        {%if cafe.isOpen %}
+            <p>Open now: accepting new orders.</p>
+        {% else %}
+            <p>CLosed now: not accepting new order.</p>
+        {% endif %}
         <p>Description:
             {% if cafe.description.length > 0 %}
                 {{ cafe.description }}
@@ -34,6 +38,11 @@
         <div id="cafe_action_btns">
             <a id="item_create_btn" href="/menuItem/create/{{cafe._id}}">Add New Menu Item</a>
             <a id="cafe_edit_btn" href="/cafe/{{ cafe._id }}/edit">Edit Cafe Info</a>
+            {% if cafe.isOpen %}
+                <button id="start_orders_btn" onclick="onStartOrdersBtnClick('{{cafe._id}}', false)">Stop Taking Orders</button>
+            {% else %}
+                <button id="start_orders_btn" onclick="onStartOrdersBtnClick('{{cafe._id}}', true)">Start Taking  Orders</button>
+            {% endif %}
             <button id="cafe_delete_btn" onclick="onDeleteCafeBtnClick('{{ cafe._id }}')">Delete this Cafe</button>
         </div>
     </div>
@@ -96,7 +105,10 @@
     #cafe_action_btns {
         margin-top: 50px;
     }
-    #item_create_btn, #cafe_edit_btn, #cafe_delete_btn {
+    #item_create_btn, 
+    #cafe_edit_btn, 
+    #cafe_delete_btn,
+    #start_orders_btn {
         color: white;
         background-color: royalblue;
         text-decoration: none;
@@ -104,7 +116,8 @@
         border-radius: 2px;
         margin-right: 10px;
         font-size: 16px;
-        cursor: pointer
+        cursor: pointer;
+        border: none
     }
     #cafe_delete_btn {
         border: 1px solid #C3381A;
@@ -115,7 +128,7 @@
     #cafe_edit_btn:hover{
         background-color: forestgreen;
     }
-    #cafe_delete_btn:hover {
+    #cafe_delete_btn:hover, #start_orders_btn:hover {
         background-color: #C3381A;
         color: white;
     }
@@ -164,6 +177,27 @@
                 }
             });
         }
+    }
+
+    function onStartOrdersBtnClick(cafeId, startOrders) {
+        console.log(startOrders);
+        fetch("/cafe/" + cafeId + "/startOrders", {
+                method: "POST", 
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    csrf: "{{ csrf }}",
+                    startOrders: startOrders
+                })
+            }).then(response => {
+                if(response.status == 200) {
+                    window.location.href = "/cafe/" + cafeId;
+                } 
+                else {
+                    alert("Something went wrong! Please try again.");
+                }
+            });
     }
 {% endblock %}
    

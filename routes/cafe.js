@@ -11,5 +11,6 @@ router.get("/:cafeId/edit", auth, admin, cafeController.edit);
 router.post("/:cafeId/update", auth, admin, csrf, cafeController.update);
 router.post("/:cafeId/delete", auth, admin, csrf, cafeController.deleteCafe);
 router.get("/orderRetriever/:cafeId", auth, employee, cafeController.orderRetriever);
+router.post("/:cafeId/startOrders", auth, admin, csrf, cafeController.startOrders);
 
 module.exports = router;
