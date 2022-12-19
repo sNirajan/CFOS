@@ -60,7 +60,6 @@ const userSchema = new mongoose.Schema({
             this.findOne({ email: email }, function (err, user) {
                 if(user) {
                     const hash = crypto.pbkdf2Sync(password, user.salt, 1000, 64, "sha512").toString("hex"); 
-                    console.log("h1:" + hash + "\nh2:" +  user.hash);
                     if(hash == user.hash) {
                         return cb(user);
                     }

@@ -10,7 +10,6 @@ router.get("/", RestrictRoute, function (req, res) {
     mongoose.connect(DB.uri);
     Cafe.find({}).then(function(cafes) {
         if(cafes) {
-            console.log(req.session);
             User.findOne({_id: mongoose.Types.ObjectId(req.session.userId)})
             .then(function(user) {
                 if(user) {
