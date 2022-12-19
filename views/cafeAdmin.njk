@@ -38,7 +38,7 @@
         {% endfor %}
 
         <div id="cafe_action_btns">
-            <a id="item_create_btn" href="/menuItem/create?cid={{ cafe._id }}">Add New Menu Item</a>
+            <a id="item_create_btn" href="/menuItem/create/{{cafe._id}}">Add New Menu Item</a>
             <a id="cafe_edit_btn" href="/cafe/{{ cafe._id }}/edit">Edit Cafe Info</a>
             <button id="cafe_delete_btn" onclick="onDeleteCafeBtnClick('{{ cafe._id }}')">Delete this Cafe</button>
         </div>

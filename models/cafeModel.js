@@ -20,6 +20,7 @@ const cafeSchema = new mongoose.Schema({
     },
     isOpen: {
         type: Boolean,
+        default: false,
         required: true
     }
 });

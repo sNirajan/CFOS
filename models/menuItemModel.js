@@ -28,7 +28,7 @@ const MenuItem = mongoose.model("menu_items", menuItemSchema);
 
 async function seedMenuItem() {
     let newMenuItem = new MenuItem({
-        cafeId: mongoose.Types.ObjectId("635add5398b892de63c25794"),
+        cafeId: "635add5398b892de63c25794",
         name: "Pasta",
         price: 10.2,
         description: "This is regular pasta!",

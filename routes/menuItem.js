@@ -4,7 +4,7 @@ const menuItemController = require("../controllers/menuItemController");
 const { auth } = require("../middlewares/auth");
 const { csrf } = require("../middlewares/guard");
 
-router.get("/create", auth, menuItemController.create);
+router.get("/create/:cafeId", auth, menuItemController.create);
 router.post("/insert", auth, csrf, menuItemController.insert);
 router.get("/:itemId/edit", auth, menuItemController.edit);
 router.post("/:itemId/update", auth, csrf, menuItemController.update);

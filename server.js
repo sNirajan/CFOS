@@ -3,6 +3,7 @@ const nunjucks = require("nunjucks");
 const session = require("express-session");
 const { SESSION, DB } = require("./config/config.js");
 const { Order, seedOrder } = require("./models/orderModel");
+const { MenuItem, seedMenuItem } = require("./models/menuItemModel");
 const { RestrictRoute } = require("./middlewares/auth");
 
 const port = 3000;

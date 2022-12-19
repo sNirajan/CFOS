@@ -9,6 +9,8 @@
 {% block main_body %}	
 	<h3>Edit Cafe Information</h3>
   	<form method = "POST" action="{{ '/cafe/' + cafe._id + '/update' }}" id="cafe_create_form">
+		<p class="error_msg">{{errorMessage}}</p>
+		
 		<input type="hidden" name="csrf" value="{{ csrf }}">
 		
 		<label for="cafe"> Cafeteria Name</label>     

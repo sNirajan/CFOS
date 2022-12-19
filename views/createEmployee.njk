@@ -9,6 +9,7 @@
 {% block main_body %}
 	<h3>Create New Employee</h3>
   	<form method = "POST" action="/employee/insert" id="employee_create_form">
+		<p class="error_msg">{{errorMessage}}</p>
 		<input type="hidden" name="csrf" value="{{ csrf }}">
 
 		<label for="firstName">First Name</label>     

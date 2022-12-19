@@ -4,15 +4,18 @@ const { Cafe } = require("../models/cafeModel");
 const { MenuItem } = require("../models/menuItemModel");
 const { DB } = require("../config/config");
 const { handleError } = require("../middlewares/errorHandler")
+const { menuItemErrorMsg, errorNameStr } = require("../utils/helper");
 
 async function create(req, res) {
+    let errorMsg = menuItemErrorMsg(req.query.invalid);
     await mongoose.connect(DB.uri);
     Cafe.find({_id: mongoose.Types.ObjectId(req.query.cid)})
     .then(function(cafe) {
         if(cafe) {
             res.render("../views/createMenuItem.njk", {
                 csrf: req.session.csrf,
-                cafeId: req.query.cid
+                cafeId: req.params.cafeId,
+                errorMessage: errorMsg
             });
         }
         else {
@@ -26,7 +29,13 @@ async function insert(req, res) {
     await mongoose.connect(DB.uri);
     newItem.save(function(err) {
         if(err) {
-            handleError(res, 500);
+            let invalidFields = errorNameStr(err);    
+            if(invalidFields.length > 0) {
+                res.redirect("/menuItem/create/" + req.body.cafeId + "/?invalid=" + invalidFields);
+            }
+            else {
+                handleError(res, 500);
+            }
         }
         else {
             res.redirect("/cafe/" + req.body.cafeId);
@@ -35,13 +44,15 @@ async function insert(req, res) {
 }
 
 async function edit(req, res) {
+    let errorMsg = menuItemErrorMsg(req.query.invalid);
     await mongoose.connect(DB.uri);
     MenuItem.findOne({_id: mongoose.Types.ObjectId(req.params.itemId)})
     .then(function(menuItem) {
         if(menuItem) {
             res.render("../views/editMenuItem.njk", {
                 csrf: req.session.csrf,
-                menuItem: menuItem
+                menuItem: menuItem,
+                errorMessage: errorMsg
             });
         }
         else {
@@ -61,7 +72,13 @@ async function update(req, res) {
             }
             menuItem.save(function(err) {
                 if(err) {
-                    handleError(res, 500);
+                    let invalidFields = errorNameStr(err);    
+                    if(invalidFields.length > 0) {
+                        res.redirect("/menuItem/" + req.params.itemId + "/edit/?invalid=" + invalidFields);
+                    }
+                    else {
+                        handleError(res, 500);
+                    }
                 }
                 else {
                     res.redirect("/cafe/" + menuItem.cafeId);
