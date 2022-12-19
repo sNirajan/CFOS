@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 const session = require("express-session");
 const crypto = require("crypto");
-const path = require("path");
 const { Cafe } = require("../models/cafeModel");
 const { User } = require("../models/userModel");
 const { DB } = require("../config/config");
+const { handleError } = require("../middlewares/errorHandler")
 
 async function index(req, res) {
     await mongoose.connect(DB.uri);
@@ -15,7 +15,7 @@ async function index(req, res) {
             });
         }
         else {
-            res.status(404).sendFile(path.join(__dirname, '../public', '404.html'));
+            handleError(res, 404);
         }
     });
 }
@@ -25,12 +25,12 @@ async function create(req, res) {
     Cafe.find({}).then(function(cafes) {
         if(cafes) {
             res.render("../views/createEmployee.njk", {
-                _csrf: "TBI",
+                csrf: req.session.csrf,
                 cafes: cafes
             });
         }
         else {
-            res.status(500).sendFile(path.join(__dirname, '../public', '500.html'));
+            handleError(res, 404);
         }
     });
 }
@@ -42,7 +42,9 @@ async function insert(req, res) {
 
     await mongoose.connect(DB.uri);  
     newUser.save(function(err) {
-        if(err) throw err;
+        if(err) {
+            handleError(res, 500);
+        }
         else {
             res.redirect("/employee");
         }
@@ -57,18 +59,18 @@ async function edit(req, res) {
             Cafe.find({}).then(function(cafes) {
                 if(cafes) {
                     res.render("../views/editEmployee.njk", {
-                        _csrf: "TBI",
+                        csrf: req.session.csrf,
                         employee: employee,
                         cafes: cafes
                     });
                 }
                 else {
-                    res.status(500).sendFile(path.join(__dirname, '../public', '500.html'));
+                    handleError(res, 500);
                 }
             });
         }
         else {
-            res.status(404).sendFile(path.join(__dirname, '../public', '404.html'));
+            handleError(res, 404);
         }
     });
 }
@@ -82,14 +84,16 @@ async function update(req, res) {
                 employee[key] = value;
             }
             employee.save(function(err) {
-                if(err) throw err;
+                if(err) {
+                    handleError(res, 500);
+                }
                 else {
                     res.redirect("/employee");
                 }
             });
         }
         else {
-            res.status(404).sendFile(path.join(__dirname, '../public', '404.html'));
+            handleError(res, 404);
         }
     });
 }
@@ -97,7 +101,9 @@ async function update(req, res) {
 async function deleteEmployee(req, res) {
     await mongoose.connect(DB.uri);
     User.deleteOne({_id: mongoose.Types.ObjectId(req.params.employeeId)}, function(err, deletedEmployee) {
-        if(err) throw err;
+        if(err) {
+            handleError(res, 500);
+        }
         else {
             res.send("OK");
         }
@@ -105,10 +111,5 @@ async function deleteEmployee(req, res) {
 }
 
 module.exports = {
-    index,
-    create,
-    insert,
-    edit,
-    update,
-    deleteEmployee
+    index, create, insert, edit, update, deleteEmployee
 }

@@ -7,14 +7,18 @@
 {% extends 'layouts/main_layout.njk' %}
 
 {% block main_body %}
-    <p>{{username}}</p>
-    <p>List of All Campus Cafeterias</p>
+    <p>Welcome {{username}}!</p>
+    <p>Pick a cafeteria from the list below to start your order.</p>
 
     <div id="container">
         {% for cafe in cafes %}
-            <a class="cafe_box" href="#" onclick="openCafePage('{{cafe._id}}')">
+            <a class="cafe_box" href="#" onclick="openCafePage('{{cafe._id}}', '{{cafe.isOPen}}')">
                 <span class="cafe_name">{{ cafe.name }}</span>
-                <span class="cafe_hours">{{ 'Open ' + cafe.daysOpened + ' ' + cafe.startTime + ' to ' + cafe.closeTime }}</span>
+                {% if cafe.isOpen %}
+                    <span class="cafe_hours">Open for Order</span>
+                {% else %}
+                    <span class="cafe_hours">Closed</span>
+                {% endif %}
             </a>
         {% endfor %}
 
@@ -77,7 +81,11 @@
 {% endblock %}
 
 {% block script %}
-    function openCafePage(cafeId) {
+    function openCafePage(cafeId, isOpen) {
+        if(isOpen == "false") {
+            return;
+        } 
+        
         if(localStorage.getItem('draftOrderCafeId') == null) {
             window.location.href = "/cafe/" + cafeId;
         }

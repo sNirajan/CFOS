@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 const session = require("express-session");
-const path = require("path");
 const { Cafe } = require("../models/cafeModel");
 const { MenuItem } = require("../models/menuItemModel");
 const { User } = require("../models/userModel");
 const { Order } = require("../models/orderModel");
 const { DB } = require("../config/config");
+const { handleError } = require("../middlewares/errorHandler"); 
 
 async function index(req, res) {
     await mongoose.connect(DB.uri);
@@ -13,19 +13,20 @@ async function index(req, res) {
     .then(function(cafe) {
         if(cafe) {
             User.findOne({_id: req.session.userId}).then(function(user){
-                if(user.accessLevel===0){
+                if(user.accessLevel === 0){
                     MenuItem.find({cafeId: cafe._id.toString()})
                     .then(function(menuItems) {
-                        res.render("../views/cafe.njk", {
-                            userLevel: 0,
+                        res.render("../views/cafeAdmin.njk", {
+                            csrf: req.session.csrf,
                             cafe: cafe,
                             menuItems: menuItems
                         });
                     });
                 }
-                if(user.accessLevel===1){
+                if(user.accessLevel === 1){
                     Order.find({cafeId: req.params.cafeId}).then(function(orders){
                         res.render("../views/cafeEmployee.njk", {
+                            csrf: req.session.csrf,
                             cafe: cafe,
                             orders: orders
                         });
@@ -40,18 +41,17 @@ async function index(req, res) {
                         });
                     });
                 }
-
             });
         }
         else {
-            res.status(404).sendFile(path.join(__dirname, '../public', '404.html'));
+            handleError(res, 404);
         }
     });
 }
 
 async function create(req, res) {
     res.render("../views/createCafe.njk", {
-        _csrf: "TBI"
+        csrf: req.session.csrf
     });
 }
 
@@ -66,7 +66,9 @@ async function insert(req, res) {
 
     await mongoose.connect(DB.uri);
     await newCafe.save(function(err) {
-        if(err) throw err;
+        if(err) {
+            handleError(res, 500);
+        }
         else {
             res.redirect("/");
         }
@@ -79,12 +81,12 @@ async function edit(req, res) {
     .then(function(cafe) {
         if(Cafe) {
             res.render("../views/editCafe.njk", {
-                _csrf: "TBI",
+                csrf: req.session.csrf,
                 cafe: cafe
             });
         }
         else {
-            res.status(404).sendFile(path.join(__dirname, '../public', '404.html'));
+            handleError(res, 404);;
         }
     });
 }
@@ -97,23 +99,26 @@ async function update(req, res) {
             for([key, value] of Object.entries(req.body)) {
                 cafe[key] = value;
             }
-            console.log(cafe);
             cafe.save(function(err) {
-                if(err) throw err;
+                if(err) {
+                    handleError(res, 500);
+                }
                 else {
                     res.redirect("/cafe/" + req.params.cafeId);
                 }
             });
         }
         else {
-            res.status(404).sendFile(path.join(__dirname, '../public', '404.html'));
+            handleError(res, 404);
         }
     });
 }
 
 async function deleteCafe(req, res) {
     Cafe.deleteOne({_id: mongoose.Types.ObjectId(req.params.cafeId)}, function(err, deletedCafe) {
-        if(err) throw err;
+        if(err) {
+            handleError(res, 500);
+        }
         else {
             res.send("OK");
         }
@@ -121,10 +126,5 @@ async function deleteCafe(req, res) {
 }
 
 module.exports = {
-    index,
-    create, 
-    insert,
-    edit,
-    update,
-    deleteCafe
+    index, create, insert, edit, update, deleteCafe
 }

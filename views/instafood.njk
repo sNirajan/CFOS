@@ -10,6 +10,7 @@
     <h2>InstaFood</h2>
 
     <form method="POST" action="/instafood/uploadImage" encType="multipart/form-data" id="foodImgUploadForm">
+        <input type="hidden" name="csrf" value="{{csrf}}">
         <label for="img_file">Upload your food picture</label>
         <input type="file" name="img_file" required></input>
         <button type="submit">Upload</button>

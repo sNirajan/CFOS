@@ -35,8 +35,8 @@
                             <p>Special Instruction: {{order.instruction}}</p>
                         </div>
                         <div>
-                            <a class="order_Accept_btn" onclick="order_Accept_btn('{{ order._id }}')">Accept</a>
-                            <button id="order_Decline_btn" onclick="order_Decline_btn('{{ order._id }}')">Decline</button>
+                            <a class="order_accept_btn" onclick="order_Accept_btn('{{ order._id }}')">Accept</a>
+                            <button id="order_decline_btn" onclick="order_Decline_btn('{{ order._id }}')">Decline</button>
                         </div>
                     </div>
                 {% endif %}
@@ -95,7 +95,7 @@
         justify-content: space-between;
         margin-top: 10px;
     }
-    .menu_item a, #order_Decline_btn {
+    .menu_item a, #order_decline_btn {
         color: forestgreen;
         padding: 5px;
         margin-left: 10px;
@@ -113,8 +113,7 @@
         background-color: forestgreen;
         color: white;
     }
-
-      #order_Decline_btn {
+    #order_decline_btn {
         border-color: #C3381A;
         color: #C3381A;
         font-size: 16px;
@@ -122,7 +121,7 @@
         border-radius: 2px;
     }
 
-    #order_Decline_btn:hover {
+    #order_decline_btn:hover {
         background-color: #C3381A;
         color: white;
     }
@@ -131,7 +130,8 @@
 {% block script %}
     function order_Accept_btn(orderId) {
             data = {
-                status: "Approved"
+                status: "Approved", 
+                csrf: "{{ csrf }}"
             };
             fetch('/order/' + orderId + '/approve',{
                 method: "POST",
@@ -140,20 +140,20 @@
                 },
                 body: JSON.stringify(data),
 
-            }).
-                then(response => {
-                    if(response.status == 200) {
-                        window.location.reload();
-                    } 
-                    else {
-                        alert('Error in Approving order!!!');
-                    }
-                });
+            }).then(response => {
+                if(response.status == 200) {
+                    window.location.reload();
+                } 
+                else {
+                    alert('Error in Approving order!!!');
+                }
+            });
     }
 
     function order_Decline_btn(orderId) {
             data = {
-                status: "Declined"
+                status: "Declined",
+                csrf: "{{ csrf }}"
             };
             fetch('/order/' + orderId + '/decline',{
                 method: "POST",
@@ -162,20 +162,20 @@
                 },
                 body: JSON.stringify(data),
 
-            }).
-                then(response => {
-                    if(response.status == 200) {
-                        window.location.reload();
-                    } 
-                    else {
-                        alert('Error in Declining order!!!');
-                    }
-                });
+            }).then(response => {
+                if(response.status == 200) {
+                    window.location.reload();
+                } 
+                else {
+                    alert('Error in Declining order!!!');
+                }
+            });
     }
 
     function order_ready_btn(orderId) {
             data = {
-                status: "Ready"
+                status: "Ready",
+                csrf: "{{ csrf }}"
             };
             fetch('/order/' + orderId + '/ready',{
                 method: "POST",

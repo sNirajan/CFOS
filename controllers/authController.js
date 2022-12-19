@@ -3,6 +3,7 @@ const session = require("express-session");
 const crypto = require("crypto");
 const { User } = require("../models/userModel");
 const { DB } = require("../config/config");
+const { handleError } = require("../middlewares/errorHandler")
 
 async function index(req, res) {
     req.session.csrf = crypto.randomBytes(100).toString('base64');
@@ -17,7 +18,7 @@ async function authenticate(req, res) {
         if(user) {
             user.temporaryAuthToken = crypto.randomBytes(16).toString("hex");
             user.save(function(err) {
-                if(err) throw err;
+                if(err) handleError(res, 500);
                 else {
                     req.session.regenerate(function () {
                         req.session.userAuthToken = user.temporaryAuthToken;
@@ -35,7 +36,7 @@ async function authenticate(req, res) {
 
 async function create(req, res) {
     res.render("../views/signup.njk", {
-        _csrf: "TBI"
+        csrf: req.session.csrf
     });
 }
 
@@ -57,7 +58,9 @@ async function insert(req, res) {
 
     await mongoose.connect(DB.uri);
     await newUser.save(function(err) {
-        if(err) throw err;
+        if(err) {
+            handleError(res, 500);
+        }
         else {
             req.session.userAuthToken = newUser.temporaryAuthToken;
             req.session.userId = newUser._id;

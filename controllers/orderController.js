@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 const session = require("express-session");
-const path = require("path");
 const { Order } = require("../models/orderModel");
 const { Cafe } = require("../models/cafeModel");
 const { User } = require("../models/userModel");
 const { DB } = require("../config/config");
+const { handleError } = require("../middlewares/errorHandler");
 
 async function review(req, res) {
     await mongoose.connect(DB.uri);
@@ -12,13 +12,12 @@ async function review(req, res) {
     .then(function(cafe) {
         if(cafe) {
             res.render("../views/orderCart.njk", {
-                _csrf: "TBI",
+                csrf: req.session.csrf,
                 cafe: cafe
             });
         }
         else {
-            console.log("Errorr");
-            res.status(404).sendFile(path.join(__dirname, '../public', '404.html'));
+            handleError(res, 404);
         }
     });
 }
@@ -40,11 +39,11 @@ async function checkout(req, res) {
             instruction: req.body.instruction
         });
         newOrder.save(function(err, order) {
-            if(err) throw err;
+            if(err) {
+                handleError(res, 500);
+            }
             else {
-                res.send({
-                    id: order._id
-                });
+                res.send({ id: order._id });
             }
         });
     });
@@ -57,15 +56,16 @@ async function approve(req, res) {
         if(order) {
             order.status = req.body.status;
             order.save(function(err) {
-                if(err) throw err;
+                if(err) {
+                    handleError(res, 500);
+                }
                 else {
-                    res.send("Success");
+                    res.send("OK");
                 }
             });
         }
         else {
-            console.log("Erorr");
-            res.status(404).sendFile(path.join(__dirname, '../public', '404.html'));
+            handleError(res, 404);
         }
     });
 }
@@ -77,15 +77,16 @@ async function decline(req, res) {
         if(order) {
             order.status = req.body.status;
             order.save(function(err) {
-                if(err) throw err;
+                if(err) {
+                    handleError(res, 500);
+                }
                 else {
-                    res.send("Success");
+                    res.send("OK");
                 }
             });
         }
         else {
-            console.log("Erorr");
-            res.status(404).sendFile(path.join(__dirname, '../public', '404.html'));
+            handleError(res, 404);
         }
     });
 }
@@ -97,15 +98,16 @@ async function ready(req, res) {
         if(order) {
             order.status = req.body.status;
             order.save(function(err) {
-                if(err) throw err;
+                if(err) {
+                    handleError(res, 500);
+                }
                 else {
-                    res.send("Success");
+                    res.send("OK");
                 }
             });
         }
         else {
-            console.log("Erorr");
-            res.status(404).sendFile(path.join(__dirname, '../public', '404.html'));
+            handleError(res, 404);
         }
     });
 }
@@ -119,7 +121,7 @@ async function track(req, res) {
             });
         }
         else {
-            res.status(404).sendFile(path.join(__dirname, '../public', '404.html'));
+            handleError(res, 404);
         }
     }) 
 }

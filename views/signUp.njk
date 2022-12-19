@@ -74,6 +74,8 @@
     <div id="bg_img">      
         <form id="signup_form" >
             <h3>SIGN UP</h3>
+            <input type="hidden" name="csrf" value="{{csrf}}">
+
             <label for="firstName">First Name</label>     
             <input type="text" name="firstName" id="firstName" required>
 
@@ -114,7 +116,6 @@
 
             }).then(response => {
                 if(response.status == 200) {
-                    console.log('OK');
                     window.location.href = '/user/login';
                 }
                 else {
@@ -123,9 +124,7 @@
             });
         }
         else {
-            console.log('NO');
             alert("Password does not match!");
         }
-    }
-    
+    } 
 </script>

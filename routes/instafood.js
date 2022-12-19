@@ -2,26 +2,20 @@ const express = require("express");
 const router = express.Router();
 const multiparty = require("multiparty");
 const fs = require("fs");
-const { RestrictRoute } = require("../middlewares/auth");
+const { auth } = require("../middlewares/auth");
 
-/**
- * GET route to show the Instafood page.
- */
-router.get("/", RestrictRoute, (req, res) => {
+router.get("/", auth, (req, res) => {
   let foodImgList = [];
   fs.readdirSync("./public/instafood/").forEach((file) => {
     foodImgList.push(file);
   });
   res.status(200).render("instafood.njk", {
     foodImgList: foodImgList,
+    csrf: req.session.csrf
   });
 });
 
-/**
- * POST route to save uploaded image to the local disk.
- * TODO: Resctrict to authenticated users only.
- */
-router.post("/uploadImage", RestrictRoute, (req, res) => {
+router.post("/uploadImage", auth, (req, res) => {
   let form = new multiparty.Form({ uploadDir: "./public/instafood" });
   form.parse(req, (err, fields, files) => {
     res.redirect("/instafood");

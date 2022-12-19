@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const orderController = require("../controllers/orderController");
-const { RestrictRoute } = require("../middlewares/auth");
+const { auth } = require("../middlewares/auth");
 
-router.get("/:cafeId/review", RestrictRoute, orderController.review);
-router.post("/:cafeId/checkout", RestrictRoute, orderController.checkout);
-router.post("/:orderId/approve", RestrictRoute, orderController.approve);
-router.post("/:orderId/decline", RestrictRoute, orderController.decline);
-router.post("/:orderId/ready", RestrictRoute, orderController.ready);
-router.get("/:orderId/track", RestrictRoute, orderController.track);
+router.get("/:cafeId/review", auth, orderController.review);
+router.post("/:cafeId/checkout", auth, orderController.checkout);
+router.post("/:orderId/approve", auth, orderController.approve);
+router.post("/:orderId/decline", auth, orderController.decline);
+router.post("/:orderId/ready", auth, orderController.ready);
+router.get("/:orderId/track", auth, orderController.track);
 
 module.exports = router;

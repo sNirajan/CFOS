@@ -54,6 +54,7 @@
         background-color: royalblue;
         text-decoration: none;
         border-radius: 2px;
+        display: inline-block;
     }
     .note {
         font-size: 12px;
@@ -91,15 +92,20 @@
                                                 'Are you sure you want to delete this employee?');
         
         if(isDeleteConfirmed) {
-            fetch('/employee/' + empId + '/delete').
-                then(response => {
-                    if(response.status == 200) {
-                        window.location.href = '/employee';
-                    } 
-                    else {
-                        alert('Sorry, couldn\'t delete the employee info. Please try again!');
-                    }
-                });
+            fetch('/employee/' + empId + '/delete', {
+                method: "POST", 
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({csrf: "{{ csrf }}"})
+            }).then(response => {
+                if(response.status == 200) {
+                    window.location.href = '/employee';
+                } 
+                else {
+                    alert('Sorry, couldn\'t delete the employee info. Please try again!');
+                }
+            });
         }
     }
 {% endblock %}

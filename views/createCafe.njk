@@ -9,7 +9,7 @@
 {% block main_body %}	
 	<h3>Create New Cafe</h3>
   	<form method = "POST" action="/cafe/insert" id="cafe_create_form">
-		<input type="hidden" name="_csrf" value="{{ _csrf }}">
+		<input type="hidden" name="csrf" value="{{ csrf }}">
 		
 		<label for="cafe"> Cafeteria Name</label>     
 		<input type="text" name="name" required>
@@ -64,27 +64,6 @@
 	#cafe_create_btn:hover {
  		background-color: forestgreen;
 	}
-{% endblock %}
-
-{% block script %}
-
-{# function sendAjax(e){
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const formProps = Object.fromEntries(formData);
-
-    let request = new XMLHttpRequest();
-    request.addEventListener("load", ()=>{
-      let response = JSON.parse(request.responseText);
-      document.getElementById("try").innerHTML = JSON.stringify(response);
-    });
-
-    request.open("POST", "/createCafe");
-    request.setRequestHeader("Content-Type", "application/json");
-    request.send((JSON.stringify(formProps)));
-  }
-  document.getElementById("Form").onsubmit = sendAjax; #}
-
 {% endblock %}
 
 

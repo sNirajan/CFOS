@@ -4,13 +4,13 @@
  * Niranjan Bikram Shah
 -->
 
-{% extends 'layouts/main_layout.njk' %}
+{% extends "layouts/main_layout.njk" %}
 
 {% block main_body %}
     <div id="cafe_info">
         <h3>{{ cafe.name }}</h3>
         <p>Location: {{ cafe.location }}</p>
-        <p>Hours of Operation: {{ cafe.daysOpened + ' ' + cafe.startTime + ' to ' + cafe.closeTime }}</p>
+        <p>Hours of Operation: {{ cafe.isOpen }}</p>
         <p>Description:
             {% if cafe.description.length > 0 %}
                 {{ cafe.description }}
@@ -25,25 +25,23 @@
         {% for item in menuItems %}
             <div class="menu_item">
                 <div>
-                    <p>{{item.name + ' ($' + item.price + ')' }}</p>
+                    <p>{{item.name}} (${{item.price}})</p>
                     {% if item.description.length > 0 %}
                         <p class="item_description">{{ item.description }}</p>
                     {% endif %}
                 </div>
                 <div>
-                    <a href="{{ '/menuItem/' + item._id + '/edit' }}" class="item_edit_btn">Edit</a>
+                    <a href="/menuItem/{{item._id}}/edit" class="item_edit_btn">Edit</a>
                     <button class="item_delete_btn" onclick="onDeleteMenuItemBtnClick('{{ item._id }}', '{{cafe._id }}')">Delete item</button>
                 </div>
             </div>
         {% endfor %}
 
-        {% if userLevel == 0 %}
-            <div id="cafe_action_btns">
-                <a id="item_create_btn" href="{{ '/menuItem/create?cid=' + cafe._id }}">Add New Menu Item</a>
-                <a id="cafe_edit_btn" href="{{ '/cafe/' + cafe._id + '/edit' }}">Edit Cafe Info</a>
-                <button id="cafe_delete_btn" onclick="onDeleteCafeBtnClick('{{ cafe._id }}')">Delete this Cafe</button>
-            </div>
-        {% endif %}
+        <div id="cafe_action_btns">
+            <a id="item_create_btn" href="/menuItem/create?cid={{ cafe._id }}">Add New Menu Item</a>
+            <a id="cafe_edit_btn" href="/cafe/{{ cafe._id }}/edit">Edit Cafe Info</a>
+            <button id="cafe_delete_btn" onclick="onDeleteCafeBtnClick('{{ cafe._id }}')">Delete this Cafe</button>
+        </div>
     </div>
 {% endblock %}
 
@@ -130,39 +128,47 @@
 {% endblock %}
 
 {% block script %}
-    {# function to make Ajax call to delete Cafe #}
     function onDeleteCafeBtnClick(cafeId) {
-        let isDeleteConfirmed = confirm('This cafe and all data associated with it will be permanently deleted. ' + 
-                                        'Are you sure you want to delete this cafe?');
+        let isDeleteConfirmed = confirm("This cafe and all data associated with it will be permanently deleted. " + 
+                                        "Are you sure you want to delete this cafe?");
         
         if(isDeleteConfirmed) {
-            fetch('/cafe/' + cafeId + '/delete').
-                then(response => {
-                    if(response.status == 200) {
-                        window.location.href = '/home';
-                    } 
-                    else {
-                        alert('Sorry, couldn\'t delete the cafe info. Please try again!');
-                    }
-                });
+            fetch("/cafe/" + cafeId + "/delete", {
+                method: "POST", 
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({csrf: "{{ csrf }}"})
+            }).then(response => {
+                if(response.status == 200) {
+                    window.location.href = "/";
+                } 
+                else {
+                    alert("Sorry, couldn't delete the cafe info. Please try again!");
+                }
+            });
         }
     }
 
-    {# function to make Ajax call to delete an item from menu #}
     function onDeleteMenuItemBtnClick(itemId, cafeId) {
-        let isDeleteConfirmed = confirm('This item will be permanently deleted. ' + 
-                                        'Are you sure you want to delete this item?');
+        let isDeleteConfirmed = confirm("This item will be permanently deleted. " + 
+                                        "Are you sure you want to delete this item?");
         
         if(isDeleteConfirmed) {
-            fetch('/menuItem/' + itemId + '/delete').
-                then(response => {
-                    if(response.status == 200) {
-                        window.location.href = '/cafe/' + cafeId;
-                    } 
-                    else {
-                        alert('Sorry, couldn\'t delete the item. Please try again!');
-                    }
-                });
+            fetch("/menuItem/" + itemId + "/delete", {
+                method: "POST", 
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({csrf: "{{ csrf }}"})
+            }).then(response => {
+                if(response.status == 200) {
+                    window.location.href = "/cafe/" + cafeId;
+                } 
+                else {
+                    alert("Sorry, couldn't delete the item. Please try again!");
+                }
+            });
         }
     }
 {% endblock %}

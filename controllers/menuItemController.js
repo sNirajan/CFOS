@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 const session = require("express-session");
-const path = require("path");
 const { Cafe } = require("../models/cafeModel");
 const { MenuItem } = require("../models/menuItemModel");
 const { DB } = require("../config/config");
+const { handleError } = require("../middlewares/errorHandler")
 
 async function create(req, res) {
     await mongoose.connect(DB.uri);
@@ -11,12 +11,12 @@ async function create(req, res) {
     .then(function(cafe) {
         if(cafe) {
             res.render("../views/createMenuItem.njk", {
-                _csrf: "TBI",
+                csrf: req.session.csrf,
                 cafeId: req.query.cid
             });
         }
         else {
-            res.status(404).sendFile(path.join(__dirname, '../public', '404.html'));
+            handleError(res, 404);
         }
     });
 }
@@ -25,7 +25,9 @@ async function insert(req, res) {
     let newItem = new MenuItem(req.body);
     await mongoose.connect(DB.uri);
     newItem.save(function(err) {
-        if(err) throw err;
+        if(err) {
+            handleError(res, 500);
+        }
         else {
             res.redirect("/cafe/" + req.body.cafeId);
         }
@@ -38,12 +40,12 @@ async function edit(req, res) {
     .then(function(menuItem) {
         if(menuItem) {
             res.render("../views/editMenuItem.njk", {
-                _csrf: "TBI",
+                csrf: req.session.csrf,
                 menuItem: menuItem
             });
         }
         else {
-            res.status(404).sendFile(path.join(__dirname, '../public', '404.html'));
+            handleError(res, 404);
         }
     });
 }
@@ -58,14 +60,16 @@ async function update(req, res) {
                 menuItem[key] = value;
             }
             menuItem.save(function(err) {
-                if(err) throw err;
+                if(err) {
+                    handleError(res, 500);
+                }
                 else {
                     res.redirect("/cafe/" + menuItem.cafeId);
                 }
             });
         }
         else {
-            res.status(404).sendFile(path.join(__dirname, '../public', '404.html'));
+            handleError(res, 404);
         }
     });
 }
@@ -74,7 +78,9 @@ async function deleteMenuItem(req, res) {
     await mongoose.connect(DB.uri);
     MenuItem.deleteOne({_id: mongoose.Types.ObjectId(req.params.itemId)}, 
         function(err, deletedItem) {
-            if(err) throw err;
+            if(err) {
+                handleError(res, 500);
+            }
             else {
                 res.send("OK");
             }
@@ -82,9 +88,5 @@ async function deleteMenuItem(req, res) {
 }
 
 module.exports = {
-    create,
-    insert,
-    edit,
-    update,
-    deleteMenuItem
+    create, insert, edit, update, deleteMenuItem
 }

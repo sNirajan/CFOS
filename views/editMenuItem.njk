@@ -9,7 +9,7 @@
 {% block main_body %}
 	<h3>Edit menu item</h3>
   	<form method = "POST" action="{{ '/menuItem/' + menuItem._id + '/update' }}" id="menu_item_create_form">
-		<input type="hidden" name="_csrf" value="{{ _csrf }}">
+		<input type="hidden" name="csrf" value="{{ csrf }}">
 
 		<label for="name"> Item Name</label>     
 		<input type="text" name="name" value="{{ menuItem.name }}" required>

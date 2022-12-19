@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const menuItemController = require("../controllers/menuItemController");
-const { RestrictRoute } = require("../middlewares/auth");
+const { auth } = require("../middlewares/auth");
 
-router.get("/create", RestrictRoute, menuItemController.create);
-router.post("/insert", RestrictRoute, menuItemController.insert);
-router.get("/:itemId/edit", RestrictRoute, menuItemController.edit);
-router.post("/:itemId/update", RestrictRoute, menuItemController.update);
-router.get("/:itemId/delete", RestrictRoute, menuItemController.deleteMenuItem);
+router.get("/create", auth, menuItemController.create);
+router.post("/insert", auth, menuItemController.insert);
+router.get("/:itemId/edit", auth, menuItemController.edit);
+router.post("/:itemId/update", auth, menuItemController.update);
+router.post("/:itemId/delete", auth, menuItemController.deleteMenuItem);
 
 module.exports = router;

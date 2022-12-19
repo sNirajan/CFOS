@@ -4,9 +4,9 @@ const mongoose = require("mongoose");
 const { Cafe } = require("../models/cafeModel");
 const { User } = require("../models/userModel");
 const { DB } = require("../config/config");
-const { RestrictRoute } = require("../middlewares/auth");
+const { auth } = require("../middlewares/auth");
 
-router.get("/", RestrictRoute, function (req, res) {
+router.get("/", auth, function (req, res) {
     mongoose.connect(DB.uri);
     User.findOne({_id: mongoose.Types.ObjectId(req.session.userId)})
     .then(function(user) {
@@ -30,4 +30,5 @@ router.get("/", RestrictRoute, function (req, res) {
         }
     });
 });
+
 module.exports = router;
