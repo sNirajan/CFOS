@@ -61,7 +61,7 @@ async function insert(req, res) {
         else {
             req.session.userAuthToken = newUser.temporaryAuthToken;
             req.session.userId = newUser._id;
-            res.redirect("/")
+            res.redirect("/user/login")
         }
     });
 }

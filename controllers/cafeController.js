@@ -3,6 +3,8 @@ const session = require("express-session");
 const path = require("path");
 const { Cafe } = require("../models/cafeModel");
 const { MenuItem } = require("../models/menuItemModel");
+const { User } = require("../models/userModel");
+const { Order } = require("../models/orderModel");
 const { DB } = require("../config/config");
 
 async function index(req, res) {
@@ -10,13 +12,35 @@ async function index(req, res) {
     Cafe.findOne({_id: mongoose.Types.ObjectId(req.params.cafeId)})
     .then(function(cafe) {
         if(cafe) {
-            MenuItem.find({cafeId: cafe._id.toString()})
-            .then(function(menuItems) {
-                res.render("../views/cafe.njk", {
-                    userLevel: 0,
-                    cafe: cafe,
-                    menuItems: menuItems
-                });
+            User.findOne({_id: req.session.userId}).then(function(user){
+                if(user.accessLevel===0){
+                    MenuItem.find({cafeId: cafe._id.toString()})
+                    .then(function(menuItems) {
+                        res.render("../views/cafe.njk", {
+                            userLevel: 0,
+                            cafe: cafe,
+                            menuItems: menuItems
+                        });
+                    });
+                }
+                if(user.accessLevel===1){
+                    Order.find({cafeId: req.params.cafeId}).then(function(orders){
+                        res.render("../views/cafeEmployee.njk", {
+                            cafe: cafe,
+                            orders: orders
+                        });
+                    });
+                }
+                if(user.accessLevel===2){
+                    MenuItem.find({cafeId: cafe._id.toString()})
+                    .then(function(menu) {
+                        res.render("../views/cafeCustomer.njk", {
+                            cafe: cafe,
+                            menu: menu
+                        });
+                    });
+                }
+
             });
         }
         else {

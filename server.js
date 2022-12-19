@@ -2,7 +2,7 @@ const express = require("express");
 const nunjucks = require("nunjucks");
 const session = require("express-session");
 const { SESSION } = require("./config/config.js");
-
+  
 const app = express();
 const port = 3000;
 

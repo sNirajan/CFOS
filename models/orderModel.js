@@ -15,6 +15,10 @@ const orderSchema = new mongoose.Schema({
         required: true,
         default: Date.now()
     },
+    status: {
+        type: String,
+        required: false
+    },
     subtotal: {
         type: Number,
         required: true
@@ -47,6 +51,7 @@ async function seedOrder() {
     let newOrder = new Order({
         userId: "6360078867776f417965a0a8",
         cafeId: "635add5398b892de63c25794",
+        status:"Pending",
         subtotal: 100.00,
         tax: 13.00,
         total: 113.00,
