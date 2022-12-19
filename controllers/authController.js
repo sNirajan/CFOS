@@ -8,7 +8,8 @@ const { randomToken } = require("../utils/helper");
 
 async function index(req, res) {
     res.render("../views/login.njk", {
-        _csrf: "TBI"
+        _csrf: "TBI",
+        validationFailed: req.query.q !== undefined
     });
 }
 
@@ -28,7 +29,7 @@ async function authenticate(req, res) {
           });
         }
         else {
-          res.redirect("/user/login");
+          res.redirect("/user/login/?q=invalid");
         }
       });
 }
@@ -67,8 +68,5 @@ async function insert(req, res) {
 }
 
 module.exports = {
-    index, 
-    create,
-    insert,
-    authenticate
+    index, create, insert, authenticate
 }

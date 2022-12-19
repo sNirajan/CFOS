@@ -57,7 +57,7 @@
         }
         #bg_img {
             /* The image used */
-            background-image: url("../public/login.jpg");	
+            background-image: url("/public/login.jpg");	
   		    /* Full height */
             height: 100%;
 
@@ -82,7 +82,10 @@
         a:hover{
             color: red;
         }
-        
+        .error_msg {
+            text-align: left;
+            color: red;
+        }
         {% block style %} {% endblock %}
     </style>
 </head>
@@ -91,6 +94,9 @@
     <div id="bg_img">
         <form id="login_form" action="/user/authenticate" method="POST">
             <h3>LOGIN</h3>
+            {% if validationFailed %}
+            <p class="error_msg">Invalid email or password.</p>
+            {% endif %}
             <input type="hidden" name="_csrf" value="{{ _csrf }}">
 
             <label for="email">Email</label>     
