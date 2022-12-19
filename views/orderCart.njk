@@ -152,15 +152,16 @@
     function removeItem(div, itemNumber) {
         div.style.display = "none";
 
+        let itemCount = 0;
         let removedItem = {};
         let newCart = [];
         let cart = JSON.parse(localStorage.getItem("cart"));
         
         for(const item of cart ) {
-            console.log(itemNumber, item.itemNumber);
             if(item.itemNumber != itemNumber) {
                 newCart.push({
-                    id: item.id,
+                    itemNumber: ++itemCount,
+                    menuItemId: item.menuItemId,
                     name: item.name,
                     price: item.price
                 });
@@ -169,13 +170,12 @@
                 removedItem = item;
             }
         }
-
         if(newCart.length > 0) {
             localStorage.setItem("cart", JSON.stringify(newCart)); 
         }
         else {
-            //localStorage.clear();
-            //window.location.href = "/cafe/{{cafe._id}}";
+            localStorage.clear();
+            window.location.href = "/cafe/{{cafe._id}}";
         }
 
         price = parseFloat(removedItem.price);

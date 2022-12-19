@@ -40,7 +40,7 @@ app.use("/order", orderRoutes);
 const orderUpdateWatch = Order.watch()
 orderUpdateWatch.on('change', change => {
   console.log(change);
-})
+});
 
 app.use((req, res) => {
   res.status(404).sendFile(__dirname + "/public/404.html");
