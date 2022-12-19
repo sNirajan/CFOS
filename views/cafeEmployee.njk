@@ -35,8 +35,8 @@
                             <p>Special Instruction: {{order.instruction}}</p>
                         </div>
                         <div>
-                            <a class="order_accept_btn" onclick="order_Accept_btn('{{ order._id }}')">Accept</a>
-                            <button id="order_decline_btn" onclick="order_Decline_btn('{{ order._id }}')">Decline</button>
+                            <a class="order_accept_btn" onclick="updateOrder('{{ order._id }}', 'Approved')">Accept</a>
+                            <button id="order_decline_btn" onclick="updateOrder('{{ order._id }}', 'Declined')">Decline</button>
                         </div>
                     </div>
                 {% endif %}
@@ -56,7 +56,7 @@
                                 <p>Instruction: {{order.instruction}}</p>
                             </div>
                         <div>
-                        <a href="#" class="order_ready" onclick="order_ready_btn('{{order._id}}')">Order Ready</a>
+                        <a href="#" class="order_ready" onclick="updateOrder('{{order._id}}', 'Ready')">Order Ready</a>
                     </div>
                 </div>
                     {% endif %}
@@ -128,70 +128,25 @@
 {% endblock %}
 
 {% block script %}
-    function order_Accept_btn(orderId) {
-            data = {
-                status: "Approved", 
-                csrf: "{{ csrf }}"
-            };
-            fetch('/order/' + orderId + '/approve',{
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-
-            }).then(response => {
-                if(response.status == 200) {
-                    window.location.reload();
-                } 
-                else {
-                    alert('Error in Approving order!!!');
-                }
-            });
-    }
-
-    function order_Decline_btn(orderId) {
-            data = {
-                status: "Declined",
-                csrf: "{{ csrf }}"
-            };
-            fetch('/order/' + orderId + '/decline',{
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-
-            }).then(response => {
-                if(response.status == 200) {
-                    window.location.reload();
-                } 
-                else {
-                    alert('Error in Declining order!!!');
-                }
-            });
-    }
-
-    function order_ready_btn(orderId) {
-            data = {
-                status: "Ready",
-                csrf: "{{ csrf }}"
-            };
-            fetch('/order/' + orderId + '/ready',{
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-
-            }).then(response => {
-                if(response.status == 200) {
-                    window.location.reload(true);
-                } 
-                else {
-                    alert('Error in Changing status of order to ready!!!');
-                }
-            });
+    function updateOrder(orderId, status) {
+        let data = {
+            csrf: "{{csrf}}",
+            status: status
+        };
+        fetch("/order/" + orderId + "/update", {
+            method: "POST", 
+            headers: {
+                "Content-type": "application/json"
+            },
+            body: JSON.stringify(data)
+        }).then(response => {
+            if(response.status == 200) {
+                window.location.reload(true);
+            } 
+            else {
+                alert("Couldn't update order status. PLease try again!");
+            }
+        });
     }
 
     const evtSource = new EventSource("/cafe/orderRetriever/{{cafe._id}}");

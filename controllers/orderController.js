@@ -49,49 +49,7 @@ async function checkout(req, res) {
     });
 }
 
-async function approve(req, res) {
-    await mongoose.connect(DB.uri);
-    Order.findOne({ _id: mongoose.Types.ObjectId(req.params.orderId) })
-    .then(function(order) {
-        if(order) {
-            order.status = req.body.status;
-            order.save(function(err) {
-                if(err) {
-                    handleError(res, 500);
-                }
-                else {
-                    res.send("OK");
-                }
-            });
-        }
-        else {
-            handleError(res, 404);
-        }
-    });
-}
-
-async function decline(req, res) {
-    await mongoose.connect(DB.uri);
-    Order.findOne({ _id: mongoose.Types.ObjectId(req.params.orderId) })
-    .then(function(order) {
-        if(order) {
-            order.status = req.body.status;
-            order.save(function(err) {
-                if(err) {
-                    handleError(res, 500);
-                }
-                else {
-                    res.send("OK");
-                }
-            });
-        }
-        else {
-            handleError(res, 404);
-        }
-    });
-}
-
-async function ready(req, res) {
+async function update(req, res) {
     await mongoose.connect(DB.uri);
     Order.findOne({ _id: mongoose.Types.ObjectId(req.params.orderId) })
     .then(function(order) {
@@ -127,5 +85,5 @@ async function track(req, res) {
 }
 
 module.exports = {
-    review, checkout, approve, decline, ready, track
+    review, checkout, update, track
 }

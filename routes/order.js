@@ -6,9 +6,7 @@ const { csrf } = require("../middlewares/guard");
 
 router.get("/:cafeId/review", auth, orderController.review);
 router.post("/:cafeId/checkout", auth, csrf, orderController.checkout);
-router.post("/:orderId/approve", auth, orderController.approve);
-router.post("/:orderId/decline", auth, orderController.decline);
-router.post("/:orderId/ready", auth, orderController.ready);
+router.post("/:orderId/update", orderController.update);
 router.get("/:orderId/track", auth, orderController.track);
 
 module.exports = router;
