@@ -1,3 +1,9 @@
+/**
+ * Reza Saker Hossain
+ * Gagandeep Singh
+ * Niranjan Shah
+ */
+
 const mongoose = require("mongoose");
 const crypto = require("crypto");
 const { DB } = require("../config/config");
