@@ -221,7 +221,8 @@
                 if(response.status === 200) {
                     response.json().then(order => {
                         localStorage.clear();
-                        window.location.href = "/order/" + order.id + "/track";
+                        localStorage.setItem("orderId", order.id);
+                        window.location.replace("/order/" + order.id + "/track");
                     });
                 } 
                 else {

@@ -96,6 +96,14 @@
             footer.style.position = 'relative';
         } 
     }
+    document.addEventListener("DOMContentLoaded", function () {
+        if(localStorage.getItem("orderId")) {
+            const a = document.createElement("a");
+            a.href = "/order/" + localStorage.getItem("orderId") + "/track";
+            a.textContent = "Track Order";
+            document.getElementById("menu_btns").appendChild(a);
+        }
+    })
     {% block script %}  {% endblock %}
 </script>
 

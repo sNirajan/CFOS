@@ -49,6 +49,19 @@ app.get("/order/tracker/:orderId", async (req, res) => {
   });
 });
 
+app.get("/cafe/orderRetriever/:cafeId", async (req, res) => {
+  res.set({
+    "Connection": "keep-alive",
+    "Content-type": "text/event-stream"
+  });
+  await mongoose.connect(DB.uri);
+  Order.watch().on("change", change => {
+    if(change.operationType == "insert" && change.fullDocument.cafeId == req.params.cafeId) {
+      res.write("event: " + req.params.cafeId + "\ndata: NEW_ORDER_FOUND\n\n");
+    }
+  });
+});
+
 app.use((req, res) => {
   res.status(404).sendFile(__dirname + "/public/404.html");
 });

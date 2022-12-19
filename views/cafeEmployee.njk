@@ -186,13 +186,19 @@
 
             }).then(response => {
                 if(response.status == 200) {
-                    window.location.reload();
+                    window.location.reload(true);
                 } 
                 else {
                     alert('Error in Changing status of order to ready!!!');
                 }
             });
     }
+
+    const evtSource = new EventSource("/cafe/orderRetriever/{{cafe._id}}");
+    evtSource.addEventListener("{{cafe._id}}", (e) => {
+        evtSource.close();
+        window.location.reload(true);
+    });
 
 {% endblock %}
    
