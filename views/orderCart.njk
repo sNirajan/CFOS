@@ -120,8 +120,6 @@
             let cart = JSON.parse(localStorage.getItem('cart'));
             let subtotal = 0.0;
 
-            console.log(cart);
-
             for(let item of cart) {     
                 const menu_item_div = document.createElement("div");
                 const item_info_div = document.createElement("div");
@@ -199,7 +197,7 @@
             let cart = JSON.parse(localStorage.getItem("cart"));
             cart.forEach(item => {
                 itemsList.push({
-                    id: item.id,
+                    menuItemId: item.menuItemId,
                     name: item.name, 
                     price: item.price
                 });

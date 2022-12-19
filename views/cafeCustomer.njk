@@ -140,7 +140,6 @@
 {% block script %}
     document.addEventListener('DOMContentLoaded', () => {
         if(localStorage.getItem('cart') != null) {
-            //localStorage.clear();
             let cart = JSON.parse(localStorage.getItem('cart'));
             for(const item of cart) {
                 addItemToView(item.name, item.price);
