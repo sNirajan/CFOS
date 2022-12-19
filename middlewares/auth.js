@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 const { User } = require("../models/userModel");
 
 function authValidation(req, res, next) {
-    console.log(req.session);
     if(req.session.userAuthToken && req.session.userId) {
         User.findOne({_id: mongoose.Types.ObjectId(req.session.userId)})
         .then(function(user) {
@@ -21,8 +20,18 @@ function authValidation(req, res, next) {
     }
 }
 
+function guestValidation(req, res, next) {
+    if(req.session.userAuthToken && req.session.userId) {
+        res.redirect("/");
+    }
+    else {
+        next();
+    }
+}
+
 module.exports = {
-    auth: authValidation
+    auth: authValidation,
+    guest: guestValidation
 }
 
 
