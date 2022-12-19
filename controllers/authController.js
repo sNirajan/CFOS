@@ -6,7 +6,8 @@ const { DB } = require("../config/config");
 const { handleError } = require("../middlewares/errorHandler")
 
 async function index(req, res) {
-    req.session.csrf = crypto.randomBytes(100).toString('base64');
+    req.session.csrf = crypto.randomBytes(64).toString('base64');
+    console.log(req.session);
     res.render("../views/login.njk", {
         csrf: req.session.csrf,
         validationFailed: req.query.q !== undefined
@@ -21,6 +22,7 @@ async function authenticate(req, res) {
                 if(err) handleError(res, 500);
                 else {
                     req.session.regenerate(function () {
+                        req.session.csrf = crypto.randomBytes(64).toString('base64');
                         req.session.userAuthToken = user.temporaryAuthToken;
                         req.session.userId = user._id;
                         res.redirect("/");
