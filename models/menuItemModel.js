@@ -3,7 +3,6 @@
  * Gagandeep Singh
  * Niranjan Shah
  */
-
 const mongoose = require("mongoose");
 const { DB } = require("../config/config");
 

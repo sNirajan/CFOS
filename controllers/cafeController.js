@@ -3,7 +3,6 @@
  * Gagandeep Singh
  * Niranjan Shah
  */
-
 const mongoose = require("mongoose");
 const session = require("express-session");
 const { Cafe } = require("../models/cafeModel");
@@ -151,6 +150,7 @@ async function deleteCafe(req, res) {
 /**
  * Server-side event - hooked to the cafeEmployee.njk file
  * Watches for insert operation in order collection and relays to cafe page for employees
+ * Unique event { req.params.cafeId } allows relaying update only to cafe who recieved the new order
  */
 async function orderRetriever(req, res) {
     res.set({

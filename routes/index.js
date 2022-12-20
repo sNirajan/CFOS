@@ -3,7 +3,6 @@
  * Gagandeep Singh
  * Niranjan Shah
  */
-
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
@@ -12,6 +11,9 @@ const { User } = require("../models/userModel");
 const { DB } = require("../config/config");
 const { auth } = require("../middlewares/auth");
 
+/**
+ * Shows the homepage fo the app.
+ */
 router.get("/", auth, function (req, res) {
     mongoose.connect(DB.uri);
     User.findOne({_id: mongoose.Types.ObjectId(req.session.userId)})

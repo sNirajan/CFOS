@@ -4,6 +4,11 @@
  * Niranjan Shah
  */
 
+/**
+ * Splits a given string of error names seperated by ' ', and returns a detailed error message.
+ * @param {String} param The string to be splited.
+ * @returns A String of that contains detailed error messages.
+ */
 function menuItemErrorMsg(param) {
     let errorMsg = "";
     if(param) {
@@ -20,6 +25,11 @@ function menuItemErrorMsg(param) {
     return errorMsg;
 }
 
+/**
+ * Splits a given string of error names seperated by ' ', and returns a detailed error message.
+ * @param {String} param The string to be splited.
+ * @returns A String of that contains detailed error messages.
+ */
 function employeeErrorMsg(param) {
     let errorMsg = "";
     if(param) {
@@ -39,6 +49,11 @@ function employeeErrorMsg(param) {
     return errorMsg;
 }
 
+/**
+ * Converts an schema validation error object into string container error names seperated by '+'.
+ * @param {String} err The error object.
+ * @returns A String of that contains the error name sperated by '+'.
+ */
 function errorNameStr(err) {
     let invalidFields = "";
     let sepChar = ["", "+"];

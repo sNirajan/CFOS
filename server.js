@@ -3,14 +3,10 @@
  * Gagandeep Singh
  * Niranjan Shah
  */
-
 const express = require("express");
 const nunjucks = require("nunjucks");
 const session = require("express-session");
-const { SESSION, DB } = require("./config/config.js");
-const { Order, seedOrder } = require("./models/orderModel");
-const { MenuItem, seedMenuItem } = require("./models/menuItemModel");
-const { RestrictRoute } = require("./middlewares/auth");
+const { SESSION } = require("./config/config.js");
 
 const port = 3000;
 const app = express();
@@ -22,7 +18,6 @@ const menuItemRoutes = require("./routes/menuItem");
 const instafoodRoutes = require("./routes/instafood");
 const userRoutes = require("./routes/user");
 const orderRoutes = require("./routes/order");
-const { default: mongoose } = require("mongoose");
 
 nunjucks.configure("views", {
   autoescape: true,

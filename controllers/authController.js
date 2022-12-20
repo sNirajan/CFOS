@@ -3,7 +3,6 @@
  * Gagandeep Singh
  * Niranjan Shah
  */
-
 const mongoose = require("mongoose");
 const session = require("express-session");
 const crypto = require("crypto");

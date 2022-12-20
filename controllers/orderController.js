@@ -3,7 +3,6 @@
  * Gagandeep Singh
  * Niranjan Shah
  */
-
 const mongoose = require("mongoose");
 const session = require("express-session");
 const { Order } = require("../models/orderModel");
@@ -12,6 +11,9 @@ const { User } = require("../models/userModel");
 const { DB } = require("../config/config");
 const { handleError } = require("../middlewares/errorHandler");
 
+/**
+ * Shows order review page
+ */
 async function review(req, res) {
     await mongoose.connect(DB.uri);
     Cafe.findOne({_id: mongoose.Types.ObjectId(req.params.cafeId)})
@@ -28,6 +30,9 @@ async function review(req, res) {
     });
 }
 
+/**
+ * Inserts a new order into the orders collection
+ */
 async function checkout(req, res) {
     await mongoose.connect(DB.uri);
     await User.findOne({_id: mongoose.Types.ObjectId(req.session.userId)})
@@ -55,6 +60,9 @@ async function checkout(req, res) {
     });
 }
 
+/**
+ * Updates status of a order ( status = "Pending" | "Approved" | "Ready" | "Declined" )
+ */
 async function update(req, res) {
     await mongoose.connect(DB.uri);
     Order.findOne({ _id: mongoose.Types.ObjectId(req.params.orderId) })
@@ -76,6 +84,9 @@ async function update(req, res) {
     });
 }
 
+/**
+ * Shows the tracking page with current order status
+ */
 async function track(req, res) {
     Order.findOne({_id: mongoose.Types.ObjectId(req.params.orderId)})
     .then(function(order) {
@@ -90,6 +101,11 @@ async function track(req, res) {
     }) 
 }
 
+/**
+ * Server-sent event hooked to the orderTracker.njk file.
+ * Watches for update in order DB and relays status change to client.
+ * Unique event { req.params.orderId } allows relaying update only to user who placed the order.
+ */
 async function tracker(req, res) {
     res.set({
         "Connection": "keep-alive",
