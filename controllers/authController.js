@@ -15,7 +15,6 @@ const { handleError } = require("../middlewares/errorHandler")
  */
 async function index(req, res) {
     req.session.csrf = crypto.randomBytes(64).toString('base64');
-    console.log(req.session);
     res.render("../views/login.njk", {
         csrf: req.session.csrf,
         validationFailed: req.query.q !== undefined
