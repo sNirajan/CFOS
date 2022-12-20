@@ -47,7 +47,6 @@ function guestValidation(req, res, next) {
  * Checks if an authenticated user has admin level access
  */
 function adminValidation(req, res, next) {
-    console.log(req.session);
     if(req.session.userAuthToken 
         && req.session.userId 
         && req.session.userLevel != undefined //NOTE: don't remove 'undefined', since userLevel=0 will cause the condition to fail
