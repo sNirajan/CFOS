@@ -7,7 +7,7 @@ This is a web-based food ordering system application that was initially develope
 Node.js, Express, Nunjucks, Mongoose, MongoDB etc. 
 
 ## Contributors (Developers)
-- Reza Saker Hossain
+- Reza Hossain
 - Gagandeep Singh
 - Nirajan Bikran Shah
 
