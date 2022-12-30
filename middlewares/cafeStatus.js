@@ -1,7 +1,7 @@
 /**
  * Reza Saker Hossain
  * Gagandeep Singh
- * Niranjan Shah
+ * Nirajan Shah
  */
 const express = require("express");
 const mongoose = require("mongoose");
